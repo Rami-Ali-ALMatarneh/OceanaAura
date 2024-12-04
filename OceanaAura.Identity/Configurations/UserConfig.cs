@@ -19,12 +19,12 @@ namespace OceanaAura.Identity.Configurations
                  new User
                  {
                      Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                     Email = "admin@localhost.com",
-                     NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                     UserName = "admin@localhost.com",
+                     Email = "opscode59@gmail.com",
+                     NormalizedEmail = "OPSCODE59@GMAIL.COM",
+                     UserName = "admin",
                      CreatedBy = "Admin",
-                     NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                     PasswordHash = hasher.HashPassword(null, "P@ssword"),
+                     NormalizedUserName = "ADMIN",
+                     PasswordHash = hasher.HashPassword(null, "Pa$$w0rd"),
                      EmailConfirmed = true}
                 
             );
