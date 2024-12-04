@@ -216,6 +216,9 @@ namespace OceanaAura.Identity.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("OTP")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -252,19 +255,19 @@ namespace OceanaAura.Identity.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "eeaefd83-a80a-447c-910f-fb6ab0bcfc3f",
+                            ConcurrencyStamp = "453cc3f7-80f5-462b-89a8-1682da8d73fd",
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2024, 12, 1, 11, 39, 2, 617, DateTimeKind.Local).AddTicks(5514),
-                            Email = "admin@localhost.com",
+                            CreatedOn = new DateTime(2024, 12, 3, 14, 42, 58, 469, DateTimeKind.Local).AddTicks(7920),
+                            Email = "opscode59@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                            NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAFHEmHNrns1nOrk8EdB/b59GqM1IzZvNbUKySNxCBUKGxwupyTheGsx9fe17cD1aw==",
+                            NormalizedEmail = "OPSCODE59@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBSjOHHcNdCnFTKnBZDjc94fq/wcOda4vsKhyWERpGbBPEW0M3htNtBMkeP3n4ZICw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "743284c1-cad8-4d4b-9805-08924751a92d",
+                            SecurityStamp = "ba7986dc-6d34-4614-81f7-beaedc0d38d6",
                             TwoFactorEnabled = false,
-                            UserName = "admin@localhost.com"
+                            UserName = "admin"
                         });
                 });
 

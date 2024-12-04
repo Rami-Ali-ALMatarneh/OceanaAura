@@ -13,7 +13,7 @@ namespace OceanaAura.Infrastructure.EmailService
 {
     public class EmailServices : IEmailService
     {
-        public EmailSettings _emailSettings { get; }
+        private readonly EmailSettings _emailSettings;
         public EmailServices(IOptions<EmailSettings> emailSettings)
         {
             _emailSettings = emailSettings.Value;
@@ -32,7 +32,7 @@ namespace OceanaAura.Infrastructure.EmailService
                 From = new MailAddress(_emailSettings.Email,_emailSettings.DisplayName),
                 Subject = emailMessage.Subject,
                 Body = emailMessage.Body,
-                IsBodyHtml = true, // Allow HTML content if needed
+                IsBodyHtml = true
 
             };
             mailMessage.To.Add(emailMessage.To);

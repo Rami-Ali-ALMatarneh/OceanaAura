@@ -1,0 +1,52 @@
+﻿@model OceanaAura.Web.Models.Auth.LoginVM
+@{
+    Layout = "../Shared/_AuthLayout.cshtml";
+}
+
+<section class="vh-100 d-flex align-items-center justify-content-center bg-gradient">
+    <div class="container py-5">
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="row g-0">
+                <!-- Left Side - Logo -->
+                <div class="col-12 col-md-6 bg-primary text-white d-flex justify-content-center align-items-center rounded-start">
+                    <a asp-controller="Home" asp-action="Index">
+                        <img src="~/File/Images/LoginLogo.png" class="img-fluid" alt="Login Logo" loading="lazy" />
+                    </a>
+                </div>
+                <!-- Right Side - Form -->
+                <div class="col-12 col-md-6 p-4 p-md-5">
+                    <h2 class="fw-bold text-center text-primary mb-4">Welcome Back!</h2>
+                    <p class="text-center text-muted mb-4">Sign in to your account and continue where you left off.</p>
+                    <form asp-action="Login" class="form-signin" asp-controller="Auth" method="post">
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-bold">Email Address</label>
+                            <input asp-for="Email" class="form-control form-control-lg" placeholder="Enter your email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-bold">Password</label>
+                                <input asp-for="Password" class="form-control form-control-lg" id="Password" type="password" placeholder="Enter your password" />
+                               <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <!-- Validation Summary at the Bottom -->
+                        <div class="mb-4">
+                            <ul class="list-unstyled text-danger">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            </ul>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg py-3" type="submit">Log In Now</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <a asp-action="ForgetPassword" asp-controller="Auth" class="text-primary text-decoration-none">Forgot your password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section ScriptsAuth {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,16 +1,25 @@
+
+using OceanaAura.Application.Contracts.Email;
+using OceanaAura.Application.Models.Email;
 using OceanaAura.Identity;
+using OceanaAura.Infrastructure;
+using OceanaAura.Web.Models;
 using Serilog;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+builder.Services.AddRazorPages(); // Adds Razor Pages support, necessary for rendering views
+builder.Services.AddControllersWithViews(); // Ensures MVC and ViewEngine are available
+
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig
     .WriteTo.Console()
     .ReadFrom.Configuration(context.Configuration));
-
+builder.Services.AddCors();
+builder.Services.AddFluentValidations();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
-builder.Services.AddControllersWithViews();
-
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddCors(options =>
 {
@@ -33,7 +42,6 @@ app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseCors("all");
@@ -43,4 +51,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();

@@ -9,6 +9,7 @@ namespace OceanaAura.Identity.Models
 {
     public class User : IdentityUser
     {
+    public string? OTP { get; set; }
     public DateTime CreatedOn { get; set; } = DateTime.Now;
     public DateTime? ModifyOn { get; set; }
     public string? ModifyBy { get; set; }
