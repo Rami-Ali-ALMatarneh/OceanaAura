@@ -18,6 +18,7 @@ namespace OceanaAura.Application.Contracts.Identity
         Task<IdentityResult> ChangePasswordAsync(ChangePasswordRequest changePassword);
         Task UpdateInfo(UpdateInfoRequest updateInfo);
         Task<UpdateInfoRequest> GetUserInfo(string UserName);
+        Task<IdentityResult> ChangeNewPassowrd(ChangeNewPassowrd changeNewPassowrd);
 
         Task Logout();
     }

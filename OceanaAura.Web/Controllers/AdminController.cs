@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OceanaAura.Application.Contracts.Identity;
 using OceanaAura.Application.Exceptions;
+using OceanaAura.Application.Models.Identity.Password;
 using OceanaAura.Application.Models.Identity.UserInfo;
 using OceanaAura.Web.Models.Auth;
 
@@ -45,7 +46,7 @@ namespace OceanaAura.Web.Controllers
             {
                 var updateInfoRequest = _mapper.Map<UpdateInfoRequest>(request);
                 await _authService.UpdateInfo(updateInfoRequest); 
-                TempData["SuccessMessage"] = "Profile updated successfully!";
+                TempData["UpdateProfile"] = "Profile updated successfully!";
                 return RedirectToAction("Profile"); 
             }
             catch (NotFoundException ex)
@@ -67,6 +68,44 @@ namespace OceanaAura.Web.Controllers
         public IActionResult ChangePassword()
         {
             return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                var ChangeNewPasswordRequest = _mapper.Map<ChangeNewPassowrd>(model);
+                var result = await _authService.ChangeNewPassowrd(ChangeNewPasswordRequest);
+                if (result.Succeeded)
+                {
+                    TempData["ChangePassword"] = "Password has been successfully changed!";
+                    return RedirectToAction("Profile", "Admin");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+            }
+            return View(model);
         }
     }
 }

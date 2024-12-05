@@ -190,7 +190,8 @@ namespace OceanaAura.Identity.Services
                 {
                     throw new InvalidOperationException("Failed to Change Password");
                 }
-
+                admin.OTP = null;
+                await _userManager.UpdateAsync(admin);
                 return result;
             }
             catch (InvalidOperationException ex)
@@ -246,5 +247,60 @@ namespace OceanaAura.Identity.Services
             var UserInfoDto = _mapper.Map<UpdateInfoRequest>(userInfo);
             return UserInfoDto;
         }
+
+        public async Task<IdentityResult> ChangeNewPassowrd(ChangeNewPassowrd changeNewPassowrd)
+        {
+            try
+            {
+                if (changeNewPassowrd.NewPassword != changeNewPassowrd.ConfirmNewPassword)
+                {
+                    throw new BadRequestException("The new password and confirmation password do not match.");
+                }
+
+                var currentUser = _httpContextAccessor.HttpContext.User;
+                var userId = currentUser?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new NotFoundException("User not found in the current context.");
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    throw new NotFoundException("No user found with the provided User ID.");
+                }
+
+                var passwordCheck = await _userManager.CheckPasswordAsync(user, changeNewPassowrd.CurrentPassword);
+                if (!passwordCheck)
+                {
+                    throw new BadRequestException("The current password is incorrect.");
+                }
+
+                var result = await _userManager.ChangePasswordAsync(user, changeNewPassowrd.CurrentPassword, changeNewPassowrd.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    throw new BadHttpRequestException($"An unexpected error occurred while changing the password");
+                }
+
+                return result;
+            }
+            catch (BadRequestException ex)
+            {
+                throw new BadRequestException(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                throw new NotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log the unexpected error for further investigation
+                throw new Exception("An unexpected error occurred. Please try again later.");
+            }
+        }
+
+
     }
 }
