@@ -14,6 +14,8 @@ namespace OceanaAura.Web.MappingProfiles
             CreateMap<ResetPasswordVM, ResetPasswordRequest>().ReverseMap();
             CreateMap<NewPasswordVM, ChangePasswordRequest>().ReverseMap();
             CreateMap<UpdateInfo, UpdateInfoRequest>().ReverseMap();
+            CreateMap<ChangePasswordVM, ChangeNewPassowrd>().ReverseMap();
+
 
         }
     }

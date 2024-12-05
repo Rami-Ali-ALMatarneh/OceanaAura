@@ -171,7 +171,7 @@ namespace OceanaAura.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    TempData["SuccessMessage"] = "Password changed successfully.";
+                    TempData["NewPasswordUpdate"] = "Password changed successfully.";
                     return RedirectToAction("Login","Auth"); 
                 }
                 else
