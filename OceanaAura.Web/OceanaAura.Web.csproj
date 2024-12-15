@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -23,8 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OceanaAura.Application\OceanaAura.Application.csproj" />
     <ProjectReference Include="..\OceanaAura.Identity\OceanaAura.Identity.csproj" />
     <ProjectReference Include="..\OceanaAura.Infrastructure\OceanaAura.Infrastructure.csproj" />
+    <ProjectReference Include="..\OceanaAura.Persistence\OceanaAura.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\File\ColorsImg\" />
   </ItemGroup>
 
 </Project>

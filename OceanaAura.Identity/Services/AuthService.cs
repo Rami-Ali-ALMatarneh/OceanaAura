@@ -283,7 +283,7 @@ namespace OceanaAura.Identity.Services
                 {
                     throw new BadHttpRequestException($"An unexpected error occurred while changing the password");
                 }
-
+                
                 return result;
             }
             catch (BadRequestException ex)

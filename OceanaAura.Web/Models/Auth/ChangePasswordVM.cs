@@ -27,7 +27,7 @@ namespace OceanaAura.Web.Models.Auth
 
             RuleFor(user => user.ConfirmNewPassword)
            .NotEmpty().WithMessage("Confirm NewPassword is required")
-           .Equal(user => user.NewPassword).WithMessage("Confirm NewPassword must match");
+           .Equal(user => user.NewPassword).WithMessage("Confirm New Password must match");
 
         }
     }

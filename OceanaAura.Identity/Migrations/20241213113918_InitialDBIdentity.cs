@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OceanaAura.Identity.Migrations
 {
     /// <inheritdoc />
-    public partial class Createdb : Migration
+    public partial class InitialDBIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -169,7 +169,7 @@ namespace OceanaAura.Identity.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedBy", "CreatedOn", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "ModifyBy", "ModifyOn", "NormalizedEmail", "NormalizedUserName", "OTP", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "453cc3f7-80f5-462b-89a8-1682da8d73fd", "Admin", new DateTime(2024, 12, 3, 14, 42, 58, 469, DateTimeKind.Local).AddTicks(7920), "opscode59@gmail.com", true, false, null, null, null, "OPSCODE59@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEBSjOHHcNdCnFTKnBZDjc94fq/wcOda4vsKhyWERpGbBPEW0M3htNtBMkeP3n4ZICw==", null, false, "ba7986dc-6d34-4614-81f7-beaedc0d38d6", false, "admin" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "8dbe4a83-fd88-46d3-a6cf-e27391ef2249", "Admin", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "opscode59@gmail.com", true, false, null, null, null, "OPSCODE59@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEBzExJUM82QtrPOXM11ctiLIxZbvLDrLHmhHkxg3uLMCo7MxKWmtMQg9+l+rnl2u4A==", null, false, "44a7386e-37c6-4fd7-9e4a-b6918527a3df", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

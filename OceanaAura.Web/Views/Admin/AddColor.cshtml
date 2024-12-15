@@ -1,0 +1,60 @@
+﻿@model OceanaAura.Web.Models.Colors.ColorVM
+
+@{
+    Layout = "../Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Add Color</h1>
+        <a asp-action="Colors" asp-controller="Admin" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Colors List
+        </a>
+    </div>
+    <hr />
+
+    <!-- Color Form Card -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Add New Color</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AddColor" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="FormFile" class="form-label">Upload Image</label>
+                            <div class="custom-file">
+                                <input type="file" class="form-control-file" id="FormFile" name="FormFile" accept="image/*" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="NameEn" class="form-label">Color Name (English)</label>
+                            <input asp-for="NameEn" class="form-control" id="NameEn" />
+                            <span asp-validation-for="NameEn" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="NameAr" class="form-label">Color Name (Arabic)</label>
+                            <input asp-for="NameAr" class="form-control" id="NameAr" />
+                            <span asp-validation-for="NameAr" class="text-danger"></span>
+                        </div>
+                        @* Display validation errors *@
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        <button type="submit" class="btn btn-primary btn-block">Add Color</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

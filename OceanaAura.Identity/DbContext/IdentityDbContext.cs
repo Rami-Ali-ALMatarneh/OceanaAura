@@ -27,7 +27,7 @@ namespace OceanaAura.Identity.DbContext
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(UserIdentityDbContext).Assembly);
         }
-        public override int SaveChanges()
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<User>();
             var userClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -35,17 +35,17 @@ namespace OceanaAura.Identity.DbContext
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedOn = DateTime.UtcNow;
-                        entry.Entity.CreatedBy = userClaim;
+                    entry.Entity.CreatedOn = DateTime.Now;
+                    entry.Entity.CreatedBy = userClaim;
                 }
                 else if (entry.State == EntityState.Modified)
                 {
-                    entry.Entity.ModifyOn = DateTime.UtcNow;
+                    entry.Entity.ModifyOn = DateTime.Now;
                     entry.Entity.ModifyBy = userClaim;
                 }
             }
 
-            return base.SaveChanges();
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -54,18 +54,26 @@
             <div class="sidebar-heading">
                 Interface
             </div>
+         
             <!-- Nav Item - Products -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" asp-action="Products" asp-controller="Admin">
                     <i class="fas fa-boxes"></i>
                     <span>Products</span>
                 </a>
             </li>
-            <!-- Nav Item - Customer -->
+           <!-- Nav Item - Customers -->
             <li class="nav-item">
                 <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-users"></i>
+                    <i class="fas fa-user-friends"></i>
                     <span>Customers</span>
+                </a>
+            </li>
+            <!-- Nav Item - Orders -->
+            <li class="nav-item">
+                <a class="nav-link" href="charts.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
                 </a>
             </li>
             <!-- Nav Item - Invoices -->
@@ -75,12 +83,11 @@
                     <span>Invoices</span>
                 </a>
             </li>
-
             <!-- Nav Item - Orders -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Orders</span>
+                <a class="nav-link" asp-action="ContactMessages" asp-controller="Admin">
+                    <i class="fas fa-comment"></i>
+                    <span>Contact Messages</span>
                 </a>
             </li>
 @*             <!-- Nav Item - Statisitcs -->
@@ -100,8 +107,10 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
+                        <a class="collapse-item" asp-action="Colors" asp-controller="Admin">Product Colors</a>
+                        <a class="collapse-item" asp-action="Sizes" asp-controller="Admin">Product Size</a>
+                        <a class="collapse-item" asp-action="ProductsCategory" asp-controller="Admin">Products Category</a>
+
                     </div>
                 </div>
             </li>
@@ -314,7 +323,7 @@
                 </nav>
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid h-100">
                     <!-- container-fluid -->
                     @RenderBody()
                     <!-- /.container-fluid -->
