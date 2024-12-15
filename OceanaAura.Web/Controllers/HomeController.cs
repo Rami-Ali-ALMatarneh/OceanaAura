@@ -1,32 +1,53 @@
+using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Web.Models;
+using OceanaAura.Web.Models.Home;
 using System.Diagnostics;
 
 namespace OceanaAura.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IMediator mediator,IMapper mapper)
         {
-            _logger = logger;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        public IActionResult ContactUs()
         {
             return View();
         }
+            [HttpPost]
+            public async Task<IActionResult> ContactUs(ContactUsVM contactUsVM)
+            {
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                    var ContactUsDto = _mapper.Map<AddContactUsCommand>(contactUsVM);
+                        var result = await _mediator.Send(ContactUsDto);
+
+                        TempData["SuccessMessage"] = "Your message has been sent successfully!";
+                        return RedirectToAction("ContactUs","Home");
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = "There was an error processing your request. Please try again.";
+                        return View(contactUsVM);
+                    }
+                }
+                return View(contactUsVM);
+            }
         }
-    }
 }

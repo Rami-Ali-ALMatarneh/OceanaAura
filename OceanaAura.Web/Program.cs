@@ -1,8 +1,11 @@
 
+using Microsoft.Extensions.Configuration;
+using OceanaAura.Application;
 using OceanaAura.Application.Contracts.Email;
 using OceanaAura.Application.Models.Email;
 using OceanaAura.Identity;
 using OceanaAura.Infrastructure;
+using OceanaAura.Persistence;
 using OceanaAura.Web.Models;
 using Serilog;
 using System.Reflection;
@@ -16,7 +19,9 @@ builder.Host.UseSerilog((context, loggerConfig) => loggerConfig
     .WriteTo.Console()
     .ReadFrom.Configuration(context.Configuration));
 builder.Services.AddCors();
-builder.Services.AddFluentValidations();
+builder.Services.AddControllersWithViews();
+builder.Services.AddApplicationServices();
+builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

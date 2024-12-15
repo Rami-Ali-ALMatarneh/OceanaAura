@@ -1,0 +1,57 @@
+﻿@model OceanaAura.Web.Models.Size.SizeVM
+
+@{
+    Layout = "../Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Add Size</h1>
+        <a asp-action="Sizes" asp-controller="Admin" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Sizes List
+        </a>
+    </div>
+    <hr />
+
+    <!-- Size Form Card -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Add New Size</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AddSize" asp-controller="Admin" method="post">
+                        <div class="mb-3">
+                            <label for="NameEn" class="form-label">Size Name (English)</label>
+                            <input asp-for="NameEn" class="form-control" id="NameEn" />
+                            <span asp-validation-for="NameEn" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="NameAr" class="form-label">Size Name (Arabic)</label>
+                            <input asp-for="NameAr" class="form-control" id="NameAr" />
+                            <span asp-validation-for="NameAr" class="text-danger"></span>
+                        </div>
+
+                        @* Display validation errors *@
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+
+                        <button type="submit" class="btn btn-primary btn-block">Add Size</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

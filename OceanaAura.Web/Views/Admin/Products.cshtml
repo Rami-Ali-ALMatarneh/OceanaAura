@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "../Shared/_AdminLayout.cshtml";
+}
+<div class="w-100">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Products</h1>
+        <!-- Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="addProductDropdown"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add Product
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="addProductDropdown">
+                <h6 class="dropdown-header">Product Categories:</h6>
+                <a class="dropdown-item d-flex justify-content-between align-items-center" asp-action="AddBottle" asp-controller="Admin">
+                    Add Bottle<i class="fas fa-plus fa-sm"></i>
+                </a>
+                <a class="dropdown-item d-flex justify-content-between align-items-center" asp-action="AddLid" asp-controller="Admin">
+                    Add Lid <i class="fas fa-plus fa-sm"></i>
+                </a>
+                <a class="dropdown-item d-flex justify-content-between align-items-center" asp-action="AddRubber" asp-controller="Admin">
+                    Add Rubber <i class="fas fa-plus fa-sm"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OceanaAura.Application.Contracts.Email;
+using OceanaAura.Application.Contracts.Logging;
 using OceanaAura.Application.Contracts.OTP;
 using OceanaAura.Application.Contracts.RenderView;
 using OceanaAura.Application.Models.Email;
 using OceanaAura.Infrastructure.EmailService;
+using OceanaAura.Infrastructure.Logging;
 using OceanaAura.Infrastructure.OTPService;
 using OceanaAura.Infrastructure.RenderServices;
 using System;
@@ -26,6 +28,7 @@ namespace OceanaAura.Infrastructure
             services.AddScoped<IViewRenderService, ViewRenderService>();
             services.AddScoped<IViewEngine, RazorViewEngine>();
             services.AddTransient<IOTPGenerator, OTPGenerator>();
+            services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddMvcCore();
             return services;
         }
