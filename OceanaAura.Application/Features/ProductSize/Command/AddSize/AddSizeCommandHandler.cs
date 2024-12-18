@@ -47,9 +47,19 @@ namespace OceanaAura.Application.Features.ProductSize.Command.AddSize
             // convert to domain entity
             var data = _mapper.Map<LookUpEntity>(request);
             data.LookupCategoryId = (int)LookUpEnums.CategoryCode.ProductSize;
+            var size = new Domain.Entities.ProductSize
+            {
+                SizeId = data.LookUpId,
+                PriceJOR = request.PriceJOR,
+                PriceUAE = request.PriceUAE,
+                PriceUSD = request.PriceUSD,
+                Size = data
+            };
             // add to database
             await _unitOfWork.GenericRepository<LookUpEntity>().AddAsync(data);
+            await _unitOfWork.GenericRepository<Domain.Entities.ProductSize>().AddAsync(size);
             await _unitOfWork.CompleteSaveAppDbAsync();
+
             //return record Id
             return data.Id;
         }

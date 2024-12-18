@@ -21,6 +21,9 @@
             <tr>
                 <th>Name En</th>
                 <th>Name Ar</th>
+                <th>Price JOR</th>
+                <th>Price UAE</th>
+                <th>Price USD</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -51,6 +54,30 @@ $(document).ready(function () {
         "columns": [
             { "data": "nameEn", "name": "NameEn", "autoWidth": true },
             { "data": "nameAr", "name": "NameAr", "autoWidth": true },
+            {
+                "data": "priceJor",
+                "name": "PriceJor",
+                "autoWidth": true,
+                "render": function (data, type, row) {
+                    return data + " JD"; // Concatenate with " JD"
+                }
+            },
+            {
+                "data": "priceUae",
+                "name": "PriceUae",
+                "autoWidth": true,
+                "render": function (data, type, row) {
+                    return data + " AED"; // Concatenate with " UAE"
+                }
+            },
+            {
+                "data": "priceUsd",
+                "name": "PriceUsd",
+                "autoWidth": true,
+                "render": function (data, type, row) {
+                            return "$ "+data; // Concatenate with "$" before the value
+                }
+            },
             {
                 "data": null,
                 "orderable": false,

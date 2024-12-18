@@ -1,171 +1,278 @@
-﻿@{
+﻿@model OceanaAura.Web.Models.Products.ProductVM
+
+@{
     Layout = "../Shared/_AdminLayout.cshtml";
+    var categories = ViewBag.Categories as List<OceanaAura.Web.Models.Lookup.CategoryVM>;
 }
-<div class="w-100">
+
+<div class="w-100 h-100">
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <h3 class="fw-bold">Add New Product</h3>
+        <h1 class="h3 mb-0 text-gray-800">Products</h1>
         <div class="d-flex justify-content-between align-items-center" style="gap:10px">
-            <a asp-action="Products" asp-controller="Admin" class="btn btn-outline-secondary me-2">
+            <a asp-action="Products" asp-controller="Admin" class="btn btn-outline-secondary btn-sm me-2 mb-0">
                 <i class="fas fa-arrow-left fa-sm text-primary-50"></i> Back to Products
             </a>
-            <button class="btn btn-primary">Add Product</button>
+            <!-- Move the button inside the form with type="submit" -->
+            <button type="button" class="btn btn-primary btn-sm" id="addProductBtn">Add Product</button>
         </div>
     </div>
-    <form>
+
+    <form id="addProductForm" enctype="multipart/form-data" asp-action="AddProduct" asp-controller="Admin" method="post">
         <div class="row g-4">
             <!-- General Information -->
             <div class="col-lg-8 col-md-12 mt-3">
                 <div class="card p-4">
                     <h5 class="fw-bold">General Information</h5>
                     <div class="mb-3">
-                        <label for="productName" class="form-label">Name Product</label>
-                        <input type="text" class="form-control" id="productName" placeholder="Enter product name">
+                        <label for="ProductName" class="form-label">Name Product</label>
+                        <input type="text" class="form-control" id="ProductName" name="Name" asp-for="Name" placeholder="Enter Product name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="productDescription" class="form-label">Description Product</label>
-                        <textarea class="form-control" id="productDescription" rows="4" placeholder="Enter product description"></textarea>
+                        <label for="ProductDescription" class="form-label">Description Product</label>
+                        <textarea class="form-control" id="ProductDescription" name="Description" asp-for="Description" rows="4" placeholder="Enter Product description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Size</label>
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="button" class="btn btn-outline-secondary">XS</button>
-                                <button type="button" class="btn btn-primary">S</button>
-                                <button type="button" class="btn btn-outline-secondary">M</button>
-                                <button type="button" class="btn btn-outline-secondary">XL</button>
-                                <button type="button" class="btn btn-outline-secondary">XXL</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Pick Colors</label>
-                            <div class="border p-2 rounded" style="min-height: 50px;" id="selected-colors">
-                                <!-- Selected items will appear here -->
-                            </div>
-                            <div class="dropdown mt-3">
-                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Select Colors
-                                </button>
-                                <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton" style="max-height: 200px; overflow-y: auto;">
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-color="Orange">
-                                            <span class="me-2 text-warning fs-1">&#9679;</span> Orange
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-color="Purple">
-                                            <span class="me-2 text-primary">&#9679;</span> Purple
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-color="Green">
-                                            <span class="me-2 text-success">&#9679;</span> Green
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-color="Blue">
-                                            <span class="me-2 text-info">&#9679;</span> Blue
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                    <div class="mb-3">
+                        <h5 class="fw-bold">Category</h5>
+                        <div class="mb-3">
+                            <label for="productCategory" class="form-label">Product Category</label>
+                            <select class="form-select w-100 form-control" id="productCategory" name="CategoryId" asp-for="CategoryId">
+                                <option value="0">Select a Category</option>
+                                @foreach (var category in categories)
+                                {
+                                 <option value="@category.id">@category.NameEn</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Upload Image -->
             <div class="col-lg-4 col-md-12 mt-3">
-                <div class="card p-4">
-                    <h5 class="fw-bold">Upload Image</h5>
-                    <div class="d-flex flex-wrap justify-content-between">
-                        <img src="https://via.placeholder.com/100" alt="Product image" class="img-thumbnail img-fluid">
-                        <img src="https://via.placeholder.com/100" alt="Product image" class="img-thumbnail img-fluid">
-                        <img src="https://via.placeholder.com/100" alt="Product image" class="img-thumbnail img-fluid">
-                        <div class="d-flex align-items-center justify-content-center bg-light border rounded" style="width: 100px; height: 100px;">
-                            <span class="text-muted fs-4">+</span>
+                    <div class="card p-4 h-100">
+                    <label for="imageUploadInput" class="control-label fw-bold">Upload Images</label>
+                    <div class="d-flex flex-wrap gap-3 mt-3" id="imagePreviewContainer" style="gap: 15px;">
+                        <!-- Default "+" button for file upload -->
+                        <div class="form-control upload-placeholder d-flex justify-content-center align-items-center border rounded"
+                             style="width: 100px; height: 100px; cursor: pointer; position: relative; background-color: #f8f9fa;">
+                            <label for="imageUploadInput" class="d-flex justify-content-center align-items-center"
+                                   style="font-size: 40px;width:100%;height:100%; color: #6c757d; position: absolute; cursor: pointer; margin: 0;">
+                                +
+                            </label>
+                            <input type="file" id="imageUploadInput" name="Images" accept="image/*" multiple
+                                   onchange="previewImages(event)" style="display: none;">
                         </div>
+                        <!-- Image previews will appear here -->
                     </div>
-                </div>
+                    <span asp-validation-for="Images" class="text-danger"></span>
+
+                    </div>
             </div>
 
-            <!-- Pricing and Stock -->
-            <div class="col-lg-8 col-md-12 mt-3">
+
+            <!-- Pricing and Discount -->
+            <div class="col-lg-8 col-md-12 mt-3" id="PricingDiscount" style="display: none;">
                 <div class="card p-4">
                     <h5 class="fw-bold">Pricing and Stock</h5>
-                    <div class="row">
+                    <div class="row" id="pricingFields">
+                        <!-- Pricing Fields -->
                         <div class="col-md-6 mb-3">
-                            <label for="basePricing" class="form-label">Price in JOR</label>
-                            <input type="text" class="form-control" id="basePricing" placeholder="$0.00">
+                            <label for="ProductPriceJOR" class="form-label">Price in JOR</label>
+                            <input type="text" class="form-control" id="ProductPriceJOR" name="PriceJOR" asp-for="PriceJOR" placeholder="0.00 JD" />
+                            <span asp-validation-for="PriceJOR" class="text-danger"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="basePricingUSD" class="form-label">Price in USD</label>
-                            <input type="text" class="form-control" id="basePricingUSD" placeholder="$0.00">
+                        <div class="col-md-6 mb-3 ">
+                            <label for="ProductPriceUSD" class="form-label">Price in USD</label>
+                            <input type="text" class="form-control" id="ProductPriceUSD" name="PriceUSD" asp-for="PriceUSD" placeholder="$ 0.00" />
+                            <span asp-validation-for="PriceUSD" class="text-danger"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="basePricingUAE" class="form-label">Price in UAE</label>
-                            <input type="text" class="form-control" id="basePricingUAE" placeholder="$0.00">
+                        <div class="col-md-6 mb-3 ">
+                            <label for="ProductPriceUAE" class="form-label">Price in UAE</label>
+                            <input type="text" class="form-control" id="ProductPriceUAE" name="PriceUAE" asp-for="PriceUAE" placeholder="0.00 AED" />
+                            <span asp-validation-for="PriceUAE" class="text-danger"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="stock" class="form-label">Stock</label>
-                            <input type="number" class="form-control" id="stock" placeholder="0">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="discount" class="form-label">Discount</label>
-                            <input type="text" class="form-control" id="discount" placeholder="10%">
-                        </div>
+                    </div>
+
+                    <!-- Discount Field -->
+                    <div class="col-md-6 mb-3 p-0" id="discountField">
+                        <label for="ProductDiscount" class="form-label">Discount (Optional)</label>
+                        <input type="text" class="form-control" id="ProductDiscount" name="Discount" asp-for="Discount" placeholder="10%" />
+                        <span asp-validation-for="Discount" class="text-danger"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- Category -->
-            <div class="col-lg-4 col-md-12 mt-3">
-                <div class="card p-4">
-                    <h5 class="fw-bold">Category</h5>
-                    <div class="mb-3">
-                        <label for="productCategory" class="form-label">Product Category</label>
-                        <select class="form-select w-100" id="productCategory">
-                            <option selected disabled>Choose a category</option>
-                            <option value="Jacket">Jacket</option>
-                            <option value="Shirt">Shirt</option>
-                            <option value="Pants">Pants</option>
-                            <option value="Shoes">Shoes</option>
-                            <option value="Accessories">Accessories</option>
-                        </select>
-                    </div>
-                    <button type="button" class="btn btn-primary w-100">Add Category</button>
-                </div>
-            </div>
+
+
+        <!-- Error Messages -->
+        <div id="errorMessages" class="alert alert-danger mt-3" style="display: none;">
+            <ul id="errorList" class="mb-0">
+                <!-- Error messages will be added here dynamically -->
+            </ul>
         </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+        <!-- Add Submit Button Inside the Form -->
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="modalImage" class="img-fluid" alt="Preview Image" />
+            </div>
+        </div>
+    </div>
+</div>
 
-@section ScriptsAuth {
-    <partial name="_ValidationScriptsPartial" />
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery first -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script> <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section ScriptsAuth{
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const colorName = this.getAttribute('data-color');
-                    const selectedColorsDiv = document.getElementById('selected-colors');
+            function previewImages(event) {
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const files = event.target.files;
 
-                    if (!Array.from(selectedColorsDiv.children).find(child => child.textContent.trim() === colorName)) {
-                        const colorTag = document.createElement('span');
-                        colorTag.classList.add('badge', 'bg-light', 'text-dark', 'me-2', 'mb-1', 'd-inline-flex', 'align-items-center');
-                        colorTag.style.cursor = 'pointer';
-                        colorTag.innerHTML = `${colorName} <span class="ms-2 text-danger">&times;</span>`;
-                        colorTag.querySelector('span').addEventListener('click', () => colorTag.remove());
-                        selectedColorsDiv.appendChild(colorTag);
+            if (files && files.length > 0) {
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith("image/")) {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            const img = new Image();
+                            img.src = e.target.result;
+
+                            // Check if the image meets the minimum size requirements (500x500)
+                            img.onload = function () {
+                                const minWidth = 500;
+                                const minHeight = 500;
+
+                                if (img.width < minWidth || img.height < minHeight) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Invalid Image Dimensions',
+                                        text: 'Image must be at least 500px by 500px.',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    return; // Skip adding this image to the preview container
+                                }
+
+                                // Create container for each image
+                                const imageDiv = document.createElement('div');
+                                imageDiv.style.cssText = "width: 100px; height: 100px; position: relative; display: inline-block;";
+
+                                img.style.cssText = "width: 100%; height: 100%; object-fit: cover; border-radius: 5px;";
+
+                                // Add click event to open image in modal
+                                img.addEventListener('click', function () {
+                                    const modalImage = document.getElementById('modalImage');
+                                    modalImage.src = img.src;
+
+                                    // Open the modal using Bootstrap 5's JavaScript API
+                                    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                                    modal.show();
+                                });
+
+                                // Create delete button
+                                const deleteBtn = document.createElement('button');
+                                deleteBtn.innerText = "X";
+                                deleteBtn.style.cssText = `
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                    background: red;
+                                    color: white;
+                                    border: none;
+                                    cursor: pointer;
+                                    width: 20px;
+                                    height: 20px;
+                                    font-size: 12px;
+                                    text-align: center;
+                                    line-height: 18px;
+                                    border-radius: 50%;
+                                `;
+
+                                // Add click event to remove the imageDiv
+                                deleteBtn.addEventListener('click', function () {
+                                    imagePreviewContainer.removeChild(imageDiv);
+                                });
+
+                                // Append elements
+                                imageDiv.appendChild(img);
+                                imageDiv.appendChild(deleteBtn);
+                                imagePreviewContainer.appendChild(imageDiv);
+                            };
+                        };
+
+                        reader.readAsDataURL(file);
                     }
                 });
-            });
+            }
+        }
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+            const pricingDiscountSection = document.getElementById("PricingDiscount");
+            const categoryDropdown = document.getElementById("productCategory");
+            const pricingFields = document.getElementById("pricingFields");
+            const discountField = document.getElementById("discountField");
+
+            // Function to toggle visibility
+            function toggleFields() {
+                const selectedCategory = parseInt(categoryDropdown.value);
+                const selectedCategoryText = categoryDropdown.options[categoryDropdown.selectedIndex].text;
+
+                if (selectedCategory>0) {
+                    // Show PricingDiscount section
+                    pricingDiscountSection.style.display = "block";
+
+                    // Toggle fields based on category
+                    if (selectedCategoryText === "Bottle") {
+                        pricingFields.style.display = "none";
+                        discountField.style.display = "block";
+                    } else {
+                        pricingFields.style.display = "flex";
+                        discountField.style.display = "none";
+                    }
+                } else {
+                    // Hide PricingDiscount if no category is selected
+                    pricingDiscountSection.style.display = "none";
+                }
+            }
+
+            // Add event listener for change in category
+            categoryDropdown.addEventListener("change", toggleFields);
+
+            // Initial check to handle pre-selected category (if any)
+            toggleFields();
         });
+        document.getElementById("addProductBtn").addEventListener("click", function (event) {
+               // Display the SweetAlert confirmation dialog
+               Swal.fire({
+                   title: 'Are you sure?',
+                   text: "Do you want to add this product?",
+                   icon: 'success',
+                   showCancelButton: true,
+                   confirmButtonColor: '#3085d6',
+                   cancelButtonColor: '#d33',
+                   confirmButtonText: 'Yes, submit it!'
+               }).then((result) => {
+                   if (result.isConfirmed) {
+                       // If confirmed, submit the form
+                       document.getElementById("addProductForm").submit();
+                   } else {
+                       // If canceled, do nothing
+                       console.log("Submission canceled.");
+                   }
+               });
+           });
     </script>
 }
+

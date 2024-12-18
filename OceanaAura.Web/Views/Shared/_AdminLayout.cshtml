@@ -110,7 +110,7 @@
                         <a class="collapse-item" asp-action="Colors" asp-controller="Admin">Product Colors</a>
                         <a class="collapse-item" asp-action="Sizes" asp-controller="Admin">Product Size</a>
                         <a class="collapse-item" asp-action="ProductsCategory" asp-controller="Admin">Products Category</a>
-
+                        <a class="collapse-item" asp-action="AdditionalProduct" asp-controller="Admin">Additional Products</a>
                     </div>
                 </div>
             </li>
@@ -294,9 +294,9 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                @*  <img class="img-profile rounded-circle"
-                                src="img/undraw_profile.svg"> *@
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.Name</span>
+                                 <img class="img-profile rounded-circle"
+                                src="~/File/Images/LoginLogo.png">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -361,8 +361,8 @@
 
         <!-- Page level plugins -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             function logout() {
                 Swal.fire({

@@ -33,7 +33,21 @@
                             <input asp-for="NameAr" class="form-control" id="NameAr" />
                             <span asp-validation-for="NameAr" class="text-danger"></span>
                         </div>
-
+                        <div class="mb-3">
+                            <label for="ProductPriceJOR" class="form-label">Price in JOR</label>
+                            <input type="text" class="form-control" id="ProductPriceJOR" name="PriceJOR" asp-for="PriceJOR" placeholder="0.00 JD" />
+                            <span asp-validation-for="PriceJOR" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ProductPriceUSD" class="form-label">Price in USD</label>
+                            <input type="text" class="form-control" id="ProductPriceUSD" name="PriceUSD" asp-for="PriceUSD" placeholder="$ 0.00" />
+                            <span asp-validation-for="PriceUSD" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ProductPriceUAE" class="form-label">Price in UAE</label>
+                            <input type="text" class="form-control" id="ProductPriceUAE" name="PriceUAE" asp-for="PriceUAE" placeholder="0.00 AED" />
+                            <span asp-validation-for="PriceUAE" class="text-danger"></span>
+                        </div>
                         @* Display validation errors *@
                         @if (!ViewData.ModelState.IsValid)
                         {

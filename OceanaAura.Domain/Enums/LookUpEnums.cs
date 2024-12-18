@@ -74,7 +74,6 @@ namespace OceanaAura.Domain.Enums
         }
         public enum ProductAdditionalCategory
         {
-            MagneticLid = 700,
             Customization = 701,
             DeliveryFee = 702
 
