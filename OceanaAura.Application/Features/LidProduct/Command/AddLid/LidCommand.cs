@@ -1,18 +1,17 @@
-﻿using OceanaAura.Domain.Common;
-using OceanaAura.Domain.Entities.LookUp;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OceanaAura.Domain.Entities.ProductsEntities
+namespace OceanaAura.Application.Features.LidProduct.Command.AddLid
 {
-    public class BaseProduct : BaseEntity
+    public class LidCommand : IRequest<int>
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<Image> ProductImages { get; set; }
+        public List<string> ImageUrls { get; set; }  // List of image URLs
         public decimal PriceJOR { get; set; }
         public decimal PriceUAE { get; set; }
         public decimal PriceUSD { get; set; }

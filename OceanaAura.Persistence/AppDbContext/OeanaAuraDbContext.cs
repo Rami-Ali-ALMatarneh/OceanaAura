@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OceanaAura.Domain.Common;
 using OceanaAura.Domain.Entities;
 using OceanaAura.Domain.Entities.LookUp;
+using OceanaAura.Domain.Entities.ProductsEntities;
 using OceanaAura.Persistence.Configurations;
 using System.Security.Claims;
 
@@ -22,7 +23,10 @@ namespace OceanaAura.Persistence.AppDbContext
         public DbSet<LookUpEntity> lookups { get; set; }
         public DbSet<LookUpCategory> lookUpCategories { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<AdditionalProduct> additionalProducts { get; set; }
+        public DbSet<ProductSize> productSizes { get; set; }
 
+        public DbSet<Product> products { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -45,7 +49,6 @@ namespace OceanaAura.Persistence.AppDbContext
                     entry.Entity.ModifyOn = DateTime.Now;
                     entry.Entity.ModifyBy = userClaim;
                 }
-                entry.Entity.Id = 1;
             }
 
             return await base.SaveChangesAsync(cancellationToken);

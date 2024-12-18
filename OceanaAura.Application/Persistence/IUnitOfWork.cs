@@ -13,6 +13,8 @@ namespace OceanaAura.Application.Persistence
         IProductColorRepository productColorRepository { get; }
         IProductSizeRepository productSizeRepository { get; }
         ILookUpRepository lookUpRepository { get; }
+        IProductRepository productRepository { get; }
+
         Task<bool> CompleteSaveIdentityAsync();
         Task<bool> CompleteSaveAppDbAsync();
 

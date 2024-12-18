@@ -2,14 +2,22 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using OceanaAura.Application.Contracts.Identity;
 using OceanaAura.Application.Exceptions;
 using OceanaAura.Application.Features.ContactUs.Commands.DeleteContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
+using OceanaAura.Application.Features.LidProduct.Command.AddLid;
 using OceanaAura.Application.Features.LookUp.Commands.AddCagegory;
+using OceanaAura.Application.Features.LookUp.Commands.Additional;
+using OceanaAura.Application.Features.LookUp.Commands.DeleteAdditional;
+using OceanaAura.Application.Features.LookUp.Commands.DeleteCategory;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllAdditinalProduct;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.LookUp.Queries.GetProductCategories;
+using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
 using OceanaAura.Application.Features.ProductColor.Commands.DeleteColor;
 using OceanaAura.Application.Features.ProductColor.Commands.UpdateColor;
@@ -22,12 +30,14 @@ using OceanaAura.Application.Models.Identity.UserInfo;
 using OceanaAura.Web.Extensions;
 using OceanaAura.Web.Models.Auth;
 using OceanaAura.Web.Models.Colors;
+using OceanaAura.Web.Models.Lookup;
+using OceanaAura.Web.Models.Products;
 using OceanaAura.Web.Models.Size;
 using System.Drawing;
 
 namespace OceanaAura.Web.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAuthService _authService;
@@ -35,7 +45,7 @@ namespace OceanaAura.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public AdminController(IAuthService authService, IMapper mapper,IMediator mediator,IWebHostEnvironment webHostEnvironment)
+        public AdminController(IAuthService authService, IMapper mapper, IMediator mediator, IWebHostEnvironment webHostEnvironment)
         {
             _authService = authService;
             _mapper = mapper;
@@ -67,9 +77,9 @@ namespace OceanaAura.Web.Controllers
             try
             {
                 var updateInfoRequest = _mapper.Map<UpdateInfoRequest>(request);
-                await _authService.UpdateInfo(updateInfoRequest); 
+                await _authService.UpdateInfo(updateInfoRequest);
                 TempData["UpdateProfile"] = "Profile updated successfully!";
-                return RedirectToAction("Profile"); 
+                return RedirectToAction("Profile");
             }
             catch (NotFoundException ex)
             {
@@ -188,7 +198,7 @@ namespace OceanaAura.Web.Controllers
             try
             {
                 var command = new DeleteContactUsCommand { Id = id };
-                await _mediator.Send(command); // Use MediatR to handle the command
+                await _mediator.Send(command); 
                 return Json(new { success = true, message = "Message deleted successfully!" });
             }
             catch (Exception ex)
@@ -196,14 +206,72 @@ namespace OceanaAura.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the message." });
             }
         }
-        public IActionResult Products()
+        public async Task<IActionResult> Products()
         {
+            var categories = await _mediator.Send(new CategoriesQuery());
+            var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
+            ViewBag.Categories = CategoriesVM; 
             return View();
         }
-        public  IActionResult AddProduct()
+        public async Task<IActionResult> AddProduct()
         {
+            var categories = await _mediator.Send(new CategoriesQuery());
+            var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
+            ViewBag.Categories = CategoriesVM;
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(ProductVM productVM)
+        {
+            var categories = await _mediator.Send(new CategoriesQuery());
+            var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
+            ViewBag.Categories = CategoriesVM;
+
+            // Validate the model using FluentValidation
+            var validator = new ProductVMalidator(_mediator);
+            var validationResult = await validator.ValidateAsync(productVM);
+
+            if (!validationResult.IsValid)
+            {
+                // If validation fails, return the view with error messages
+                foreach (var failure in validationResult.Errors)
+                {
+                    ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+                }
+
+                return View(productVM); // Return the productVM with validation errors
+            }
+            var imageUrls = new List<string>();
+
+            if (productVM.Images != null && productVM.Images.Any())
+            {
+                foreach (var image in productVM.Images)
+                {
+                    if (image.Length > 0)
+                    {
+                        var imageUrl = await FileExtensions.ConvertFileToStringAsync(image, webHostEnvironment);
+                        if (!string.IsNullOrEmpty(imageUrl))
+                        {
+                            imageUrls.Add(imageUrl);
+                        }
+                    }
+                }
+            }
+
+            var productCommand = _mapper.Map<AddProductCommand>(productVM);
+            productCommand.ImageUrls = imageUrls;
+            var result = await _mediator.Send(productCommand);
+
+            if (result > 0)
+            {
+                return Json(new { success = true, message = "Product added successfully." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to add product." });
+            }
+        }
+
 
         public async Task<IActionResult> Colors()
         {
@@ -317,7 +385,7 @@ namespace OceanaAura.Web.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> DeleteColor(int id,string? imgUrl)
+        public async Task<JsonResult> DeleteColor(int id, string? imgUrl)
         {
             try
             {
@@ -387,7 +455,7 @@ namespace OceanaAura.Web.Controllers
             }
         }
 
-        public  IActionResult AddSize()
+        public IActionResult AddSize()
         {
             return View();
         }
@@ -491,6 +559,94 @@ namespace OceanaAura.Web.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            try
+            {
+                var command = new DeleteCategoryCommad { Id = id };
+                await _mediator.Send(command);
+                return Json(new { success = true, message = "Category deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        public async Task<IActionResult> AdditionalProduct()
+        {
+            // Return the view for displaying colors.
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAdditionalProducts()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"], "][name]")];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+
+            // Fetch paginated data using Mediator
+            var (additionalProduct, totalRecords) = await _mediator.Send(new PaginatedAdditionalQuery
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+                SortColumn = sortColumn,
+                SortDirection = sortColumnDirection
+            });
+
+            // Prepare JSON response for DataTable
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = additionalProduct
+            };
+
+            return Ok(jsonData);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddAdditionalProduct(AddAdditionalCommad command)
+        {
+            try
+            {
+                var productId = await _mediator.Send(command);
+                return Json(new { success = true, productId = productId });
+            }
+            catch (BadRequestException ex)
+            {
+                return Json(new { success = false, message = ex.ErrorMessages });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<JsonResult> DeleteAdditionalProduct(int id, int lookUpId)
+        {
+            try
+            {
+                var command = new DeleteAdditionalCommand { Id = id, LookUpId = lookUpId };
+                await _mediator.Send(command);  
+
+                // Return success message
+                return Json(new { success = true, message = "Additional product deleted successfully!" });
+            }
+            catch (NotFoundException ex)
+            {
+                return Json(new { success = false, message = ex.Message });  
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while deleting the additional product." });
             }
         }
 

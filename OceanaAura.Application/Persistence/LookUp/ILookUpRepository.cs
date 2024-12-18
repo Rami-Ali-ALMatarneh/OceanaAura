@@ -11,5 +11,8 @@ namespace OceanaAura.Application.Persistence.LookUp
     public interface ILookUpRepository : IGenericRepository<LookUpEntity>
     {
         IQueryable<LookUpEntity> GetProductsCategory();
+       Task<List<LookUpEntity>> GetAllProductsCategory();
+        IQueryable<LookUpEntity> GetAdditinalProducts();
+        Task<LookUpEntity> GetLookUpByName(string name);
     }
 }

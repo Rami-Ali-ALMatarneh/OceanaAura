@@ -17,9 +17,13 @@ namespace OceanaAura.Application.MappingProfiles
         public ProductSizeProfile()
         {
 
-            CreateMap<ProductSizeDto, LookUpEntity>()
-                  .ForMember(dest => dest.LookUpId, opt => opt.MapFrom(src => src.Id))
-                .ReverseMap();
+            CreateMap<ProductSize, ProductSizeDto>()
+           .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+           .ForMember(dest => dest.NameEn, opt => opt.MapFrom(src => src.Size.NameEn))
+           .ForMember(dest => dest.NameAr, opt => opt.MapFrom(src => src.Size.NameAr))
+           .ForMember(dest => dest.PriceJor, opt => opt.MapFrom(src => src.PriceJOR))
+           .ForMember(dest => dest.PriceUae, opt => opt.MapFrom(src => src.PriceUAE))
+           .ForMember(dest => dest.PriceUsd, opt => opt.MapFrom(src => src.PriceUSD)).ReverseMap();
             CreateMap<AddSizeCommand, LookUpEntity>().ReverseMap();
 
         }

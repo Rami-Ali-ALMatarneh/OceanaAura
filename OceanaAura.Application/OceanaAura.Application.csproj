@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\AdditinalProduct\Commands\" />
-    <Folder Include="Features\AdditinalProduct\Queries\" />
+    <Folder Include="Features\LidProduct\Queries\" />
   </ItemGroup>
 
 </Project>

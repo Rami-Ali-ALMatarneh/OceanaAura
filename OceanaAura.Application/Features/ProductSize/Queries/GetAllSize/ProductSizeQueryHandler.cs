@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using OceanaAura.Application.Common.Extensions;
 using OceanaAura.Application.Contracts.Logging;
 using OceanaAura.Application.Features.ProductColor.Queries.GetAllProductColors;
@@ -28,32 +29,57 @@ namespace OceanaAura.Application.Features.ProductSize.Queries.GetAllSize
         public async Task<(List<ProductSizeDto> productSizeDtos, int TotalRecords)> Handle(PaginatedProductSizeQuery request, CancellationToken cancellationToken)
         {
             // Retrieve all ProductColor records from the database
-            var lookUpRepository = _unitOfWork.productSizeRepository;
-            var query = lookUpRepository.GetAllSize();
+            var SizeRepository = _unitOfWork.GenericRepository<Domain.Entities.ProductSize>();
+            var query = SizeRepository.Query();
+            query = query.Include(ap => ap.Size);
 
             // Apply search filter for name
             if (!string.IsNullOrEmpty(request.SearchValue))
             {
                 query = query.Where(c =>
-                    c.NameEn.Contains(request.SearchValue) ||
-                    c.NameAr.Contains(request.SearchValue));
+                    c.Size.NameEn.Contains(request.SearchValue) ||
+                    c.Size.NameAr.Contains(request.SearchValue) ||
+                     c.PriceJOR.ToString().Contains(request.SearchValue) ||
+                    c.PriceUAE.ToString().Contains(request.SearchValue) ||
+                    c.PriceUSD.ToString().Contains(request.SearchValue));
             }
+            var totalRecords = await query.CountAsync();  // Use async for counting records
 
-            // Get the total record count
-            var totalRecords = query.Count();
-            // Apply sorting
+            // Sorting
+            // Only apply sorting if there are records
             if (!string.IsNullOrEmpty(request.SortColumn))
             {
                 if (request.SortDirection.ToLower() == "asc")
                 {
-                    query = query.OrderByDynamic(request.SortColumn);
+                    if (request.SortColumn == "NameEn")
+                    {
+                        query = query.OrderBy(x => x.Size.NameEn);
+                    }
+                    else if (request.SortColumn == "NameAr")
+                    {
+                        query = query.OrderBy(x => x.Size.NameAr);
+                    }
+                    else
+                    {
+                        query = query.OrderByDynamic(request.SortColumn);
+                    }
                 }
                 else
                 {
-                    query = query.OrderByDescendingDynamic(request.SortColumn);
+                    if (request.SortColumn == "NameEn")
+                    {
+                        query = query.OrderByDescending(x => x.Size.NameEn);
+                    }
+                    else if (request.SortColumn == "NameAr")
+                    {
+                        query = query.OrderByDescending(x => x.Size.NameAr);
+                    }
+                    else
+                    {
+                        query = query.OrderByDescendingDynamic(request.SortColumn);
+                    }
                 }
             }
-
             // Apply pagination
             query = query.Skip(request.Start).Take(request.Length);
 

@@ -25,15 +25,19 @@ namespace OceanaAura.Application.Features.ProductSize.Command.DeleteSize
         public async Task<Unit> Handle(DeleteSizeCommand request, CancellationToken cancellationToken)
         {
             //validation request data
-            var Color = await _unitOfWork.GenericRepository<LookUpEntity>().GetByIdAsync(request.Id);
+            var ProductSize = await _unitOfWork.GenericRepository<Domain.Entities.ProductSize>().GetByIdAsync(request.Id);
+
             //verify that record exists
-            if (Color == null)
+            if (ProductSize == null)
             {
-                _appLogger.LogWarning("Validation errors in Delete request {0} - {1}", nameof(Color), request.Id);
+                _appLogger.LogWarning("Validation errors in Delete request {0} - {1}", nameof(ProductSize), request.Id);
                 throw new NotFoundException("Invalid to Delete Size Product Message,Size Product is Not Found!");
             }
+            var size = await _unitOfWork.GenericRepository<LookUpEntity>().GetByIdAsync(ProductSize.SizeId);
+
             // add to database
-            _unitOfWork.GenericRepository<LookUpEntity>().Remove(Color);
+            _unitOfWork.GenericRepository<Domain.Entities.ProductSize>().Remove(ProductSize);
+            _unitOfWork.GenericRepository<LookUpEntity>().Remove(size);
             await _unitOfWork.CompleteSaveAppDbAsync();
             return Unit.Value;
         }

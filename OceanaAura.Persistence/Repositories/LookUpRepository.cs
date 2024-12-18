@@ -18,9 +18,24 @@ namespace OceanaAura.Persistence.Repositories
         {
             _appDbContext = appDbContext;
         }
+       public async Task<List<LookUpEntity>> GetAllProductsCategory()
+        {
+            return await _appDbContext.lookups.Where(x => x.LookupCategoryId == (int)LookUpEnums.CategoryCode.ProductCategory && !x.IsDeleted).AsNoTracking().ToListAsync();
+
+        }
+
         public IQueryable<LookUpEntity> GetProductsCategory()
         {
             return  _appDbContext.lookups.Where(x=>x.LookupCategoryId == (int)LookUpEnums.CategoryCode.ProductCategory && !x.IsDeleted).AsNoTracking().AsQueryable();
+        }
+        public IQueryable<LookUpEntity> GetAdditinalProducts()
+        {
+            return _appDbContext.lookups.Where(x => x.LookupCategoryId == (int)LookUpEnums.CategoryCode.ProductAdditional && !x.IsDeleted).AsNoTracking().AsQueryable();
+        }
+
+        public async Task<LookUpEntity> GetLookUpByName(string name)
+        {
+            return await _appDbContext.lookups.FirstOrDefaultAsync(x => x.NameEn == name);
         }
     }
 }
