@@ -113,9 +113,6 @@
                 "orderable": false,
                 "render": function (data, type, row) {
                     return `
-                         <a href="#" class="edit-color" data-id="${row.id}" data-nameen="${row.nameEn}" data-namear="${row.nameAr}" data-imgurl="${row.imageUrl}">
-                            <i class="fas fa-edit text-primary"></i>
-                        </a>
                         <a href="#" class="delete-color" data-id="${row.id}" data-imgurl="${row.imageUrl}">
                             <i class="fas fa-trash text-danger"></i>
                         </a>
@@ -124,103 +121,6 @@
             }
         ]
     });
-    $('#editColorImage').on('change', function () {
-        var file = this.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#colorImagePreview').attr('src', e.target.result).show();
-            };
-            reader.readAsDataURL(file);
-
-            // Update the label to show the file name
-            var fileName = file.name;
-            $(this).next('.custom-file-label').html(fileName);  // This updates the label with the file name
-        } else {
-            $('#colorImagePreview').hide();
-            $(this).next('.custom-file-label').html('Choose file');  // Reset the label if no file is selected
-        }
-    });
-
-    // Clear error message when modal is closed
-    $('#editColorModal').on('hidden.bs.modal', function () {
-        debugger
-        $('#editColorError').addClass('d-none');
-        $('#errorList').empty(); // Clear error list
-    });
-
-    // Handle edit-color button click
-    $('#colorsTable').on('click', '.edit-color', function (e) {
-        e.preventDefault();
-
-        var colorId = $(this).data('id');
-        var nameEn = $(this).data('nameen');
-        var nameAr = $(this).data('namear');
-        var imgUrl = $(this).data('imgurl');
-
-        // Populate the input fields in the modal
-        $('#editColorNameEn').val(nameEn);
-        $('#editColorNameAr').val(nameAr);
-
-        if (imgUrl) {
-            $('#colorImagePreview').attr('src', `/File/ColorsImg/${imgUrl}`).show();
-        } else {
-            $('#colorImagePreview').hide();
-        }
-
-        // Clear previous file selection
-        $('#editColorImage').val('');
-
-        // Show the modal
-        $('#editColorModal').modal('show');
-
-        // Save changes
-        $('#saveColorChanges').off('click').on('click', function () {
-            var updatedNameEn = $('#editColorNameEn').val();
-            var updatedNameAr = $('#editColorNameAr').val();
-            var updatedImage = $('#editColorImage')[0].files[0];
-
-            var formData = new FormData();
-            formData.append('Id', colorId);
-            formData.append('NameEn', updatedNameEn);
-            formData.append('NameAr', updatedNameAr);
-
-            if (updatedImage) {
-                formData.append('Image', updatedImage);
-            }
-
-            $.ajax({
-                url: '@Url.Action("UpdateColor", "Admin")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire('Updated!', response.message, 'success');
-                        table.ajax.reload();
-                        $('#editColorModal').modal('hide');
-                    } else {
-                            debugger
-                        // Display errors
-                        $('#editColorError').removeClass('d-none');
-                        $('#errorList').empty(); // Clear previous errors
-                        response.message.forEach(function (error) {
-                        $('#errorList').append('<li>' + error + '</li>'); // Corrected concatenation
-                    });
-
-                    }
-                },
-                error: function (xhr) {
-                    const errorMessage = xhr.responseJSON?.message || 'Unable to update color.';
-                    $('#editColorError').removeClass('d-none');
-                    $('#errorList').empty(); // Clear previous errors
-                    $('#errorList').append('<li>'+errorMessage + '</li>');
-                }
-            });
-        });
-    });
-
     // Handle delete-color button click
     $('#colorsTable').on('click', '.delete-color', function (e) {
         e.preventDefault();

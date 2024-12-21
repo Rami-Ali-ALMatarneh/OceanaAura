@@ -33,16 +33,26 @@ namespace OceanaAura.Application.Features.LookUp.Queries.GetAllAdditinalProduct
             var additionalRepository = _unitOfWork.GenericRepository<AdditionalProduct>();
             var query = additionalRepository.Query();
             query =query.Include(ap => ap.AdditionalProducts);
-            // Search filtering
-            if (!string.IsNullOrEmpty(request.SearchValue))
+            // Apply search filter for email, subject, and date
+            if (!string.IsNullOrEmpty(request.SearchValue) || !string.IsNullOrEmpty(request.SearchDate))
             {
-                query = query.Where(c =>
-                    c.AdditionalProducts.NameEn.Contains(request.SearchValue) ||
-                    c.AdditionalProducts.NameAr.Contains(request.SearchValue) ||
-                    c.PriceJOR.ToString().Contains(request.SearchValue) ||
-                    c.PriceUAE.ToString().Contains(request.SearchValue) ||
-                    c.PriceUSD.ToString().Contains(request.SearchValue));
+                if (!string.IsNullOrEmpty(request.SearchValue))
+                {
+                    query = query.Where(c =>
+                        c.AdditionalProducts.NameEn.Contains(request.SearchValue) ||
+                        c.AdditionalProducts.NameAr.Contains(request.SearchValue) ||
+                        c.PriceJOR.ToString().Contains(request.SearchValue) ||
+                        c.PriceUAE.ToString().Contains(request.SearchValue) ||
+                        c.PriceUSD.ToString().Contains(request.SearchValue));
+                }
+
+                // Handle searchDate filtering
+                if (!string.IsNullOrEmpty(request.SearchDate) && DateTime.TryParse(request.SearchDate, out DateTime searchDate))
+                {
+                    query = query.Where(c => c.CreatedOn.Date == searchDate.Date);
+                }
             }
+           
 
             var totalRecords = await query.CountAsync();  // Use async for counting records
 

@@ -44,7 +44,7 @@ namespace OceanaAura.Application.Features.ProductColor.Commands.UpdateColor
             if (string.IsNullOrWhiteSpace(url))
                 return false;
             var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp)$";
-            return Regex.IsMatch(url, imageExtensionsPattern, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(url.ToLower(), imageExtensionsPattern, RegexOptions.IgnoreCase);
         }
         private async Task<bool> EnUnique(string name,int id, CancellationToken token)
         {

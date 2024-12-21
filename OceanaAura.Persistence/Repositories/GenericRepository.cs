@@ -58,6 +58,13 @@ namespace OceanaAura.Persistence.Repositories
             return await query.ToListAsync();
         }
 
-
+        public void ReomveRange(List<T> entities)
+        {
+            _context.RemoveRange(entities);
+        }
+        public async Task AddRangeAsync(List<T> entities)
+        {
+            await _context.AddRangeAsync(entities);
+        }
     }
 }
