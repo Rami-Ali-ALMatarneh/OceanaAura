@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OceanaAura.Application.Features.Product.Command.AddProduct
+namespace OceanaAura.Application.Features.Product.Command.EditProduct
 {
-    public class AddProductCommand : IRequest<int>
+    public class EditProductCommand : IRequest<int>
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<string> ImageUrls { get; set; }  
+        public List<string> ImageUrls { get; set; }
         public decimal? PriceJOR { get; set; }
         public decimal? PriceUAE { get; set; }
         public decimal? PriceUSD { get; set; }

@@ -1,0 +1,378 @@
+﻿@model OceanaAura.Web.Models.Products.EditProductVM
+@{
+    Layout = "../Shared/_AdminLayout.cshtml";
+}
+
+<div class="w-100 h-100">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h1 class="h3 mb-0 text-gray-800">Edit Product</h1>
+        <div class="d-flex justify-content-between align-items-center" style="gap:10px">
+            <a asp-action="Products" asp-controller="Admin" class="btn btn-outline-secondary btn-sm me-2 mb-0">
+                <i class="fas fa-arrow-left fa-sm text-primary-50"></i> Back to Products
+            </a>
+            <!-- Move the button inside the form with type="submit" -->
+            <button type="button" class="btn btn-primary btn-sm" id="editProductBtn">Update Product</button>
+        </div>
+    </div>
+
+    <form id="editProductForm" enctype="multipart/form-data" asp-action="EditProduct" asp-controller="Admin" method="post">
+        <input type="text" class="form-control d-none" id="ProductName" name="Id" asp-for="Id" value="@Model.Id" />
+        <div class="row g-4">
+            <!-- General Information -->
+
+            <div class="col-lg-8 col-md-12 mt-3">
+                <div class="card p-4">
+                    <h5 class="fw-bold">General Information</h5>
+                    <div class="mb-3">
+                        <label for="ProductName" class="form-label">Name Product</label>
+                        <input type="text" class="form-control" id="ProductName" name="Name" asp-for="Name" placeholder="Enter Product name" value="@Model.Name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ProductDescription" class="form-label">Description Product</label>
+                        <textarea class="form-control" id="ProductDescription" name="Description" asp-for="Description" rows="4" placeholder="Enter Product description">@Model.Description</textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <h5 class="fw-bold">Category</h5>
+                        <div class="mb-3">
+                            <label for="productCategory" class="form-label">Product Category</label>
+                            <select class="form-select w-100 form-control" id="productCategory" name="CategoryId" asp-for="CategoryId">
+                                <option value="0">Select a Category</option>
+                                @foreach (var category in Model.categoryVMs)
+                                {
+                                    var select = @category.id == Model.CategoryId ? "selected" : "";
+                                    <option value="@category.id" select>@category.NameEn</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12 mt-3">
+                <div class="card p-4 h-100">
+                    <label for="imageUploadInput" class="h5 fw-bold control-label fw-bold">Upload Images</label>
+                    <div class="d-flex flex-wrap gap-3 mt-3" id="imagePreviewContainer" style="gap: 15px;">
+                        <!-- Upload Placeholder -->
+                        <div class="form-control upload-placeholder d-flex justify-content-center align-items-center border rounded" style="width: 100px; height: 100px; cursor: pointer; position: relative; background-color: #f8f9fa;">
+                            <label for="imageUploadInput" class="d-flex justify-content-center align-items-center" style="font-size: 40px;width:100%;height:100%; color: #6c757d; position: absolute; cursor: pointer; margin: 0;">+</label>
+                            <input type="file" id="imageUploadInput" name="Images" accept="image/*" multiple onchange="previewImages(event)" style="display: none;">
+                        </div>
+                    </div>
+                    <span asp-validation-for="Images" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Pricing and Discount -->
+            <div class="col-lg-8 col-md-12 mt-3" id="PricingDiscount" style="display:none;">
+                <div class="card p-4">
+                    <h5 class="fw-bold">Pricing and Discount</h5>
+                    <div class="row" id="pricingFields">
+                        <div class="col-md-6 mb-3">
+                            <label for="ProductPriceJOR" class="form-label">Price in JOR</label>
+                            <input type="text" class="form-control" id="ProductPriceJOR" name="PriceJOR" asp-for="PriceJOR" placeholder="0.00 JD" value="@Model.PriceJOR" />
+                            <span asp-validation-for="PriceJOR" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="ProductPriceUSD" class="form-label">Price in USD</label>
+                            <input type="text" class="form-control" id="ProductPriceUSD" name="PriceUSD" asp-for="PriceUSD" placeholder="$ 0.00" value="@Model.PriceUSD" />
+                            <span asp-validation-for="PriceUSD" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="ProductPriceUAE" class="form-label">Price in UAE</label>
+                            <input type="text" class="form-control" id="ProductPriceUAE" name="PriceUAE" asp-for="PriceUAE" placeholder="0.00 AED" value="@Model.PriceUAE" />
+                            <span asp-validation-for="PriceUAE" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3 p-0" id="discountField">
+                        <label for="ProductDiscount" class="form-label">Discount (Optional)</label>
+                        <input type="text" class="form-control" id="ProductDiscount" name="Discount" asp-for="Discount" placeholder="10%" value="@Model.Discount" />
+                        <span asp-validation-for="Discount" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- HTML -->
+            <div class="col-lg-4 col-md-12 mt-3">
+                <div class="card p-4 h-100">
+                    <p class="h5 fw-bold control-label">Images</p>
+                    <div class="d-flex flex-wrap gap-3 mt-3" style="gap: 15px;">
+                        <!-- Existing Images -->
+                        @if (Model.ImageUrls.Count() > 1)
+                        {
+                            @foreach (var image in Model.ImageUrls)
+                            {
+                                <div class="form-control d-flex justify-content-center align-items-center border rounded p-0" style="width: 100px; height: 100px; position: relative; background-color: #f8f9fa;">
+                                    <img src="/File/ColorsImg/@image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer;" onclick="showImageInModal1('/File/ColorsImg/@image')" />
+                                    <button type="button" style="position: absolute;
+                                        top: 0;
+                                        right: 0;
+                                        background: red;
+                                        color: white;
+                                        border: none;
+                                        cursor: pointer;
+                                        width: 20px;
+                                        height: 20px;
+                                        font-size: 12px;
+                                        text-align: center;
+                                        line-height: 18px;
+                                        border-radius: 50%;" onclick="removeImage1('@image')">
+                                                                X
+                                    </button>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            @foreach (var image in Model.ImageUrls)
+                            {
+                                <div class="form-control d-flex justify-content-center align-items-center border rounded p-0" style="width: 100px; height: 100px; position: relative; background-color: #f8f9fa;">
+                                    <img src="/File/ColorsImg/@image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer;" onclick="showImageInModal1('/File/ColorsImg/@image')" />
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bootstrap Modal -->
+            <div class="modal fade" id="imageModal1" tabindex="-1" aria-labelledby="imageModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="imageModalLabel1">Image Preview</h5>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img id="modalImage1" src="" style="width: 100%; height: auto; border-radius: 5px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Error Messages -->
+            <div id="errorMessages" class="alert alert-danger mt-3" style="display: none;">
+                <ul id="errorList" class="mb-0">
+                </ul>
+            </div>
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+    </form>
+</div>
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="modalImage" class="img-fluid" alt="Preview Image" />
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+@section ScriptsAuth {
+    <script>
+        document.getElementById("editProductBtn").addEventListener("click", function (event) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to update this product?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("editProductForm").submit();
+                }
+            });
+        });
+        // Define the removeImage function
+        function removeImage(imageUrl) {
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const imageDivs = imagePreviewContainer.getElementsByClassName('form-control');
+
+            Array.from(imageDivs).forEach(function (imageDiv) {
+                const img = imageDiv.querySelector('img');
+                if (img && img.src.includes(imageUrl)) {
+                    imagePreviewContainer.removeChild(imageDiv);
+                }
+            });
+        }
+
+        // The previewImages function for handling image preview
+        function previewImages(event) {
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const files = event.target.files;
+
+            if (files && files.length > 0) {
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith("image/")) {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            const img = new Image();
+                            img.src = e.target.result;
+
+                            // Check if the image meets the minimum size requirements (500x500)
+                            img.onload = function () {
+                                const minWidth = 500;
+                                const minHeight = 500;
+
+                                if (img.width < minWidth || img.height < minHeight) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Invalid Image Dimensions',
+                                        text: 'Image must be at least 500px by 500px.',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    return; // Skip adding this image to the preview container
+                                }
+
+                                // Create container for each image
+                                const imageDiv = document.createElement('div');
+                                imageDiv.style.cssText = "width: 100px; height: 100px; position: relative; display: inline-block;";
+
+                                img.style.cssText = "width: 100%; height: 100%; object-fit: cover; border-radius: 5px;";
+
+                                // Add click event to open image in modal
+                                img.addEventListener('click', function () {
+                                    const modalImage = document.getElementById('modalImage');
+                                    modalImage.src = img.src;
+
+                                    // Open the modal using Bootstrap 5's JavaScript API
+                                    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                                    modal.show();
+                                });
+
+                                // Create delete button
+                                const deleteBtn = document.createElement('button');
+                                deleteBtn.innerText = "X";
+                                deleteBtn.style.cssText = `
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                    background: red;
+                                    color: white;
+                                    border: none;
+                                    cursor: pointer;
+                                    width: 20px;
+                                    height: 20px;
+                                    font-size: 12px;
+                                    text-align: center;
+                                    line-height: 18px;
+                                    border-radius: 50%;
+                                `;
+
+                                // Add click event to remove the imageDiv
+                                deleteBtn.addEventListener('click', function () {
+                                    imagePreviewContainer.removeChild(imageDiv);
+                                });
+
+                                // Append elements
+                                imageDiv.appendChild(img);
+                                imageDiv.appendChild(deleteBtn);
+                                imagePreviewContainer.appendChild(imageDiv);
+                            };
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+               // Function to remove the image
+        function removeImage1(image) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this image!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteImage", "Admin")', // Ensure correct URL
+                        type: 'POST',
+                        data: { url: image }, // Send the image URL as data
+                        success: function (response) {
+                            if (response.success) {
+                                debugger
+                                // Remove the image element from the DOM
+                                Swal.fire('Deleted!', response.message, 'success')
+                                    .then(() => {
+                                        // Reload the page after the user acknowledges the success message
+                                        location.reload();
+                                    });
+                            } else {
+                                Swal.fire('Error!', response.message, 'error');
+                            }
+                        },
+                        error: function (xhr) {
+                            Swal.fire('Error!', 'An error occurred while deleting the image.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+
+        // Function to show image in modal
+        function showImageInModal1(imageSrc) {
+            var modalImage = document.getElementById('modalImage1');
+            modalImage.src = imageSrc;
+
+            // Show the modal
+            var imageModal = new bootstrap.Modal(document.getElementById('imageModal1'));
+            imageModal.show();
+        }
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pricingDiscountSection = document.getElementById("PricingDiscount");
+            const categoryDropdown = document.getElementById("productCategory");
+            const pricingFields = document.getElementById("pricingFields");
+            const discountField = document.getElementById("discountField");
+
+            // Function to toggle visibility
+            function toggleFields() {
+                const selectedCategory = parseInt(categoryDropdown.value);
+                const selectedCategoryText = categoryDropdown.options[categoryDropdown.selectedIndex].text;
+
+                if (selectedCategory > 0) {
+                    // Show PricingDiscount section
+                    pricingDiscountSection.style.display = "block";
+
+                    // Toggle fields based on category
+                    if (selectedCategoryText === "Bottle") {
+                        pricingFields.style.display = "none";
+                        discountField.style.display = "block";
+                    } else {
+                        pricingFields.style.display = "flex";
+                        discountField.style.display = "none";
+                    }
+                } else {
+                    // Hide PricingDiscount if no category is selected
+                    pricingDiscountSection.style.display = "none";
+                }
+            }
+
+            // Add event listener for change in category
+            categoryDropdown.addEventListener("change", toggleFields);
+
+            // Initial check to handle pre-selected category (if any)
+            toggleFields();
+        });
+</script>
+
+}

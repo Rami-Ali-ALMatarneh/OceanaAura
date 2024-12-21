@@ -18,6 +18,11 @@ using OceanaAura.Application.Features.LookUp.Queries.GetAllAdditinalProduct;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.LookUp.Queries.GetProductCategories;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
+using OceanaAura.Application.Features.Product.Command.DeleteImg;
+using OceanaAura.Application.Features.Product.Command.DeleteProduct;
+using OceanaAura.Application.Features.Product.Command.EditProduct;
+using OceanaAura.Application.Features.Product.Queries.GetAllProduct;
+using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
 using OceanaAura.Application.Features.ProductColor.Commands.DeleteColor;
 using OceanaAura.Application.Features.ProductColor.Commands.UpdateColor;
@@ -210,9 +215,146 @@ namespace OceanaAura.Web.Controllers
         {
             var categories = await _mediator.Send(new CategoriesQuery());
             var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
-            ViewBag.Categories = CategoriesVM; 
+            ViewBag.Categories = CategoriesVM;
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"], "][name]")];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+            var searchDate = Request.Form["searchDate"];  // Capture the searchDate parameter
+            // Fetch paginated data using Mediator
+            var (products, totalRecords) = await _mediator.Send(new PaginatedProductQuery
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+                SortColumn = sortColumn,
+                SortDirection = sortColumnDirection
+            });
+
+            // Prepare JSON response for DataTable
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = products
+            };
+
+            return Ok(jsonData);
+        }
+        public async Task<IActionResult> EditProduct(int id)
+        {
+
+
+            if (id <= 0)
+            {
+                ViewBag.ErrorMessage = "Invalid product ID provided.";
+                return RedirectToAction("Products");
+            }
+
+            var productDetailsDto = await _mediator.Send(new ProductDetailsQuery(id));
+
+            if (productDetailsDto == null)
+            {
+                ViewBag.ErrorMessage = "Product not found.";
+                return RedirectToAction("Products");
+            }
+
+            // Map ProductDetailsDto to ProductVM
+            var productVM = _mapper.Map<EditProductVM>(productDetailsDto);
+
+            var categories = await _mediator.Send(new CategoriesQuery());
+            var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
+            productVM.categoryVMs = CategoriesVM;
+            return View(productVM);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(EditProductVM productVM)
+        {
+            var categories = await _mediator.Send(new CategoriesQuery());
+            var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
+            productVM.categoryVMs = CategoriesVM;
+            var imgs = await _mediator.Send(new ProductDetailsQuery(productVM.Id));
+            productVM.ImageUrls = imgs.ImageUrls;
+            // Validate the model using FluentValidation
+            var validator = new EditProductVMalidator(_mediator);
+            var validationResult = await validator.ValidateAsync(productVM);
+
+            if (!validationResult.IsValid)
+            {
+                // If validation fails, return the view with error messages
+                foreach (var failure in validationResult.Errors)
+                {
+                    ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+                }
+
+                return View(productVM); // Return the productVM with validation errors
+            }
+            var imageUrls = new List<string>();
+
+            if (productVM.Images != null && productVM.Images.Any())
+            {
+                foreach (var image in productVM.Images)
+                {
+                    if (image.Length > 0)
+                    {
+                        var imageUrl = await FileExtensions.ConvertFileToStringAsync(image, webHostEnvironment);
+                        if (!string.IsNullOrEmpty(imageUrl))
+                        {
+                            imageUrls.Add(imageUrl);
+                        }
+                    }
+                }
+            }
+
+            var productCommand = _mapper.Map<EditProductCommand>(productVM);
+            productCommand.ImageUrls = imageUrls;
+            var result = await _mediator.Send(productCommand);
+
+            if (result > 0)
+            {
+                return Json(new { success = true, message = "Product Updated successfully." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to Update product." });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return Json(new { success = false, message = "Image URL is required." });
+            }
+
+            try
+            {
+                var deleteCommand = new DeleteImageCommand { Url = url };
+                await _mediator.Send(deleteCommand);
+                FileExtensions.DeleteFileFromFileFolder(url, webHostEnvironment);
+                // Return success response
+                return Json(new { success = true, message = "Image deleted successfully." });
+            }
+            catch (NotFoundException ex)
+            {
+                // Return error message if image is not found
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Return a generic error message
+                return Json(new { success = false, message = "An error occurred while deleting the image." });
+            }
+        }
+
         public async Task<IActionResult> AddProduct()
         {
             var categories = await _mediator.Send(new CategoriesQuery());
@@ -220,13 +362,13 @@ namespace OceanaAura.Web.Controllers
             ViewBag.Categories = CategoriesVM;
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductVM productVM)
         {
             var categories = await _mediator.Send(new CategoriesQuery());
             var CategoriesVM = _mapper.Map<List<CategoryVM>>(categories);
             ViewBag.Categories = CategoriesVM;
-
             // Validate the model using FluentValidation
             var validator = new ProductVMalidator(_mediator);
             var validationResult = await validator.ValidateAsync(productVM);
@@ -239,7 +381,7 @@ namespace OceanaAura.Web.Controllers
                     ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
                 }
 
-                return View(productVM); // Return the productVM with validation errors
+                return View(); // Return the productVM with validation errors
             }
             var imageUrls = new List<string>();
 
@@ -271,7 +413,35 @@ namespace OceanaAura.Web.Controllers
                 return Json(new { success = false, message = "Failed to add product." });
             }
         }
+        [HttpPost]
+        public async Task<JsonResult> DeleteProduct(int id , string imgurls)
+        {
+            try
+            {
+                var ImgUrls = new List<string>();
 
+                if (!string.IsNullOrEmpty(imgurls))
+                {
+                    ImgUrls = imgurls.Split(',').ToList();
+                }
+                var command = new DeleteProductCommand { Id = id};
+                await _mediator.Send(command);
+                foreach(var img in ImgUrls)
+                {
+                   FileExtensions.DeleteFileFromFileFolder(img, webHostEnvironment);
+                }
+                // Return success message
+                return Json(new { success = true, message = "Product deleted successfully!" });
+            }
+            catch (NotFoundException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while deleting the Product." });
+            }
+        }
 
         public async Task<IActionResult> Colors()
         {
@@ -649,6 +819,9 @@ namespace OceanaAura.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the additional product." });
             }
         }
+
+
+
 
     }
 }

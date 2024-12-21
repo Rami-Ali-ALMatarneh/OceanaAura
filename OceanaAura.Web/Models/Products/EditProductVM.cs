@@ -1,43 +1,44 @@
 ﻿using FluentValidation;
 using MediatR;
 using OceanaAura.Application.Features.Product.Queries.GetProductByName;
-using OceanaAura.Application.Persistence;
-using OceanaAura.Persistence.Repositories;
-using OceanaAura.Web.Models.Colors;
+using OceanaAura.Application.Features.Product.Queries.GetProductUnique;
 using OceanaAura.Web.Models.Lookup;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace OceanaAura.Web.Models.Products
 {
-    public class ProductVM
+    public class EditProductVM
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<string> ImageUrls { get; set; }
-        [Required]
-        public IFormFileCollection Images { get; set; }
+        public List<string>? ImageUrls { get; set; }
+        public IFormFileCollection? Images { get; set; }
         public string? PriceJOR { get; set; }
         public string? PriceUAE { get; set; }
         public string? PriceUSD { get; set; }
         public int? Discount { get; set; }
         public int CategoryId { get; set; }
+        public List<CategoryVM> categoryVMs { get; set; }
         public bool IsBottleCategory => CategoryId == 900;
     }
-    public class ProductVMalidator : AbstractValidator<ProductVM>
+    public class EditProductVMalidator : AbstractValidator<EditProductVM>
     {
         private readonly IMediator _mediator;
 
-        public ProductVMalidator(IMediator mediator)
+        public EditProductVMalidator(IMediator mediator)
         {
             _mediator = mediator;
 
             RuleFor(p => p.Name)
                 .NotNull().WithMessage("{PropertyName} is required.")
                 .MinimumLength(2).WithMessage("{PropertyName} must be at least 2 characters long.")
-                .MaximumLength(30).WithMessage("{PropertyName} can have a maximum of 30 characters.")
-                .MustAsync(UniqueName).WithMessage("Name already exists!");
-
+                .MaximumLength(30).WithMessage("{PropertyName} can have a maximum of 30 characters.");
+          
+            RuleFor(p => new { p.Name, p.Id })
+            .MustAsync((model, token) => UniqueName(model.Name, model.Id, token))
+            .WithMessage("Name already exists!");
+            
             RuleFor(p => p.Description)
                 .NotNull().WithMessage("{PropertyName} is required.")
                 .MaximumLength(500).WithMessage("{PropertyName} can have a maximum of 500 characters.");
@@ -46,7 +47,7 @@ namespace OceanaAura.Web.Models.Products
             RuleFor(p => p.PriceJOR)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .Must(BeValidPrice).WithMessage("Price JOR must be a valid number greater than zero.")
-                .When(p => !p.IsBottleCategory && p.CategoryId!=0);
+                .When(p => !p.IsBottleCategory && p.CategoryId != 0);
 
             RuleFor(p => p.PriceUAE)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -66,11 +67,10 @@ namespace OceanaAura.Web.Models.Products
                 .NotEmpty().WithMessage("Product Category is required.")
                 .GreaterThan(0).WithMessage("Product category must be selected.");
 
-            RuleFor(p => p.Images)
-                .NotEmpty().WithMessage("{PropertyName} is required.");
 
             RuleForEach(p => p.Images)
-                .Must(HaveValidImagesExtension).WithMessage("Each image must have a valid file extension. Supported formats: .jpg, .jpeg, .png, .gif, jfif.");
+                       .Must(HaveValidImagesExtension).WithMessage("Each image must have a valid file extension. Supported formats: .jpg, .jpeg, .png, .gif, jfif.")
+                       .When(p => p.Images != null && p.Images.Any());
         }
 
         private bool BeValidPrice(string price)
@@ -86,11 +86,11 @@ namespace OceanaAura.Web.Models.Products
             return validExtensions.Contains(fileExtension);
         }
 
-        private async Task<bool> UniqueName(string name, CancellationToken token)
+        private async Task<bool> UniqueName(string name,int id, CancellationToken token)
         {
-            var existingProduct = await _mediator.Send(new ProductQuery(name));
+            var existingProduct = await _mediator.Send(new UniqueProductQuery(name,id));
             return existingProduct == null;
         }
     }
-
 }
+

@@ -2,13 +2,16 @@
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
+using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductByName;
+using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
 using OceanaAura.Application.Features.ProductSize.Command.AddSize;
 using OceanaAura.Application.Models.Identity.Login;
 using OceanaAura.Application.Models.Identity.Password;
 using OceanaAura.Application.Models.Identity.UserInfo;
 using OceanaAura.Domain.Entities.LookUp;
+using OceanaAura.Domain.Entities.ProductsEntities;
 using OceanaAura.Web.Models.Auth;
 using OceanaAura.Web.Models.Colors;
 using OceanaAura.Web.Models.Home;
@@ -33,6 +36,14 @@ namespace OceanaAura.Web.MappingProfiles
             CreateMap<AddSizeCommand, SizeVM>().ReverseMap();
             CreateMap<CategoryVM,CategoryDto>().ReverseMap();
             CreateMap<ProductVM,AddProductCommand>().ReverseMap();
+            CreateMap<EditProductVM, EditProductCommand>().ReverseMap();
+            CreateMap<ProductDetailsDto, EditProductVM>()
+              .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.ProductImages.Select(img => img.ImageUrl).ToList()))
+              .ReverseMap();
+            CreateMap<ProductDetailsDto, ProductVM>()
+               .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.ProductImages.Select(img => img.ImageUrl).ToList()))
+               .ReverseMap();
+
         }
     }
 }
