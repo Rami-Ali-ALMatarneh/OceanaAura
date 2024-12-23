@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\css\HomeDesign\" />
     <Folder Include="wwwroot\File\ColorsImg\" />
   </ItemGroup>
 
