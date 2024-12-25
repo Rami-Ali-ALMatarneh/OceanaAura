@@ -270,34 +270,11 @@
                                     <a class="nav-link dropdown-toggle" href="#" id="dropdownShop" data-bs-toggle="dropdown"
                                        aria-haspopup="true" aria-expanded="false">Shop</a>
                                     <ul class="dropdown-menu list-unstyled" aria-labelledby="dropdownShop">
-                                        @if (ViewBag.ProductCategory != null)
-                                        {
-                                            var categories = ViewBag.ProductCategory as List<OceanaAura.Web.Models.Lookup.CategoryVM>;
-
-                                            foreach (var category in categories)
-                                            {
-                                                <li>
-                                                    <a href="index.html" class="dropdown-item item-anchor">@category.NameEn</a>
-                                                </li>
-                                            }
-                                        }
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="dropdownPages" data-bs-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false">Pages</a>
-                                    <ul class="dropdown-menu list-unstyled" aria-labelledby="dropdownPages">
                                         <li>
-                                            <a href="index.html" class="dropdown-item item-anchor">About </a>
+                                            <a href="index.html" class="dropdown-item item-anchor">Shop Our Products </a>
                                         </li>
                                         <li>
-                                            <a href="index.html" class="dropdown-item item-anchor">Cart </a>
-                                        </li>
-                                        <li>
-                                            <a href="index.html" class="dropdown-item item-anchor">Feedback </a>
-                                        </li>
-                                        <li>
-                                            <a href="index.html" class="dropdown-item item-anchor">Order Tracking </a>
+                                            <a href="index.html" class="dropdown-item item-anchor">Create Your Own bottle </a>
                                         </li>
                                     </ul>
                                 </li>
