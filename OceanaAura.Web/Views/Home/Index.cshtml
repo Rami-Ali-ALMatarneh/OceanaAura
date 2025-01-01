@@ -1,17 +1,19 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     var categories = ViewBag.Categories as List<OceanaAura.Web.Models.Lookup.CategoryVM>;
+    var Products = ViewBag.Products as List<OceanaAura.Web.Models.Products.ProductVMHome>;
+
 }
 
 <section id="billboard" class="bg-light py-5 pt-1">
     <div class="container">
         <div class="row justify-content-center">
-            <h1 class="section-title text-center mt-4" data-aos="fade-up">
+            <h3 class="section-title text-center mt-4" data-aos="fade-up">
                 MOVE WITH STYLE
-            </h1>
+            </h3>
             <div class="col-md-6 text-center" data-aos="fade-up" data-aos-delay="300">
                 <p>
-                    Discover the new collection of Oceana Aura water bottles, crafted for those who embrace both style and sustainability. Whether you're exploring nature or enjoying urban life, our bottles are designed to keep your drinks fresh and your journey smooth. Available in vibrant colors and sleek designs, these bottles will not only hydrate you but also inspire you to live boldly.
+                    Discover the perfect blend of style, elegance and performance with OA bottles. Designed to keep you moving in style, our bottles are available in a variety of sizes and colors to meet your taste. From sleek elegance to bold vibrance, OA has the ideal bottle for every moment that will keep your drinks cold and hot for hours.
                 </p>
             </div>
         </div>
@@ -209,60 +211,42 @@
         </div>
     </div>
 </section>
-<section class="categories overflow-hidden">
-    <div class="container pt-5 pb-5">
+
+<section id="related-products" class="related-products product-carousel py-5 position-relative overflow-hidden">
+    <div class="container">
         <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-3">
-            <h4 class="text-uppercase">Our Products</h4>
-            <a href="index.html" class="btn-link">View All Products</a>
+            <h4 class="text-uppercase m-0 d-flex align-item">Our Products</h4>
+            <a asp-action="Store" asp-controller="Home" class="btn-link">View All Products</a>
         </div>
-        <div class="open-up" data-aos="zoom-out">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="cat-item image-zoom-effect">
-                        <div class="image-holder">
-                            <a href="index.html">
-                                <img src="~/File/HomeImg/cat-item1.jpg" alt="categories" class="product-image img-fluid">
-                            </a>
-                        </div>
-                        <div class="category-content">
-                            <div class="product-button">
-                                <a href="index.html" class="btn btn-common text-uppercase">Shop for men</a>
+        <div class="swiper product-swiper open-up" data-aos="zoom-out">
+            <div class="swiper-wrapper d-flex" style="gap:0">
+
+                @foreach (var Product in Products.Take(2))
+                {
+                    <div class="col-md-6 col-sm-6 col-12 p-4">
+                        <div class="product-item image-zoom-effect link-effect">
+                            <div class="image-holder">
+                                <a asp-action="Store" asp-controller="Home">
+                                    <img src="~/File/ColorsImg/@Product.ImgProduct[0]" alt="product" class="product-image img-fluid">
+                                </a>
+                                <div class="product-content">
+                                    <h5 class="text-uppercase fs-5 mt-3">
+                                        <a>@Product.Name</a>
+                                    </h5>
+                                    <a asp-action="Store" asp-controller="Home" class="text-decoration-none" data-after="Products"><span>Go to Shop</span></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="cat-item image-zoom-effect">
-                        <div class="image-holder">
-                            <a href="index.html">
-                                <img src="~/File/HomeImg/cat-item2.jpg" alt="categories" class="product-image img-fluid">
-                            </a>
-                        </div>
-                        <div class="category-content">
-                            <div class="product-button">
-                                <a href="index.html" class="btn btn-common text-uppercase">Shop for women</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="cat-item image-zoom-effect">
-                        <div class="image-holder">
-                            <a href="index.html">
-                                <img src="~/File/HomeImg/cat-item3.jpg" alt="categories" class="product-image img-fluid">
-                            </a>
-                        </div>
-                        <div class="category-content">
-                            <div class="product-button">
-                                <a href="index.html" class="btn btn-common text-uppercase">Shop accessories</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
+            <div class="swiper-pagination"></div>
         </div>
     </div>
 </section>
+
+
+
 <section class="collection bg-light position-relative py-5">
     <div class="container">
         <div class="row">
@@ -355,48 +339,48 @@
 </section>
 <section class="instagram position-relative">
     <div class="d-flex justify-content-center w-100 position-absolute bottom-0 z-1">
-        <a href="https://www.instagram.com/templatesjungle/" class="btn btn-dark px-5">Follow us on Instagram</a>
+        <a href="https://www.instagram.com/oaforce/?hl=en" class="btn btn-dark px-5">Follow us on Instagram</a>
     </div>
     <div class="row g-0">
         <div class="col-6 col-sm-4 col-md-2">
             <div class="insta-item">
-                <a href="https://www.instagram.com/templatesjungle/" target="_blank">
-                    <img src="~/File/HomeImg/insta-item1.jpg" alt="instagram" class="insta-image img-fluid">
+                <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank">
+                    <img src="~/File/HomeImg/insta1.jpeg" alt="instagram" class="insta-image img-fluid">
+                </a>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+            <div class="insta-item">
+                <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank">
+                    <img src="~/File/HomeImg/insta2.jpeg" alt="instagram" class="insta-image img-fluid">
+                </a>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+            <div class="insta-item">
+                <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank">
+                    <img src="~/File/HomeImg/insta3.jpeg" alt="instagram" class="insta-image img-fluid">
+                </a>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+            <div class="insta-item">
+                <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank">
+                    <img src="~/File/HomeImg/insta4.jpeg" alt="instagram" class="insta-image img-fluid">
+                </a>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+            <div class="insta-item">
+                <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank">
+                    <img src="~/File/HomeImg/insta5.jpeg" alt="instagram" class="insta-image img-fluid">
                 </a>
             </div>
         </div>
         <div class="col-6 col-sm-4 col-md-2">
             <div class="insta-item">
                 <a href="https://www.instagram.com/templatesjungle/" target="_blank">
-                    <img src="~/File/HomeImg/insta-item2.jpg" alt="instagram" class="insta-image img-fluid">
-                </a>
-            </div>
-        </div>
-        <div class="col-6 col-sm-4 col-md-2">
-            <div class="insta-item">
-                <a href="https://www.instagram.com/templatesjungle/" target="_blank">
-                    <img src="~/File/HomeImg/insta-item3.jpg" alt="instagram" class="insta-image img-fluid">
-                </a>
-            </div>
-        </div>
-        <div class="col-6 col-sm-4 col-md-2">
-            <div class="insta-item">
-                <a href="https://www.instagram.com/templatesjungle/" target="_blank">
-                    <img src="~/File/HomeImg/insta-item4.jpg" alt="instagram" class="insta-image img-fluid">
-                </a>
-            </div>
-        </div>
-        <div class="col-6 col-sm-4 col-md-2">
-            <div class="insta-item">
-                <a href="https://www.instagram.com/templatesjungle/" target="_blank">
-                    <img src="~/File/HomeImg/insta-item5.jpg" alt="instagram" class="insta-image img-fluid">
-                </a>
-            </div>
-        </div>
-        <div class="col-6 col-sm-4 col-md-2">
-            <div class="insta-item">
-                <a href="https://www.instagram.com/templatesjungle/" target="_blank">
-                    <img src="~/File/HomeImg/insta-item6.jpg" alt="instagram" class="insta-image img-fluid">
+                    <img src="~/File/HomeImg/insta6.jpeg" alt="instagram" class="insta-image img-fluid">
                 </a>
             </div>
         </div>

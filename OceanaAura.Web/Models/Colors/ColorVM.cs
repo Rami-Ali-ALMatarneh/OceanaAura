@@ -6,6 +6,7 @@ namespace OceanaAura.Web.Models.Colors
 {
     public class ColorVM
     {
+        public int? Id { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; }
         public string? ImageURL { get; set; }

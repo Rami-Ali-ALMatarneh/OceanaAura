@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OceanaAura.Application.Persistence.LookUp;
+using OceanaAura.Domain.Entities;
 using OceanaAura.Domain.Entities.LookUp;
 using OceanaAura.Domain.Enums;
 using OceanaAura.Persistence.AppDbContext;
@@ -37,5 +38,16 @@ namespace OceanaAura.Persistence.Repositories
                                              .AnyAsync(p => p.NameAr == Name && p.LookupCategoryId == (int)LookUpEnums.CategoryCode.ProductSize);
             return !result; // Return true if the name doesn't exist (unique), false if it does        }
         }
+
+        public async Task<List<ProductSize>> GetAllProductSizesAsync()
+        {
+            return await _appDbContext.productSizes.Include(x => x.Size).ToListAsync();
+        }
+
+        public async Task<ProductSize> GetProductSizeAsync(int sizeId)
+        {
+            return await _appDbContext.productSizes.FirstAsync(x => x.Id == sizeId);
+        }
+
     }
 }

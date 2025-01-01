@@ -1,0 +1,310 @@
+﻿@{
+    var product = (OceanaAura.Web.Models.Products.ProductVM)ViewBag.Product;
+    var sizes = (List<OceanaAura.Web.Models.Size.SizeVM>)ViewBag.Sizes;
+    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
+    var categories = (List<OceanaAura.Web.Models.Lookup.CategoryVM>)ViewBag.ProductCategory;
+    var SelectedRegionPage = ViewBag.SelectedRegionPage;
+
+}
+<div class="container mt-5">
+    @if (product != null)
+    {
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < product.ImageUrls.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="~/File/ColorsImg/@product.ImageUrls[i]" class="d-block w-100" alt="Product Image">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-md-6">
+                <h1>@product.Name</h1>
+                <p>@product.Description</p>
+                <h5>
+                    Category:
+                    @categories.FirstOrDefault(c => c.id == product.CategoryId)?.NameEn
+                </h5>
+
+                <!-- Pricing and Sizes -->
+                @if (product.IsBottleCategory)
+                {
+                    <h5>Available Sizes</h5>
+                    <form id="buyForm" method="post">
+                        <input type="hidden" name="ProductId" value="@product.Id" />
+
+                        <!-- Size Dropdown -->
+                        <div class="mb-3">
+                            <label for="size" class="form-label">Select Size</label>
+                            <select class="form-select" id="size" name="SizeId">
+                                <option value="" disabled selected>Select Size</option>
+                                @foreach (var size in sizes)
+                                {
+                                    <option value="@size.Id">
+                                        <span class="size-name">@size.NameEn</span> -
+                                            @if(SelectedRegionPage =="Jordan")
+                                            {
+                                            <span class="size-price">@size.PriceJOR JOD</span>
+                                            }
+                                            @if (SelectedRegionPage == "United Arab Emirates")
+                                            {
+                                            <span class="size-price">@size.PriceJOR AED</span>
+                                            }
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Colors -->
+                        @foreach (var color in colors)
+                        {
+                            <label class="color-circle @(color.Id == ViewBag.SelectedColorId ? "selected" : "")" style="background-image: url('/File/ColorsImg/@color.ImageURL');">
+                                <input type="radio" name="ColorId" value="@color.Id" @(color.Id == ViewBag.SelectedColorId ? "checked" : "") style="display: none;" />
+                            </label>
+                        }
+
+
+                        <!-- Quantity -->
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <div class="input-group quantity-selector" style="max-width: 1000px;">
+                                <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+
+                                <input type="number" class="form-control text-center" id="quantity" name="Quantity" min="1" value="1" style="max-width: 60px;" />
+
+                                <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Buy Now Button -->
+                        <button type="submit" class="btn btn-lg btn-dark mt-4">Buy Now</button>
+                        <!-- Add to Cart Button -->
+                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">Add to Cart</button>
+                    </form>
+                }
+                else
+                {
+                    <h5>Price:</h5>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        <span class="size-price">@product.PriceJOR JOD</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+                        <span class="size-price"> @product.PriceUAE AED</span>
+                    }
+                    <!-- Simplified Buy Form -->
+                    <form id="buyFormSimple" method="post">
+                        <input type="hidden" name="ProductId" value="@product.Id" />
+
+                        <!-- Quantity -->
+                        <div class="mb-3">
+                            <label for="quantitySimple" class="form-label">Quantity</label>
+                            <div class="input-group quantity-selector" style="max-width: 1000px;">
+                                <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity-simple">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" class="form-control text-center" id="quantitySimple" name="Quantity" min="1" value="1" style="max-width: 60px;" />
+                                <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity-simple">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Buy Now Button -->
+                        <button type="submit" class="btn btn-lg btn-dark mt-4">Buy Now</button>
+                        <!-- Add to Cart Button -->
+                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">Add to Cart</button>
+                    </form>
+                }
+            </div>
+        </div>
+
+        <!-- Exchange Request Section -->
+        <div class="exchange-request p-4 mt-5 border rounded shadow-sm bg-light">
+            <h3 class="text-black mb-3">Request an Exchange</h3>
+            <p class="text-muted fs-5">Need to request an exchange item?</p>
+            <p class="alert alert-warning mt-3">
+                <strong>Note:</strong> No refund is applicable. Exchange is only allowed within <strong>2 days</strong>.
+            </p>
+        </div>
+    }
+    else
+    {
+        <h2 class="text-danger">Product not found!</h2>
+    }
+</div>
+
+<!-- Custom CSS to remove number spinner -->
+<style>
+    /* For Chrome, Safari, Edge, Opera */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    /* Highlight invalid color circle */
+    .color-circle.is-invalid {
+        border: 2px solid red;
+    }
+
+    /* Style for the error message */
+    .alert-container {
+        margin-top: 10px;
+        display: none;
+    }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Function to display error messages dynamically
+            function showError(form, message) {
+                const alertContainer = $(form).find('.alert-container');
+                alertContainer.html(`<div class="alert alert-danger" role="alert">${message}</div>`);
+                alertContainer.fadeIn().delay(3000).fadeOut();
+            }
+
+            // Common function to validate the form
+            function validateForm(form) {
+                let isValid = true;
+
+                // Validate size (only for bottle category)
+                const sizeDropdown = $(form).find('#size');
+                if (sizeDropdown.length && !sizeDropdown.val()) {
+                    isValid = false;
+                    showError(form, 'Please select a size.');
+                    sizeDropdown.addClass('is-invalid');
+                } else {
+                    sizeDropdown.removeClass('is-invalid');
+                }
+
+                // Validate color
+                const colorInput = $(form).find('input[name="ColorId"]');
+                if (colorInput.length && !$('input[name="ColorId"]:checked').val()) {
+                    isValid = false;
+                    showError(form, 'Please select a color.');
+                    $('.color-circle').addClass('is-invalid');
+                } else {
+                    $('.color-circle').removeClass('is-invalid');
+                }
+
+                // Validate quantity
+                const quantityInput = $(form).find('input[name="Quantity"]');
+                if (quantityInput.length && (!quantityInput.val() || quantityInput.val() <= 0)) {
+                    isValid = false;
+                    showError(form, 'Quantity must be at least 1.');
+                    quantityInput.addClass('is-invalid');
+                } else {
+                    quantityInput.removeClass('is-invalid');
+                }
+
+                return isValid;
+            }
+
+            // Add a border to the selected color circle
+            $('input[name="ColorId"]').on('change', function () {
+                $('.color-circle').removeClass('selected');
+                $(this).parent('.color-circle').addClass('selected');
+            });
+
+            // Quantity change functionality for bottle products
+            $('#decrease-quantity').click(function () {
+                const quantityInput = $('#quantity');
+                const currentValue = parseInt(quantityInput.val());
+                if (currentValue > 1) {
+                    quantityInput.val(currentValue - 1);
+                }
+            });
+
+            $('#increase-quantity').click(function () {
+                const quantityInput = $('#quantity');
+                const currentValue = parseInt(quantityInput.val());
+                quantityInput.val(currentValue + 1);
+            });
+
+            // Quantity change functionality for simple products
+            $('#decrease-quantity-simple').click(function () {
+                const quantityInput = $('#quantitySimple');
+                const currentValue = parseInt(quantityInput.val());
+                if (currentValue > 1) {
+                    quantityInput.val(currentValue - 1);
+                }
+            });
+
+            $('#increase-quantity-simple').click(function () {
+                const quantityInput = $('#quantitySimple');
+                const currentValue = parseInt(quantityInput.val());
+                quantityInput.val(currentValue + 1);
+            });
+          $('#buyForm, #buyFormSimple').on('submit', function (e) {
+            e.preventDefault(); // Prevent traditional form submission
+
+            const form = $(this);
+            const formId = form.attr('id'); // Identify the form
+            const formData = form.serialize(); // Serialize form data
+
+            let url = '';
+            let details = '';
+
+            if (formId === 'buyForm') {
+                url = '@Url.Action("OrderRequest", "Home")'; // For OrderRequest
+                details = 'OrderDetails';
+            } else if (formId === 'buyFormSimple') {
+                url = '@Url.Action("SubOrderRequest", "Home")'; // For SubOrderRequest
+                details = 'SubOrderDetails';
+            }
+
+            // Add Details parameter to the form data
+            const dataToSend = formData 
+            debugger
+            // Validate the form before sending data
+            if (validateForm(form)) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                        data: formData,
+                              success: function (response) {
+                    if (response.success) {
+                        // Redirect to the Order action with the Details parameter in the query string
+                              window.location.href = `@Url.Action("Order", "Home")?Details=${details}`;
+                            }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error submitting:', error);
+                }
+                });
+            }
+        });
+
+    });
+    </script>
+}

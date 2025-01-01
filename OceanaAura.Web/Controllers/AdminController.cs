@@ -317,15 +317,8 @@ namespace OceanaAura.Web.Controllers
             var productCommand = _mapper.Map<EditProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
             var result = await _mediator.Send(productCommand);
+                return RedirectToAction("Products", "Admin");
 
-            if (result > 0)
-            {
-                return Json(new { success = true, message = "Product Updated successfully." });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Failed to Update product." });
-            }
         }
         [HttpPost]
         public async Task<IActionResult> DeleteImage(string url)
@@ -403,15 +396,7 @@ namespace OceanaAura.Web.Controllers
             var productCommand = _mapper.Map<AddProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
             var result = await _mediator.Send(productCommand);
-
-            if (result > 0)
-            {
-                return Json(new { success = true, message = "Product added successfully." });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Failed to add product." });
-            }
+                return RedirectToAction("Products", "Admin");
         }
         [HttpPost]
         public async Task<JsonResult> DeleteProduct(int id , string imgurls)

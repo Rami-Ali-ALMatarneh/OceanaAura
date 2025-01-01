@@ -453,7 +453,7 @@ namespace OceanaAura.Persistence.Configurations
                     LookUpId = (int)LookUpEnums.ProductAdditionalCategory.DeliveryFee,
                     NameEn = "Delivery Fee",
                     NameAr = "رسوم التوصيل",
-                    LookupCategoryId = (int)LookUpEnums.CategoryCode.ProductAdditional,
+                    LookupCategoryId = (int)LookUpEnums.CategoryCode.Payment,
                     CreatedBy = "admin",
                     IsDeleted = false,
                     CreatedOn = DateTime.Now,

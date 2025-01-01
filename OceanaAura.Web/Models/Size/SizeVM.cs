@@ -6,6 +6,7 @@ namespace OceanaAura.Web.Models.Size
 {
     public class SizeVM
     {
+        public int? Id { get; set; } 
         public string NameEn { get; set; }
         public string NameAr { get; set; }
 

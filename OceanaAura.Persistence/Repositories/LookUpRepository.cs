@@ -37,5 +37,11 @@ namespace OceanaAura.Persistence.Repositories
         {
             return await _appDbContext.lookups.FirstOrDefaultAsync(x => x.NameEn == name);
         }
+
+        public Task<List<LookUpEntity>> GetAllRegions()
+        {
+            return _appDbContext.lookups.Where(x => x.LookupCategoryId == (int)LookUpEnums.CategoryCode.Region && !x.IsDeleted).AsNoTracking().ToListAsync();
+
+        }
     }
 }

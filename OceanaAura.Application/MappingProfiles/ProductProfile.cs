@@ -2,6 +2,7 @@
 using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetAllProduct;
+using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductByName;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
 using OceanaAura.Application.Features.Product.Queries.GetProductUnique;
@@ -38,6 +39,11 @@ namespace OceanaAura.Application.MappingProfiles
              
              .ReverseMap();
             CreateMap<UniqueProductDto, Product>().ReverseMap();
+            CreateMap<Product,ProductHomeDto>()
+             
+            .ForMember(dest => dest.ImgUrl, opt => opt.MapFrom(src => src.ProductImages.Select(img => img.ImageUrl).ToList()))
+                .ReverseMap();  
+
         }
     }
 }

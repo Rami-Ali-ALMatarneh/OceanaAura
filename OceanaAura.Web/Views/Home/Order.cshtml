@@ -1,0 +1,152 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+    var Regions = ViewBag.Regions as List<OceanaAura.Web.Models.BuyVM.RegionVM>;
+    var Payments = ViewBag.Payments as OceanaAura.Web.Models.BuyVM.deliveryFee;
+    var OrderSummary = ViewBag.OrderSummary as OceanaAura.Web.Models.BuyVM.OrderSummary;
+    var SelectedRegionPage = ViewBag.SelectedRegionPage;
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Side: Contact, Delivery, Shipping, Payment -->
+        <div class="col-lg-8">
+            <div class="p-4 bg-light">
+                <h3 class="mb-4">Checkout</h3>
+
+                <!-- Contact Section -->
+                <h4>Contact</h4>
+                <form method="post" class="needs-validation" novalidate>
+                    <div class="form-group mb-4">
+                        <input type="email" class="form-control" id="Email" placeholder="Email" required>
+                        <div class="invalid-feedback">Please provide a valid email.</div>
+                    </div>
+
+                    <h4>Delivery</h4>
+                    <div class="form-group mb-3">
+                        <label for="CountryRegion">Country/Region</label>
+                        <select id="CountryRegion" class="form-select" required onchange="updateOrderSummary()">
+                            @foreach (var region in Regions)
+                            {
+                                if (string.IsNullOrEmpty(SelectedRegionPage))
+                                {
+                                    <option value="@region.Id" data-region-name="@region.NameEn">@region.NameEn</option>
+                                }
+                                else
+                                {
+                                    if (SelectedRegionPage == region.NameEn)
+                                    {
+                                        <option value="@region.Id" selected data-region-name="@region.NameEn">@region.NameEn</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@region.Id" data-region-name="@region.NameEn">@region.NameEn</option>
+                                    }
+                                }
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select your country or region.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="FirstName" placeholder="First name" required>
+                            <div class="invalid-feedback">First name is required.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="LastName" placeholder="Last name" required>
+                            <div class="invalid-feedback">Last name is required.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" id="Address" placeholder="Address" required>
+                        <div class="invalid-feedback">Please enter your address.</div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" id="Apartment" placeholder="Apartment, suite, etc. (optional)">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="City" placeholder="City" required>
+                            <div class="invalid-feedback">City is required.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="PostalCode" placeholder="Postal code (optional)">
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <input type="tel" class="form-control" id="Phone" placeholder="Phone number" required>
+                        <div class="invalid-feedback">Please provide a phone number.</div>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <h4>Payment</h4>
+                    <div class="form-check mb-4" id="DeliveryFeeDisplay">
+                        <input class="form-check-input m-0" type="radio" name="PaymentMethod" id="Payment" value="" checked>
+                        <label class="form-check-label" for="Payment">Delivery Fee</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg btn-block mt-3">Complete Order</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side: Order Summary -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="p-4 bg-light">
+                <h4 class="mb-3">Order Summary</h4>
+
+                <!-- Order Item -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <!-- Product Image -->
+                        <img src="~/File/ColorsImg/@OrderSummary.Product.ImageUrls[0]" alt="@OrderSummary.Product.Name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                        <div>
+                            <p class="mb-1">Name: @OrderSummary.Product.Name</p>
+                            <small class="text-muted">
+                                Quantity: @OrderSummary.Quantity
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subtotal, Shipping, and Total -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Subtotal</span>
+                    <span>@OrderSummary.ProductPrice</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span>Payment</span>
+                    <span id="ShippingFee">@OrderSummary.deliveryFee</span>
+                </div>
+
+                <hr class="my-3">
+
+                <div class="d-flex justify-content-between align-items-center font-weight-bold">
+                    <span>Total</span>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        <span id="TotalFee">JOD @OrderSummary.Total</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+                        <span id="TotalFee">AED @OrderSummary.Total</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+    function updateOrderSummary() {
+                window.location.href = '/order?region=' + SelectedRegionPage;
+        }
+    }
+</script>
+}
+

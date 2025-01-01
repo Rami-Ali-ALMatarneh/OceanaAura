@@ -1557,3 +1557,64 @@ a.btn-link.text-light:after {
   background-size: cover;
   transition: transform .3s ease-out;
 }
+.product-swiper .swiper-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.product-swiper .swiper-slide {
+    flex: 1 1 calc(33.333% - 1rem); /* 3 columns default */
+}
+
+@media (max-width: 992px) { /* For tablets and medium screens */
+    .product-swiper .swiper-slide {
+        flex: 1 1 calc(50% - 1rem); /* 2 columns */
+    }
+}
+
+@media (max-width: 576px) { /* For mobile screens */
+    .product-swiper .swiper-slide {
+        flex: 1 1 100%; /* 1 column */
+    }
+}
+
+.color-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    transition: border 0.3s ease;
+}
+
+    .color-circle.selected {
+        /* Create the external border with spacing */
+        box-shadow: 0 0 0 4px #000; /* 5px spacing between the circle and the border */
+    }
+
+@media (max-width: 768px) {
+    .color-circle {
+        width: 30px;
+        height: 30px;
+    }
+}
+/* Add responsive styles for the select dropdown */
+.size-name, .size-price {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+    .size-name {
+        font-size: 14px; /* Adjust size on smaller screens */
+    }
+
+    .size-price {
+        font-size: 12px; /* Adjust price font size for smaller screens */
+        display: block; /* Stack the price information on small screens */
+        margin-top: 5px;
+    }
+}
