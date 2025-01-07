@@ -81,12 +81,9 @@ namespace OceanaAura.Domain.Enums
         public enum OrderStatusCategory
         {
             Pending = 800,
-            Confirmed =801,
-            Shipped = 802,
-            OutForDelivery = 803,
-            Delivered =  804,
-            Completed = 805,
-            Cancelled = 806
+            InProgress =801,
+            Completed = 802,
+            Cancelled = 803
         }
         public enum ProductCategory
         {

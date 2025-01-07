@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
+using OceanaAura.Application.Features.Order.Commands.CreateOrder;
+using OceanaAura.Application.Features.Order.Queries.GetAllOrder;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Application.Features.ProductSize.Queries.GetSizeDetails;
@@ -31,11 +34,26 @@ namespace OceanaAura.Application.MappingProfiles
             CreateMap<LookUpEntity, ColorDto>()
            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LookUpId))
            .ForMember(dest => dest.Img, opt => opt.MapFrom(src => src.Details))
+           .ForMember(dest => dest.NameEn, opt => opt.MapFrom(src => src.NameEn))
+           .ForMember(dest => dest.NameAr, opt => opt.MapFrom(src => src.NameAr))
+
            .ReverseMap();
-           CreateMap<ProductSize,SizeDto>()
-           .ForMember(dest => dest.NameEn, opt => opt.MapFrom(src => src.Size.NameEn))
-           .ForMember(dest => dest.NameAr, opt => opt.MapFrom(src => src.Size.NameAr))
+            CreateMap<ProductSize, SizeDto>()
+            .ForMember(dest => dest.NameEn, opt => opt.MapFrom(src => src.Size.NameEn))
+            .ForMember(dest => dest.NameAr, opt => opt.MapFrom(src => src.Size.NameAr))
+                 .ReverseMap();
+            CreateMap<OrderDto, Order>()
+                                 .ReverseMap();
+            CreateMap<GetOrdersDto,Order>()
                 .ReverseMap();
+            CreateMap<CartDto, Cart>()
+             .ReverseMap();
+            CreateMap<LookUpEntity,StatusDto>()
+                            .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.LookUpId))
+
+.ReverseMap();
+            CreateMap<Cart, cartCommand>()
+              .ReverseMap();
 
         }
     }

@@ -10,5 +10,8 @@ namespace OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors
     {
         public int Id { get; set; }
         public string Img { get; set; }
+        public string NameEn { get; set; }
+        public string NameAr { get; set; }
+
     }
 }

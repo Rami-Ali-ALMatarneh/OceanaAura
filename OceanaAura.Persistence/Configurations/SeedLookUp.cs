@@ -473,54 +473,19 @@ namespace OceanaAura.Persistence.Configurations
                     ModifyBy = null,
                     ModifyOn = null,
                 },
-                new LookUpEntity
-                {
-                    LookUpId = (int)OrderStatusCategory.Confirmed,
-                    NameEn = "Confirmed",
-                    NameAr = "تم التأكيد",
-                    LookupCategoryId = (int)LookUpEnums.CategoryCode.OrderStatus,
-                    CreatedBy = "admin",
-                    IsDeleted = false,
-                    CreatedOn = DateTime.Now,
-                    ModifyBy = null,
-                    ModifyOn = null,
-                },
-                new LookUpEntity
-                {
-                    LookUpId = (int)OrderStatusCategory.Shipped,
-                    NameEn = "Shipped",
-                    NameAr = "تم الشحن",
-                    LookupCategoryId = (int)LookUpEnums.CategoryCode.OrderStatus,
-                    CreatedBy = "admin",
-                    IsDeleted = false,
-                    CreatedOn = DateTime.Now,
-                    ModifyBy = null,
-                    ModifyOn = null,
-                },
-                new LookUpEntity
-                {
-                    LookUpId = (int)OrderStatusCategory.OutForDelivery,
-                    NameEn = "Out for Delivery",
-                    NameAr = "قيد التوصيل",
-                    LookupCategoryId = (int)LookUpEnums.CategoryCode.OrderStatus,
-                    CreatedBy = "admin",
-                    IsDeleted = false,
-                    CreatedOn = DateTime.Now,
-                    ModifyBy = null,
-                    ModifyOn = null,
-                },
-                new LookUpEntity
-                {
-                    LookUpId = (int)OrderStatusCategory.Delivered,
-                    NameEn = "Delivered",
-                    NameAr = "تم التوصيل",
-                    LookupCategoryId = (int)LookUpEnums.CategoryCode.OrderStatus,
-                    CreatedBy = "admin",
-                    IsDeleted = false,
-                    CreatedOn = DateTime.Now,
-                    ModifyBy = null,
-                    ModifyOn = null,
-                },
+                    new LookUpEntity
+                    {
+                        LookUpId = (int)OrderStatusCategory.InProgress,
+                        NameEn = "InProgress",
+                        NameAr = "قيد العمل",
+                        LookupCategoryId = (int)LookUpEnums.CategoryCode.OrderStatus,
+                        CreatedBy = "admin",
+                        IsDeleted = false,
+                        CreatedOn = DateTime.Now,
+                        ModifyBy = null,
+                        ModifyOn = null,
+                    },
+
                 new LookUpEntity
                 {
                     LookUpId = (int)OrderStatusCategory.Completed,

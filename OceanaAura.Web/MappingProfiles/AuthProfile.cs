@@ -3,6 +3,8 @@ using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
+using OceanaAura.Application.Features.Order.Commands.CreateOrder;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProduct;
@@ -65,6 +67,13 @@ namespace OceanaAura.Web.MappingProfiles
                .ReverseMap();
             CreateMap<deliveryFee, PaymentDto>()
       .ReverseMap();
+            CreateMap<OrderDto, OrderRequest>()
+.ReverseMap();
+            CreateMap<StatusDto, StatusVM>()
+.ReverseMap();
+
+            CreateMap<OrderDto, CartsOrder>()
+.ReverseMap();
         }
     }
 }

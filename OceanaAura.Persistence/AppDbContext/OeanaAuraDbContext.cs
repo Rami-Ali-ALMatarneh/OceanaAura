@@ -25,6 +25,8 @@ namespace OceanaAura.Persistence.AppDbContext
         public DbSet<Image> Images { get; set; }
         public DbSet<AdditionalProduct> additionalProducts { get; set; }
         public DbSet<ProductSize> productSizes { get; set; }
+        public DbSet<Order> orders { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         public DbSet<Product> products { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -32,6 +34,11 @@ namespace OceanaAura.Persistence.AppDbContext
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(OeanaAuraDbContext).Assembly);
             SeedLookUp.Seed(builder);
+            builder.Entity<Cart>().HasKey(x => x.CartId);
+            builder.Entity<Cart>().HasOne(tc => tc.Order)
+              .WithMany(t => t.carts)
+              .HasForeignKey(tc => tc.OrderId)
+              .OnDelete(DeleteBehavior.Restrict);
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

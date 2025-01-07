@@ -15,14 +15,23 @@ using OceanaAura.Application.Features.LookUp.Commands.Additional;
 using OceanaAura.Application.Features.LookUp.Commands.DeleteAdditional;
 using OceanaAura.Application.Features.LookUp.Commands.DeleteCategory;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllAdditinalProduct;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
 using OceanaAura.Application.Features.LookUp.Queries.GetProductCategories;
+using OceanaAura.Application.Features.Order.Commands.DeleteOrder;
+using OceanaAura.Application.Features.Order.Commands.UpdateOrder;
+using OceanaAura.Application.Features.Order.Queries.GetAllOrder;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.Product.Command.DeleteImg;
 using OceanaAura.Application.Features.Product.Command.DeleteProduct;
 using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetAllProduct;
+using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
+using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
+using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
 using OceanaAura.Application.Features.ProductColor.Commands.DeleteColor;
 using OceanaAura.Application.Features.ProductColor.Commands.UpdateColor;
@@ -34,11 +43,13 @@ using OceanaAura.Application.Models.Identity.Password;
 using OceanaAura.Application.Models.Identity.UserInfo;
 using OceanaAura.Web.Extensions;
 using OceanaAura.Web.Models.Auth;
+using OceanaAura.Web.Models.BuyVM;
 using OceanaAura.Web.Models.Colors;
 using OceanaAura.Web.Models.Lookup;
 using OceanaAura.Web.Models.Products;
 using OceanaAura.Web.Models.Size;
 using System.Drawing;
+using System.Linq;
 
 namespace OceanaAura.Web.Controllers
 {
@@ -804,9 +815,105 @@ namespace OceanaAura.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the additional product." });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteOrder(int orderId)
+        {
+            // Create the DeleteOrderCommand
+            var command = new DeleteOrderCommand { Id = orderId };
+
+            try
+            {
+                // Send the command to the MediatR handler
+                await _mediator.Send(command);
+
+                // Return success response
+                return Json(new { success = true });
+            }
+            catch (NotFoundException ex)
+            {
+                // Log and return failure response if order is not found
+                return Json(new { success = false, message = "Order not found" });
+            }
+            catch (Exception ex)
+            {
+                // Log and return failure response for general errors
+                return Json(new { success = false, message = "An error occurred while deleting the order" });
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderStatus(int id, int statusId)
+        {
+            try
+            {
+                var updateOrderDto = new UpdateOrderDto { Id = id, StatusId = statusId };
+                var updatedOrderId = await _mediator.Send(updateOrderDto);
+                return Ok(new { Message = "Order status updated successfully", OrderId = updatedOrderId });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred", Details = ex.Message });
+            }
+        }
 
 
 
+        public async Task<IActionResult> Orders()
+        {
+            var Status = await _mediator.Send(new StatusQuery());
+            var StatusVM = _mapper.Map<List<StatusVM>>(Status);
+            ViewBag.Status = StatusVM;
+            var regions = await _mediator.Send(new RegionQuery());
+            var regionsVM = _mapper.Map<List<RegionVM>>(regions);
+            ViewBag.Regions = regionsVM;
+            var payments = await _mediator.Send(new PaymentQuery());
+            var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
+            ViewBag.Payments = paymentsVM;
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+            ViewBag.Colors = colorsVM;
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
+            var products = await _mediator.Send(new ProductQuery());
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
 
+            // Return the view for displaying colors.
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetOrders()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"], "][name]")];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+
+            // Fetch paginated data using Mediator
+            var (Orders, totalRecords) = await _mediator.Send(new PaginatedOrdersQuery
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+              
+            });
+
+            // Prepare JSON response for DataTable
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = Orders
+            };
+            return Ok(jsonData);
+        }
     }
 }

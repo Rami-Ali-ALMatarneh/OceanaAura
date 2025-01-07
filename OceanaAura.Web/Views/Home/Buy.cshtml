@@ -4,6 +4,7 @@
     var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
     var categories = (List<OceanaAura.Web.Models.Lookup.CategoryVM>)ViewBag.ProductCategory;
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
+    var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
 
 }
 <div class="container mt-5">
@@ -63,7 +64,7 @@
                                             }
                                             @if (SelectedRegionPage == "United Arab Emirates")
                                             {
-                                            <span class="size-price">@size.PriceJOR AED</span>
+                                            <span class="size-price">@size.PriceUAE AED</span>
                                             }
                                     </option>
                                 }
@@ -285,7 +286,6 @@
 
             // Add Details parameter to the form data
             const dataToSend = formData 
-            debugger
             // Validate the form before sending data
             if (validateForm(form)) {
                 $.ajax({
@@ -304,6 +304,46 @@
                 });
             }
         });
+        $('#addToCart').on('click', function () {
+            const form = $(this).closest('form'); // Select the closest form (either buyForm or buyFormSimple)
+            const formId = form.attr('id'); // Identify the form
+            let details = '';
+            debugger
+            if (formId === 'buyForm') {
+                details = 'OrderDetails';
+            } else if (formId === 'buyFormSimple') {
+                details = 'SubOrderDetails';
+            }
+
+            const formData = form.serialize(); // Serialize form data
+            const url = '@Url.Action("AddToCart", "Home")'; // URL for the AddToCart action
+
+            // Append the Details parameter to the formData
+            const dataToSend = formData + '&Details=' + encodeURIComponent(details);
+
+            // Validate the form before sending data
+            if (validateForm(form)) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: dataToSend, // Send the data including Details
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Product added to cart successfully!');
+                            window.location.reload();
+                            } else {
+                            showError(form, 'Failed to add the product to the cart. Please try again.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error adding to cart:', error);
+                    }
+                });
+            }
+        });
+
+
+
 
     });
     </script>

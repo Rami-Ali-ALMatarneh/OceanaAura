@@ -15,5 +15,7 @@ namespace OceanaAura.Application.Persistence.LookUp
         IQueryable<LookUpEntity> GetAdditinalProducts();
         Task<LookUpEntity> GetLookUpByName(string name);
         Task<List<LookUpEntity>> GetAllRegions();
+        Task<List<LookUpEntity>> GetAllStatus();
+
     }
 }

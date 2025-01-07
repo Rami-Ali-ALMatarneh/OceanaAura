@@ -1,0 +1,185 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+    var Regions = ViewBag.Regions as List<OceanaAura.Web.Models.BuyVM.RegionVM>;
+    var Payments = ViewBag.Payments as OceanaAura.Web.Models.BuyVM.deliveryFee;
+    var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
+    var SelectedRegionPage = ViewBag.SelectedRegionPage;
+    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
+    var color = new OceanaAura.Web.Models.Colors.ColorVM();
+    var showSweetAlert = ViewBag.ShowSweetAlert; // Get the ViewBag condition
+}
+@model OceanaAura.Web.Models.BuyVM.CartsOrder
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Side: Contact, Delivery, Shipping, Payment -->
+        <div class="col-lg-8">
+            <div class="p-4 bg-light">
+                <h3 class="mb-4">Checkout</h3>
+                <!-- Contact Section -->
+                <h4>Contact</h4>
+                <form method="post" asp-action="BuyCart" asp-controller="Home" class="needs-validation" novalidate>
+                    <!-- Contact Section -->
+                    <div class="form-group mb-4">
+                        <input type="email" class="form-control" id="Email" name="Email" asp-for="Email" placeholder="Email" required>
+                        <div class="invalid-feedback">Please provide a valid email.</div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Delivery Section -->
+                    <h4>Delivery</h4>
+                    <div class="form-group mb-3">
+                        <label for="CountryRegion">Country/Region</label>
+                        <select id="CountryRegion" class="form-select" asp-for="RegionId" required>
+                            @foreach (var region in Regions)
+                            {
+                                <option value="@region.Id" data-region-name="@region.NameEn">@region.NameEn</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select your country or region.</div>
+                        <span asp-validation-for="RegionId" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="FirstName" name="FirstName" asp-for="FirstName" placeholder="First name" required>
+                            <div class="invalid-feedback">First name is required.</div>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="LastName" name="LastName" asp-for="LastName" placeholder="Last name" required>
+                            <div class="invalid-feedback">Last name is required.</div>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" id="Address" name="Address" asp-for="Address" placeholder="Address" required>
+                        <div class="invalid-feedback">Please enter your address.</div>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" id="Apartment" name="Apartment" asp-for="Apartment" placeholder="Apartment, suite, etc. (optional)">
+                        <span asp-validation-for="Apartment" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="City" name="City" asp-for="City" placeholder="City" required>
+                            <div class="invalid-feedback">City is required.</div>
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" id="PostalCode" name="PostalCode" asp-for="PostalCode" placeholder="Postal code (optional)">
+                            <span asp-validation-for="PostalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <input type="tel" class="form-control" id="Phone" name="PhoneNumber" asp-for="PhoneNumber" placeholder="Phone number" required>
+                        <div class="invalid-feedback">Please provide a phone number.</div>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <h4>Payment</h4>
+                    <div class="form-check mb-4">
+                        <input class="form-check-input m-0" type="radio" name="PaymentId" asp-for="PaymentId" id="Payment" value="@Payments?.Id" checked>
+                        <label class="form-check-label" for="Payment">Delivery Fee</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg btn-block mt-3">Complete Order</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side: Cart Summary -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="p-4 bg-light">
+                <h4 class="mb-3">Cart Summary</h4>
+
+                <!-- Loop through CartSummaryList -->
+                @foreach (var orderSummary in CartSummaryList)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <!-- Product Image -->
+                            <img src="~/File/ColorsImg/@orderSummary.Product.ImageUrls[0]" alt="@orderSummary.Product.Name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                            <div>
+                                <p class="mb-1">Name: @orderSummary.Product.Name</p>
+                                @if (orderSummary.ColorId != 0)
+                                {
+                                    <small class="text-muted">
+                                        Color: @color.NameEn
+                                    </small>
+                                    <br />
+                                }
+                                <small class="text-muted">
+                                    Quantity: @orderSummary.Quantity
+                                </small>
+                            </div>
+                        </div>
+                        <!-- Delete Button -->
+                        <button class="btn btn-sm btn-danger"
+                                onclick="removeFromCart(@orderSummary.OrderNumber)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Subtotal, Shipping, and Discount for each item -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Subtotal</span>
+                        <span>@orderSummary.ProductPrice</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span>Payment</span>
+                        <span>@orderSummary.deliveryFee</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span>Discount</span>
+                        <span>@orderSummary.Discount %</span>
+                    </div>
+                    <hr class="my-3">
+                }
+
+                <!-- Total Calculation -->
+                <div class="d-flex justify-content-between align-items-center font-weight-bold">
+                    <span>Total</span>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        var TotalPriceJOD = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity) - ((x.ProductPrice * x.Quantity) * x.Discount / 100)) + @Payments.PriceJOR;
+                        <span id="TotalFee">JOD @TotalPriceJOD</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+                        var TotalPriceAED = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity) - ((x.ProductPrice * x.Quantity) * x.Discount / 100)) + @Payments.PriceUAE;
+
+                        <span id="TotalFee">AED @TotalPriceAED</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert Script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (ViewBag.ShowSweetAlert != null)
+{
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                title: "Success!",
+                text: "@ViewBag.ShowSweetAlert",
+                icon: "success",
+                confirmButtonText: "OK"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the desired action
+                    window.location.href = '@Url.Action("Store", "Home")'; // Change "Store" and "Home" to your desired action and controller
+                }
+            });
+        });
+    </script>
+}

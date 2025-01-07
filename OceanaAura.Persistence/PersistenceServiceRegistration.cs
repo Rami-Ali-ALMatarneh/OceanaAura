@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OceanaAura.Application.Persistence;
@@ -26,6 +27,12 @@ namespace OceanaAura.Persistence
             services.AddScoped<ILookUpRepository, LookUpRepository>();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            // Add HangFire for background jobs
+            services.AddHangfire(config =>
+                config.UseSqlServerStorage(configuration.GetConnectionString("OceanaAuraConnectionString")));
+
+            // Add Hangfire server
+            services.AddHangfireServer();
             return services;
         }
     }

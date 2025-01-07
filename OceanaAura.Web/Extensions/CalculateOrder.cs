@@ -36,7 +36,7 @@ namespace OceanaAura.Web.Extensions
             var size = await _mediator.Send(new SizeDetailsQuery(orderDetails.SizeId));
             var deliveryFee = paymentList?.FirstOrDefault();
             orderSummary.Discount = int.TryParse(product?.Discount, out int discount) ? discount : 0;
-
+            orderSummary.Region = Region;
            
             if (orderDetails.SizeId > 0)
             {
@@ -53,7 +53,7 @@ namespace OceanaAura.Web.Extensions
 
                 }
 
-                orderSummary.Total = ((orderSummary.ProductPrice * orderDetails.Quantity) + orderSummary.deliveryFee) - ((orderSummary.ProductPrice * orderDetails.Quantity) + orderSummary.deliveryFee) * (orderSummary.Discount ?? 0);
+                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity) - (orderSummary.ProductPrice * orderDetails.Quantity) * (orderSummary.Discount ?? 0);
             }
             else
             {
@@ -69,7 +69,7 @@ namespace OceanaAura.Web.Extensions
                     orderSummary.deliveryFee = deliveryFee.PriceUAE;
 
                 }
-                orderSummary.Total = ((orderSummary.ProductPrice * orderDetails.Quantity) + orderSummary.deliveryFee) - ((orderSummary.ProductPrice * orderDetails.Quantity) + orderSummary.deliveryFee) * (orderSummary.Discount ?? 0);
+                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity) - (orderSummary.ProductPrice * orderDetails.Quantity) * (orderSummary.Discount ?? 0);
             }
             orderSummary.Product = _mapper.Map<ProductVM>(product);
             orderSummary.SizeId = size.Id;
@@ -91,7 +91,9 @@ namespace OceanaAura.Web.Extensions
             var paymentList = await _mediator.Send(new PaymentQuery());
             var deliveryFee = paymentList?.FirstOrDefault();
             orderSummary.Discount = int.TryParse(product?.Discount, out int discount) ? discount : 0;
-                if (Region == "Jordan")
+            orderSummary.Region = Region;
+
+            if (Region == "Jordan")
                 {
                     orderSummary.ProductPrice = product.PriceJOR ?? 0;
                 orderSummary.deliveryFee = deliveryFee.PriceJOR;
@@ -104,7 +106,7 @@ namespace OceanaAura.Web.Extensions
 
                 }
 
-            orderSummary.Total = ((orderSummary.ProductPrice * subOrderDetails.Quantity) + orderSummary.deliveryFee) - ((orderSummary.ProductPrice * subOrderDetails.Quantity) + orderSummary.deliveryFee) * (orderSummary.Discount ?? 0);
+            orderSummary.Total = (orderSummary.ProductPrice * subOrderDetails.Quantity) - (orderSummary.ProductPrice * subOrderDetails.Quantity) * (orderSummary.Discount ?? 0);
             orderSummary.Product = _mapper.Map<ProductVM>(product);
             orderSummary.Quantity = subOrderDetails.Quantity;
             return orderSummary;
