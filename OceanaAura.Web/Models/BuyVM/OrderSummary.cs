@@ -8,7 +8,6 @@ namespace OceanaAura.Web.Models.BuyVM
         public decimal deliveryFee { get; set; }
 
         public decimal ProductPrice{ get; set; }
-        public int? Discount { get; set; }
         public decimal Total { get; set; }
         public ProductVM Product { get; set; }
         public int Quantity { get; set; }

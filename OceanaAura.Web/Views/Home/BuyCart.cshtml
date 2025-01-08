@@ -136,10 +136,6 @@
                         <span>Payment</span>
                         <span>@orderSummary.deliveryFee</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span>Discount</span>
-                        <span>@orderSummary.Discount %</span>
-                    </div>
                     <hr class="my-3">
                 }
 
@@ -148,12 +144,12 @@
                     <span>Total</span>
                     @if (SelectedRegionPage == "Jordan")
                     {
-                        var TotalPriceJOD = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity) - ((x.ProductPrice * x.Quantity) * x.Discount / 100)) + @Payments.PriceJOR;
+                        var TotalPriceJOD = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity) ) + @Payments.PriceJOR;
                         <span id="TotalFee">JOD @TotalPriceJOD</span>
                     }
                     @if (SelectedRegionPage == "United Arab Emirates")
                     {
-                        var TotalPriceAED = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity) - ((x.ProductPrice * x.Quantity) * x.Discount / 100)) + @Payments.PriceUAE;
+                        var TotalPriceAED = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity) ) + @Payments.PriceUAE;
 
                         <span id="TotalFee">AED @TotalPriceAED</span>
                     }

@@ -21,7 +21,6 @@ namespace OceanaAura.Domain.Entities.ProductsEntities
         public decimal? PriceJOR { get; set; }
         public decimal? PriceUAE { get; set; }
         public decimal? PriceUSD { get; set; }
-        public int? Discount { get; set; }
         public bool GradientColor { get; set; } 
         // Foreign key for category
         [ForeignKey("Category")]

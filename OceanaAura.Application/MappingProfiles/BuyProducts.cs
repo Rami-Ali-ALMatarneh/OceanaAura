@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
+using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
@@ -54,7 +56,11 @@ namespace OceanaAura.Application.MappingProfiles
 .ReverseMap();
             CreateMap<Cart, cartCommand>()
               .ReverseMap();
+            CreateMap<InvoiceDetails, OrderDto>()
+          .ReverseMap();
 
+            CreateMap<InvoiceDetailsDto,InvoiceDetails>()
+        .ReverseMap();
         }
     }
 }

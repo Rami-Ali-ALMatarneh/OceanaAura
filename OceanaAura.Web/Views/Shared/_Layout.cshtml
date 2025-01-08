@@ -273,11 +273,11 @@
                                 <span>@cart.Product.Name</span>
                                 @if (@ViewBag.SelectedRegionPage == "Jordan")
                                 {
-                                    <span>Total: JOD @cart.Total</span>
+                                    <span>Total: JOD @cart.ProductPrice </span>
                                 }
                                 else if (@ViewBag.SelectedRegionPage == "United Arab Emirates")
                                 {
-                                    <span>Total: AED @cart.Total</span>
+                                    <span>Total: AED @cart.ProductPrice</span>
                                 }
                             </div>
                             <button class="btn btn-sm btn-danger"
@@ -295,8 +295,8 @@
             <div class="d-flex justify-content-between flex-column">
                 @{
                     var deliveryFee = CartSummaryList.FirstOrDefault()?.deliveryFee ?? 0; // Ensure a default value if null
-                    var TotalPrice = CartSummaryList.Sum(x => x.Total);
-                    var sumTotal = deliveryFee + TotalPrice;
+                    var TotalPrice = CartSummaryList.Sum(x => x.Total - deliveryFee);
+                    var sumTotal = TotalPrice + deliveryFee;
                 }
 
                 <div class="d-flex justify-content-between mb-3">

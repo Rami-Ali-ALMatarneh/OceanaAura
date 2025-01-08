@@ -9,7 +9,7 @@
     var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
     var color = new OceanaAura.Web.Models.Colors.ColorVM();
     var OrderSuccessMessage = ViewBag.OrderSuccessMessage;
-    var TotalOrder = OrderSummary.Total + OrderSummary.deliveryFee;
+    var TotalOrder = OrderSummary.Total;
     if(OrderSummary.ColorId!=0){
             color = colors.FirstOrDefault(x => x.Id == OrderSummary.ColorId);
     }
@@ -38,7 +38,6 @@
                     <input type="hidden" name="Details" value="@Details" />
                     <input type="hidden" name="Shipping" value="@OrderSummary.deliveryFee" />
                     <input type="hidden" name="ProductPrice" value="@OrderSummary.ProductPrice" />
-                    <input type="hidden" name="Discount" value="@OrderSummary.Discount" />
                     <input type="hidden" name="TotalPrice" value="@TotalOrder" />
                     <input type="hidden" name="Quantity" value="@OrderSummary.Quantity" />
                     <input type="hidden" name="SizeId" value="@OrderSummary.SizeId" />
@@ -148,10 +147,6 @@
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <span>Payment</span>
                     <span id="ShippingFee">@OrderSummary.deliveryFee</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span>Discount</span>
-                    <span>@OrderSummary.Discount %</span>
                 </div>
 
                 <hr class="my-3">

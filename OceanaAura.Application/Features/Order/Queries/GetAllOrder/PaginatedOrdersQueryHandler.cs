@@ -67,7 +67,6 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
                 Carts = order.carts.Select(cart => new CartDto
                 {
                     CartId = cart.CartId,
-                    Discount = cart.Discount,
                     OrderId = cart.OrderId,
                     ProductId = cart.ProductId,
                     PaymentId = cart.PaymentId,

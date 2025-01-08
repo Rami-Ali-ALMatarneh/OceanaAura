@@ -21,10 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Invoice\Commands\AddInvoice\" />
-    <Folder Include="Features\Invoice\Queries\" />
     <Folder Include="Features\LidProduct\Queries\" />
-    <Folder Include="Features\Order\Queries\GetOrderDetails\" />
   </ItemGroup>
 
 </Project>

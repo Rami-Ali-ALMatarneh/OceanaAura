@@ -41,7 +41,6 @@ namespace OceanaAura.Application.Features.Order.Commands.CreateOrder
                 return cart;
             }).ToList();
             await _unitOfWork.CompleteSaveAppDbAsync();
-
             // Return the created Order ID
             return order.OrderId;
         }

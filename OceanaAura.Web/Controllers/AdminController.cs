@@ -9,6 +9,7 @@ using OceanaAura.Application.Exceptions;
 using OceanaAura.Application.Features.ContactUs.Commands.DeleteContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
+using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.LidProduct.Command.AddLid;
 using OceanaAura.Application.Features.LookUp.Commands.AddCagegory;
 using OceanaAura.Application.Features.LookUp.Commands.Additional;
@@ -214,7 +215,7 @@ namespace OceanaAura.Web.Controllers
             try
             {
                 var command = new DeleteContactUsCommand { Id = id };
-                await _mediator.Send(command); 
+                await _mediator.Send(command);
                 return Json(new { success = true, message = "Message deleted successfully!" });
             }
             catch (Exception ex)
@@ -328,7 +329,7 @@ namespace OceanaAura.Web.Controllers
             var productCommand = _mapper.Map<EditProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
             var result = await _mediator.Send(productCommand);
-                return RedirectToAction("Products", "Admin");
+            return RedirectToAction("Products", "Admin");
 
         }
         [HttpPost]
@@ -407,10 +408,10 @@ namespace OceanaAura.Web.Controllers
             var productCommand = _mapper.Map<AddProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
             var result = await _mediator.Send(productCommand);
-                return RedirectToAction("Products", "Admin");
+            return RedirectToAction("Products", "Admin");
         }
         [HttpPost]
-        public async Task<JsonResult> DeleteProduct(int id , string imgurls)
+        public async Task<JsonResult> DeleteProduct(int id, string imgurls)
         {
             try
             {
@@ -420,11 +421,11 @@ namespace OceanaAura.Web.Controllers
                 {
                     ImgUrls = imgurls.Split(',').ToList();
                 }
-                var command = new DeleteProductCommand { Id = id};
+                var command = new DeleteProductCommand { Id = id };
                 await _mediator.Send(command);
-                foreach(var img in ImgUrls)
+                foreach (var img in ImgUrls)
                 {
-                   FileExtensions.DeleteFileFromFileFolder(img, webHostEnvironment);
+                    FileExtensions.DeleteFileFromFileFolder(img, webHostEnvironment);
                 }
                 // Return success message
                 return Json(new { success = true, message = "Product deleted successfully!" });
@@ -801,14 +802,14 @@ namespace OceanaAura.Web.Controllers
             try
             {
                 var command = new DeleteAdditionalCommand { Id = id, LookUpId = lookUpId };
-                await _mediator.Send(command);  
+                await _mediator.Send(command);
 
                 // Return success message
                 return Json(new { success = true, message = "Additional product deleted successfully!" });
             }
             catch (NotFoundException ex)
             {
-                return Json(new { success = false, message = ex.Message });  
+                return Json(new { success = false, message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -902,7 +903,7 @@ namespace OceanaAura.Web.Controllers
                 Start = start,
                 Length = length,
                 SearchValue = searchValue,
-              
+
             });
 
             // Prepare JSON response for DataTable
@@ -912,6 +913,39 @@ namespace OceanaAura.Web.Controllers
                 recordsTotal = totalRecords,
                 recordsFiltered = totalRecords,
                 data = Orders
+            };
+            return Ok(jsonData);
+        }
+        public IActionResult Invoice()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GetInvoices()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"], "][name]")];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+
+            // Fetch paginated data using Mediator
+            var (Invoices, totalRecords) = await _mediator.Send(new PaginatedInvoiceDetails
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+                SortColumn = sortColumn,
+                SortDirection = sortColumnDirection
+            });
+
+            // Prepare JSON response for DataTable
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = Invoices
             };
             return Ok(jsonData);
         }

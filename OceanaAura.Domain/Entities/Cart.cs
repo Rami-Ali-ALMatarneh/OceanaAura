@@ -18,7 +18,6 @@ namespace OceanaAura.Domain.Entities
         public int OrderId { get; set; }
         public Order Order { get; set; }
         public int ProductId { get; set; }
-        public int Discount { get; set; } = 0;
 
         public int PaymentId { get; set; }
 

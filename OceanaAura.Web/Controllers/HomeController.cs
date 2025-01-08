@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
+using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
@@ -257,7 +258,7 @@ namespace OceanaAura.Web.Controllers
         [Route("order")]
         public async Task<IActionResult> Order(OrderRequest orderRequest)
         {
-            
+
 
             // Set ViewBag data similar to the GET request
 
@@ -331,11 +332,14 @@ namespace OceanaAura.Web.Controllers
             };
 
             var OrderDto = _mapper.Map<OrderDto>(orderRequest);
+
             var carts = new List<cartCommand>();
-            carts.Add(cartOrder); 
+            carts.Add(cartOrder);
             OrderDto.carts = carts;
             var result = await _mediator.Send(OrderDto);
-                ViewBag.OrderSuccessMessage= "Your order has been placed successfully!";
+            await _mediator.Send(new InvoiceCommand() { OrderId = result });
+
+            ViewBag.OrderSuccessMessage = "Your order has been placed successfully!";
 
             return View();
         }
@@ -471,7 +475,6 @@ namespace OceanaAura.Web.Controllers
                         Shipping = item.deliveryFee,
                         ProductId = (int)item.Product.Id,
                         ProductPrice = item.ProductPrice,
-                        Discount = (int)item.Discount
                     };
                     carts.Add(cart);
                 }
@@ -479,13 +482,22 @@ namespace OceanaAura.Web.Controllers
             OrderDto.carts = carts;
             OrderDto.Region = ViewBag.SelectedRegionPage;
             var result = await _mediator.Send(OrderDto);
-            ViewBag.OrderSuccessMessage = "Your order has been placed successfully!";
-            var cartSession = HttpContext.Session.GetObjectFromJson<List<OrderSummary>>("CartSummaryList") ?? new List<OrderSummary>();
-            // Remove all items from the cart
-            cartSession.Clear();
+            if (result > 0)
+            {
+                await _mediator.Send(new InvoiceCommand(){ OrderId = result});
+                ViewBag.OrderSuccessMessage = "Your order has been placed successfully!";
+                var cartSession = HttpContext.Session.GetObjectFromJson<List<OrderSummary>>("CartSummaryList") ?? new List<OrderSummary>();
+                // Remove all items from the cart
+                cartSession.Clear();
                 HttpContext.Session.SetObjectAsJson("CartSummaryList", cartSession);
-           ViewBag.ShowSweetAlert = "Your order has been placed successfully and send to your email"; // Set this based on your condition
-            return View();
+                ViewBag.ShowSweetAlert = "Your order has been placed successfully and send to your email"; // Set this based on your condition
+                return View();
+            }
+            else
+            {
+                ViewBag.ShowSweetAlert = "Invalid to make order, please try again."; // Set this based on your condition
+                return View();
+            }
         }
 
     }

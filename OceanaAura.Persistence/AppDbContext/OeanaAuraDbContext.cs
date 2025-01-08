@@ -27,6 +27,7 @@ namespace OceanaAura.Persistence.AppDbContext
         public DbSet<ProductSize> productSizes { get; set; }
         public DbSet<Order> orders { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<Invoice> invoices { get; set; }
 
         public DbSet<Product> products { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)

@@ -17,11 +17,17 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
         //  منتج البيع القالب 
         public int Quantity { get; set; }
         public int SizeId { get; set; }
+        public string SizeName { get; set; }
         public int ColorId { get; set; }
-        public int? Discount { get; set; }
-
+        public string ColorName { get; set; }
         public decimal ProductPrice { get; set; }
+        public string ProductPriceString { get; set; }
+
         public decimal Shipping { get; set; }
+        public string ShippingString { get; set; }
+
         public decimal TotalPrice { get; set; }
+        public string TotalPriceString { get; set; }
+
     }
 }

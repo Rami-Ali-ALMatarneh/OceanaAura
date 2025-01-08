@@ -23,7 +23,6 @@ namespace OceanaAura.Domain.Entities
         public string City { get; set; }
         public string? PostalCode { get; set; } //optional
         public string? Apartment { get; set; } //optional
-        public int? Discount { get; set; }
         public int StatusId { get; set; }
         public int RegionId { get; set; }
 

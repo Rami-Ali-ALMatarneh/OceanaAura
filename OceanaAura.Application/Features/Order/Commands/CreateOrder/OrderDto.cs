@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OceanaAura.Application.Features.Order.Commands.CreateOrder
 {
-    public class OrderDto : IRequest<int>
+    public class OrderDto :  IRequest<int>
     {
         public string Email { get; set; }
         public string Region { get; set; }

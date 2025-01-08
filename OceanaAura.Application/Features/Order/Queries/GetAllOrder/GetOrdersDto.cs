@@ -19,7 +19,6 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
         public string? PostalCode { get; set; } //optional
         public string? Apartment { get; set; } //optional
         public int StatusId { get; set; }
-        public int? Discount { get; set; }
         public int RegionId { get; set; }
 
         public List<CartDto> Carts { get; set; }

@@ -26,6 +26,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddScoped<CalculateOrder>();
+builder.Services.AddScoped<OceanaAura.Application.Contracts.CalculateOrder>(); // Ensure this line is present
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

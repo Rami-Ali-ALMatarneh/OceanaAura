@@ -106,7 +106,6 @@
                                 <div class="card-body">
                                     <p><strong>Payment currency:</strong> <span id="orderRegion"></span></p>
                                     <p><strong>Delivery Region:</strong> <span id="orderRegionId"></span></p>
-                                    <p><strong>Discount:</strong> <span id="orderDiscount"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -148,9 +147,6 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <p><strong>Subtotal:</strong> <span id="orderSubtotal"></span></p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Discount:</strong> <span id="orderDiscountAmount"></span></p>
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Shipping:</strong> <span id="orderShippingCost"></span></p>
@@ -228,12 +224,8 @@
                             });
 
                             // Apply discount once for the entire order
-                            if (row.discount > 0) {
-                                totalPrice = subtotal - (subtotal * (row.discount / 100));
-                            } else {
-                                totalPrice = subtotal;
-                            }
-
+                                totalPrice = subtotal ;
+                          
                             // Add shipping cost based on region (applied once per order)
                             if (row.region === "Jordan" || row.region === "United Arab Emirates") {
                                 totalPrice += row.carts[0].shipping; // Assuming shipping cost is the same for all items in the order
@@ -322,6 +314,7 @@
 
             // Show order details in modal
             $('#ordersTable').on('click', '.view-details', function () {
+                debugger
                 var order = $(this).data('details');
                 var statuses = @Html.Raw(Json.Serialize(Status));
                 var Regions = @Html.Raw(Json.Serialize(Regions));
@@ -350,19 +343,6 @@
                 $('#orderRegion').text(order.region);
                 $('#orderRegionId').text(regionName);
                // Calculate total discount from all cart items
-                let totalDiscount = 0;
-                order.carts.forEach(cart => {
-                    if (cart.discount > 0) {
-                        totalDiscount += cart.discount;
-                    }
-                });
-
-                // Display total discount
-                if (totalDiscount === 0) {
-                    $('#orderDiscount').text('0%');
-                } else {
-                    $('#orderDiscount').text(`${totalDiscount.toFixed(2)}%`);
-                }
                 // Populate cart information
                 var cartHtml = '';
                 order.carts.forEach(function (cart) {
@@ -389,32 +369,26 @@
 
                 // Calculate Pricing Details
                 let subtotal = 0;
-                let discountAmount = 0;
                 let shippingCost = 0;
                 let totalPrice = 0;
-
-                // Calculate subtotal and discount for all items
                 order.carts.forEach(cart => {
-                    subtotal += cart.productPrice * cart.quantity;
-                    if (cart.discount > 0) {
-                        discountAmount += (cart.productPrice * cart.quantity) * (cart.discount / 100);
-                    }
-                });
-
-                // Add shipping cost based on region (applied once per order)
+                       subtotal += cart.productPrice * cart.quantity;
+                       if (cart.discount > 0) {
+                           discountAmount += (cart.productPrice * cart.quantity);
+                       }
+                   });                // Add shipping cost based on region (applied once per order)
                 if (order.region === "Jordan" || order.region === "United Arab Emirates") {
                     shippingCost = order.carts[0].shipping; // Assuming shipping cost is the same for all items in the order
                 }
 
                 // Calculate total price
-                totalPrice = subtotal - discountAmount + shippingCost;
+                totalPrice = subtotal + shippingCost;
 
                 // Format the values based on the region
                 let currency = order.region === "Jordan" ? "JOD" : order.region === "United Arab Emirates" ? "AED" : "USD";
 
                 // Populate Pricing Details
                 $('#orderSubtotal').text(`${subtotal.toFixed(2)} ${currency}`);
-                $('#orderDiscountAmount').text(`${discountAmount.toFixed(2)} ${currency}`);
                 $('#orderShippingCost').text(`${shippingCost.toFixed(2)} ${currency}`);
                 $('#orderTotalPrice').text(`${totalPrice.toFixed(2)} ${currency}`);
 

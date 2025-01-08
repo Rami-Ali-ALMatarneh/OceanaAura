@@ -169,7 +169,7 @@ namespace OceanaAura.Identity.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedBy", "CreatedOn", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "ModifyBy", "ModifyOn", "NormalizedEmail", "NormalizedUserName", "OTP", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "060378b0-e3b8-4b1c-ac4a-7c463d96a73f", "Admin", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "opscode59@gmail.com", true, false, null, null, null, "OPSCODE59@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEJ15QHbnRLeZ5lsP5Qapm5ork0N52I9ALa6lVVJeqopeIvqA+n+LV4b9ZD8cyXqFlA==", null, false, "ed28799c-b276-4f75-a98b-d1b777347475", false, "admin" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "a090a958-ff8b-4f73-9e55-d0aa06f3c756", "Admin", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "opscode59@gmail.com", true, false, null, null, null, "OPSCODE59@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEK9QV2lRvAxiG/X9kVg+JaPQyopE5jVd/pVlG/MZts+M5y/OaGlkbqwUcrHUPa1BhA==", null, false, "32c9bf94-398f-4555-a1b6-1ae878ce126a", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
