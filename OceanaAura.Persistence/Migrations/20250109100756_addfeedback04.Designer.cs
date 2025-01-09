@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OceanaAura.Persistence.AppDbContext;
 
@@ -11,9 +12,11 @@ using OceanaAura.Persistence.AppDbContext;
 namespace OceanaAura.Persistence.Migrations
 {
     [DbContext(typeof(OeanaAuraDbContext))]
-    partial class OeanaAuraDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250109100756_addfeedback04")]
+    partial class addfeedback04
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

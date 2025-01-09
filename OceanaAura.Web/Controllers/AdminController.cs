@@ -9,6 +9,9 @@ using OceanaAura.Application.Exceptions;
 using OceanaAura.Application.Features.ContactUs.Commands.DeleteContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
+using OceanaAura.Application.Features.Feedback.Command.DeleteFeedback;
+using OceanaAura.Application.Features.Feedback.Command.UpdateVisabilityFeedback;
+using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
 using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.LidProduct.Command.AddLid;
 using OceanaAura.Application.Features.LookUp.Commands.AddCagegory;
@@ -948,6 +951,65 @@ namespace OceanaAura.Web.Controllers
                 data = Invoices
             };
             return Ok(jsonData);
+        }
+        // Action to render the Feedback view
+        public IActionResult Feedback()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetFeedbacks()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"].FirstOrDefault(), "][name]")].FirstOrDefault();
+            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+            var (feedbacks, totalRecords) = await _mediator.Send(new PaginatedFeedback
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+                SortColumn = sortColumn,
+                SortDirection = sortColumnDirection
+            });
+
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = feedbacks
+            };
+
+            return Ok(jsonData);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFeedback(int id)
+        {
+            var result = await _mediator.Send(new DeleteFeedbackCommand { FeedbackId = id });
+            return Json(new { success = result });
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateVisibilityFeedback(int id, bool statusId)
+        {
+            try
+            {
+                var updateVisibilityFeedback = new VisibilityFeedback { FeedbackId = id, IsShow = statusId };
+                var VisibilityFeedbackId = await _mediator.Send(updateVisibilityFeedback);
+                return Ok(new { Message = "Visibility Feedback updated successfully", FeedbackId = VisibilityFeedbackId });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred", Details = ex.Message });
+            }
         }
     }
 }

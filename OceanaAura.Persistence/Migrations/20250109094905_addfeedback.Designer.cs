@@ -12,8 +12,8 @@ using OceanaAura.Persistence.AppDbContext;
 namespace OceanaAura.Persistence.Migrations
 {
     [DbContext(typeof(OeanaAuraDbContext))]
-    [Migration("20250108130822_dddd1")]
-    partial class dddd1
+    [Migration("20250109094905_addfeedback")]
+    partial class addfeedback
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,6 +142,39 @@ namespace OceanaAura.Persistence.Migrations
                     b.ToTable("ContactUs");
                 });
 
+            modelBuilder.Entity("OceanaAura.Domain.Entities.Feedback", b =>
+                {
+                    b.Property<int>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackId"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmittedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("feedbacks");
+                });
+
             modelBuilder.Entity("OceanaAura.Domain.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
@@ -246,7 +279,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 1,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2025),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2378),
                             Description = "Region Country",
                             Id = 0,
                             IsDeleted = false,
@@ -257,7 +290,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 2,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2039),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2391),
                             Description = "Payment",
                             Id = 0,
                             IsDeleted = false,
@@ -268,7 +301,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 4,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2042),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2393),
                             Description = "PriceCountry",
                             Id = 0,
                             IsDeleted = false,
@@ -279,7 +312,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 3,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2044),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2395),
                             Description = "Language",
                             Id = 0,
                             IsDeleted = false,
@@ -290,7 +323,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 5,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2046),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2396),
                             Description = "Product Color",
                             Id = 0,
                             IsDeleted = false,
@@ -301,7 +334,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 6,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2048),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2398),
                             Description = "Product Size",
                             Id = 0,
                             IsDeleted = false,
@@ -312,7 +345,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 7,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2049),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2399),
                             Description = "Product Additional",
                             Id = 0,
                             IsDeleted = false,
@@ -323,7 +356,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 8,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2051),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2400),
                             Description = "Order Status",
                             Id = 0,
                             IsDeleted = false,
@@ -334,7 +367,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             CategoryId = 9,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2052),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2402),
                             Description = "Product Category",
                             Id = 0,
                             IsDeleted = false,
@@ -395,7 +428,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 100,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2172),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2500),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 1,
@@ -406,7 +439,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 101,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2174),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2502),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 1,
@@ -417,7 +450,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 200,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2175),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2503),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 2,
@@ -428,7 +461,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 400,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2177),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2505),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 4,
@@ -439,7 +472,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 401,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2178),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2506),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 4,
@@ -450,7 +483,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 402,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2180),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2508),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 4,
@@ -461,7 +494,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 300,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2181),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2509),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 3,
@@ -472,7 +505,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 301,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2183),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2511),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 3,
@@ -483,7 +516,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 500,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2184),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2512),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -494,7 +527,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 501,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2185),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2513),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -505,7 +538,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 502,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2187),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2515),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -516,7 +549,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 503,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2188),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2516),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -527,7 +560,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 504,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2190),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2517),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -538,7 +571,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 505,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2191),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2519),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -549,7 +582,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 506,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2192),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2520),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -560,7 +593,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 507,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2194),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2522),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -571,7 +604,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 508,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2195),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2523),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -582,7 +615,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 509,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2200),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2524),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -593,7 +626,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 510,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2202),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2526),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -604,7 +637,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 511,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2203),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2527),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -615,7 +648,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 512,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2205),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2528),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -626,7 +659,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 513,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2206),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2530),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -637,7 +670,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 514,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2207),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2531),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -648,7 +681,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 515,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2209),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2532),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -659,7 +692,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 516,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2210),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2533),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 5,
@@ -670,7 +703,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 701,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2212),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2535),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 7,
@@ -681,7 +714,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 702,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2213),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2536),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 2,
@@ -692,7 +725,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 800,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2214),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2537),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 8,
@@ -703,7 +736,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 801,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2216),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2539),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 8,
@@ -714,7 +747,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 802,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2217),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2540),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 8,
@@ -725,7 +758,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 803,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2218),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2541),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 8,
@@ -736,7 +769,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 900,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2220),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2543),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 9,
@@ -747,7 +780,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 901,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2221),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2544),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 9,
@@ -758,7 +791,7 @@ namespace OceanaAura.Persistence.Migrations
                         {
                             LookUpId = 902,
                             CreatedBy = "admin",
-                            CreatedOn = new DateTime(2025, 1, 8, 16, 8, 21, 474, DateTimeKind.Local).AddTicks(2223),
+                            CreatedOn = new DateTime(2025, 1, 9, 12, 49, 4, 305, DateTimeKind.Local).AddTicks(2545),
                             Id = 0,
                             IsDeleted = false,
                             LookupCategoryId = 9,
@@ -937,6 +970,17 @@ namespace OceanaAura.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("OceanaAura.Domain.Entities.Feedback", b =>
+                {
+                    b.HasOne("OceanaAura.Domain.Entities.ProductsEntities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("OceanaAura.Domain.Entities.Image", b =>

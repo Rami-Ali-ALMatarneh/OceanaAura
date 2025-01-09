@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
+using OceanaAura.Application.Features.Feedback.Command.AddFeedback;
+using OceanaAura.Application.Features.Feedback.Queries.GetIsShowFeedback;
 using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
@@ -88,6 +90,9 @@ namespace OceanaAura.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var VisibilityFeedback = await _mediator.Send(new GetIsShowFeedbackQuery());
+            var VisibilityFeedbackVM = _mapper.Map<List<VisibilityFeedbackVM>>(VisibilityFeedback);
+
             var categories = await _mediator.Send(new CategoriesQuery());
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
@@ -100,6 +105,8 @@ namespace OceanaAura.Web.Controllers
 
             ViewBag.Products = productsVM;
             ViewBag.ProductCategory = categoriesVM;
+            ViewBag.VisibilityFeedback = VisibilityFeedbackVM;
+
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
 
@@ -499,7 +506,19 @@ namespace OceanaAura.Web.Controllers
                 return View();
             }
         }
+        [HttpPost]
 
+        public async Task<IActionResult> AddFeedback([FromBody] AddFeedbackCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Return validation errors if the model state is invalid
+            }
+
+            var feedbackId = await _mediator.Send(command); // Send the command to the handler
+
+            return Ok(new { FeedbackId = feedbackId }); // Return the created feedback ID
+        }
     }
 
 

@@ -153,6 +153,34 @@
     {
         <h2 class="text-danger">Product not found!</h2>
     }
+    <!-- Feedback Form Section -->
+    <div class="feedback-form p-4 mt-5 border rounded shadow-sm bg-light">
+        <h3 class="text-black mb-3">Leave Your Feedback</h3>
+        <form id="feedbackForm">
+            <input type="hidden" name="ProductId" value="@product.Id" />
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="Email" required />
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label">Rating</label>
+                <select class="form-select" id="rating" name="Rating" required>
+                    <option value="" disabled selected>Select Rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">Feedback</label>
+                <textarea class="form-control" id="content" name="Content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        </form>
+        <div class="alert-container mt-3"></div>
+    </div>
 </div>
 
 <!-- Custom CSS to remove number spinner -->
@@ -184,8 +212,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 @section Scripts {
+    <script src="~/js/FeedbackValidation.js"></script>
+
     <script>
         $(document).ready(function () {
+
 
             // Function to display error messages dynamically
             function showError(form, message) {
@@ -341,10 +372,38 @@
                 });
             }
         });
+         $('#feedbackForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent traditional form submission
 
+            const form = $(this);
+            const formData = form.serializeArray(); // Get form data as an array of key-value pairs
+            const jsonData = {}; // Convert to JSON object
 
+            // Convert form data to JSON
+            $.each(formData, function (index, field) {
+                jsonData[field.name] = field.value;
+            });
 
-
+            const url = '@Url.Action("AddFeedback", "Home")'; // URL for the AddFeedback action
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json', // Set content type to JSON
+                data: JSON.stringify(jsonData), // Convert JSON object to string
+                success: function (response) {
+                    if (response.feedbackId) {
+                        alert('Feedback submitted successfully!');
+                        form.trigger("reset"); // Reset the form
+                    } else {
+                        showError(form, 'Failed to submit feedback. Please try again.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error submitting feedback:', error);
+                    showError(form, 'An error occurred while submitting feedback. Please try again.');
+                }
+            });
+        });
     });
     </script>
 }

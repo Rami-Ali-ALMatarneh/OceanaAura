@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using OceanaAura.Application.Features.Feedback.Command.AddFeedback;
+using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetAllProduct;
@@ -6,10 +8,12 @@ using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductByName;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
 using OceanaAura.Application.Features.Product.Queries.GetProductUnique;
+using OceanaAura.Domain.Entities;
 using OceanaAura.Domain.Entities.ProductsEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,7 +46,14 @@ namespace OceanaAura.Application.MappingProfiles
             CreateMap<Product,ProductHomeDto>()
              
             .ForMember(dest => dest.ImgUrl, opt => opt.MapFrom(src => src.ProductImages.Select(img => img.ImageUrl).ToList()))
-                .ReverseMap();  
+                .ReverseMap();
+            CreateMap<Feedback, FeedbackDto>()
+                 .ForMember(dest => dest.SubmittedOn, opt => opt.MapFrom(src => src.SubmittedOn.ToString("yyyy-MM-dd HH:mm"))) // Format date
+
+          .ReverseMap();
+            CreateMap<AddFeedbackCommand, Feedback>()
+                          .ReverseMap();
+
 
         }
     }

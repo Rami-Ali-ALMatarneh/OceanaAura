@@ -15,5 +15,5 @@ namespace OceanaAura.Application.Persistence
 
         Task<List<Image>> GetImgsByForeignIdAsync(int id);
         Task<List<Product>> GetAllProducts();
-    };
+    }
 }

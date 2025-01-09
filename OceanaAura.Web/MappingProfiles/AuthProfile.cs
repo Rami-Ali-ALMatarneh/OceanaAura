@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
+using OceanaAura.Application.Features.Feedback.Command.UpdateVisabilityFeedback;
+using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
@@ -73,6 +75,8 @@ namespace OceanaAura.Web.MappingProfiles
 .ReverseMap();
 
             CreateMap<OrderDto, CartsOrder>()
+.ReverseMap();
+            CreateMap<VisibilityFeedbackVM, FeedbackDto>()
 .ReverseMap();
         }
     }
