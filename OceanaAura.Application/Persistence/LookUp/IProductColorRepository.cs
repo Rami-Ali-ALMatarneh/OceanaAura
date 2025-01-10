@@ -11,6 +11,7 @@ namespace OceanaAura.Application.Persistence.LookUp
     public interface IProductColorRepository : IGenericRepository<LookUpEntity>
     {
         IQueryable<LookUpEntity> GetAllColor();
+        Task<List<LookUpEntity>> GetALLColors();
         Task<bool> IsNameEnUnique(string Name);
         Task<bool> IsNameArUnique(string Name);
         Task<bool> IsNameEnUnique(string Name,int id );

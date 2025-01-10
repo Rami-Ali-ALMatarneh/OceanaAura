@@ -36,6 +36,19 @@ namespace OceanaAura.Infrastructure.EmailService
 
             };
             mailMessage.To.Add(emailMessage.To);
+            // Add attachments if any
+            if (emailMessage.Attachments != null && emailMessage.Attachments.Any())
+            {
+                foreach (var attachment in emailMessage.Attachments)
+                {
+                    var mailAttachment = new Attachment(
+                        new System.IO.MemoryStream(attachment.Content),
+                        attachment.FileName,
+                        attachment.ContentType
+                    );
+                    mailMessage.Attachments.Add(mailAttachment);
+                }
+            }
 
             return client.SendMailAsync(mailMessage);
         }

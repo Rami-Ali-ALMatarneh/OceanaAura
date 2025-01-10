@@ -37,5 +37,10 @@ namespace OceanaAura.Persistence.Repositories
         public ILookUpRepository lookUpRepository => new LookUpRepository(_oeanaAuraDbContext);
 
         public IProductRepository productRepository =>  new ProductRepository(_oeanaAuraDbContext);
+        public ICartRepository cartRepository => new CartRepository(_oeanaAuraDbContext);
+
+        public IAdditionalProductsRepository additionalProductsRepository => new AdditionalProductsRepository(_oeanaAuraDbContext);
+
+        public IFeedbackRepository feedbackRepository => new FeedbackRepository(_oeanaAuraDbContext);
     }
 }

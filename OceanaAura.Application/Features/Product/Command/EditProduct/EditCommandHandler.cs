@@ -47,7 +47,6 @@ namespace OceanaAura.Application.Features.Product.Command.EditProduct
             product.PriceJOR = request.PriceJOR;
             product.PriceUSD = request.PriceUSD;
             product.PriceUAE = request.PriceUAE;
-            product.Discount = request.Discount;
 
             if (product.CategoryId != request.CategoryId)
             {

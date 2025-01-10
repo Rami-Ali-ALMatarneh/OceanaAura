@@ -46,5 +46,11 @@ namespace OceanaAura.Persistence.Repositories
             var result = await _appDbContext.lookups.AnyAsync(p => p.NameEn == Name && p.LookupCategoryId == (int)LookUpEnums.CategoryCode.ProductColor && p.LookUpId != id);
             return !result;
         }
+
+        public async Task<List<LookUpEntity>> GetALLColors()
+        {
+            return await _appDbContext.lookups.Where(x => x.LookupCategoryId == (int)LookUpEnums.CategoryCode.ProductColor && !x.IsDeleted).AsNoTracking()
+            .ToListAsync();
+        }
     }
 }

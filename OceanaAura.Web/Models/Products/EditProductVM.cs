@@ -17,7 +17,6 @@ namespace OceanaAura.Web.Models.Products
         public string? PriceJOR { get; set; }
         public string? PriceUAE { get; set; }
         public string? PriceUSD { get; set; }
-        public int? Discount { get; set; }
         public int CategoryId { get; set; }
         public List<CategoryVM> categoryVMs { get; set; }
         public bool IsBottleCategory => CategoryId == 900;
@@ -59,9 +58,6 @@ namespace OceanaAura.Web.Models.Products
                 .Must(BeValidPrice).WithMessage("Price USD must be a valid number greater than zero.")
                 .When(p => !p.IsBottleCategory && p.CategoryId != 0);
 
-            RuleFor(p => p.Discount)
-                .GreaterThanOrEqualTo(0).WithMessage("{PropertyName} must be at least 0.")
-                .LessThanOrEqualTo(100).WithMessage("{PropertyName} must be at most 100.");
 
             RuleFor(p => p.CategoryId)
                 .NotEmpty().WithMessage("Product Category is required.")

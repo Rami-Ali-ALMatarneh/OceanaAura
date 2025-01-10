@@ -41,7 +41,6 @@ namespace OceanaAura.Application.Features.Product.Queries.GetAllProduct
                                          p.Description.Contains(request.SearchValue) ||
                                          p.Category.NameEn.Contains(request.SearchValue) ||
                                          p.Category.NameAr.Contains(request.SearchValue) ||
-                             p.Discount.ToString().Contains(request.SearchValue) ||
                              (p.PriceJOR.HasValue && p.PriceJOR.ToString().Contains(request.SearchValue)) ||
                              (p.PriceUAE.HasValue && p.PriceUAE.ToString().Contains(request.SearchValue)) ||
                              (p.PriceUSD.HasValue && p.PriceUSD.ToString().Contains(request.SearchValue)) ||
@@ -74,9 +73,6 @@ namespace OceanaAura.Application.Features.Product.Queries.GetAllProduct
                         break;
                     case "priceusd":
                         query = sortDirection == "asc" ? query.OrderBy(p => p.PriceUSD) : query.OrderByDescending(p => p.PriceUSD);
-                        break;
-                    case "discount":
-                        query = sortDirection == "asc" ? query.OrderBy(p => p.Discount) : query.OrderByDescending(p => p.Discount);
                         break;
                     default:
                         query = query.OrderBy(p => p.Name); // Default sorting (you can choose a different field)

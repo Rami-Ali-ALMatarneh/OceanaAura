@@ -9,20 +9,33 @@ using OceanaAura.Application.Exceptions;
 using OceanaAura.Application.Features.ContactUs.Commands.DeleteContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
+using OceanaAura.Application.Features.Feedback.Command.DeleteFeedback;
+using OceanaAura.Application.Features.Feedback.Command.UpdateVisabilityFeedback;
+using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
+using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.LidProduct.Command.AddLid;
 using OceanaAura.Application.Features.LookUp.Commands.AddCagegory;
 using OceanaAura.Application.Features.LookUp.Commands.Additional;
 using OceanaAura.Application.Features.LookUp.Commands.DeleteAdditional;
 using OceanaAura.Application.Features.LookUp.Commands.DeleteCategory;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllAdditinalProduct;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
+using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
 using OceanaAura.Application.Features.LookUp.Queries.GetProductCategories;
+using OceanaAura.Application.Features.Order.Commands.DeleteOrder;
+using OceanaAura.Application.Features.Order.Commands.UpdateOrder;
+using OceanaAura.Application.Features.Order.Queries.GetAllOrder;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.Product.Command.DeleteImg;
 using OceanaAura.Application.Features.Product.Command.DeleteProduct;
 using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetAllProduct;
+using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
+using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
+using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
 using OceanaAura.Application.Features.ProductColor.Commands.DeleteColor;
 using OceanaAura.Application.Features.ProductColor.Commands.UpdateColor;
@@ -34,11 +47,13 @@ using OceanaAura.Application.Models.Identity.Password;
 using OceanaAura.Application.Models.Identity.UserInfo;
 using OceanaAura.Web.Extensions;
 using OceanaAura.Web.Models.Auth;
+using OceanaAura.Web.Models.BuyVM;
 using OceanaAura.Web.Models.Colors;
 using OceanaAura.Web.Models.Lookup;
 using OceanaAura.Web.Models.Products;
 using OceanaAura.Web.Models.Size;
 using System.Drawing;
+using System.Linq;
 
 namespace OceanaAura.Web.Controllers
 {
@@ -203,7 +218,7 @@ namespace OceanaAura.Web.Controllers
             try
             {
                 var command = new DeleteContactUsCommand { Id = id };
-                await _mediator.Send(command); 
+                await _mediator.Send(command);
                 return Json(new { success = true, message = "Message deleted successfully!" });
             }
             catch (Exception ex)
@@ -317,15 +332,8 @@ namespace OceanaAura.Web.Controllers
             var productCommand = _mapper.Map<EditProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
             var result = await _mediator.Send(productCommand);
+            return RedirectToAction("Products", "Admin");
 
-            if (result > 0)
-            {
-                return Json(new { success = true, message = "Product Updated successfully." });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Failed to Update product." });
-            }
         }
         [HttpPost]
         public async Task<IActionResult> DeleteImage(string url)
@@ -403,18 +411,10 @@ namespace OceanaAura.Web.Controllers
             var productCommand = _mapper.Map<AddProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
             var result = await _mediator.Send(productCommand);
-
-            if (result > 0)
-            {
-                return Json(new { success = true, message = "Product added successfully." });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Failed to add product." });
-            }
+            return RedirectToAction("Products", "Admin");
         }
         [HttpPost]
-        public async Task<JsonResult> DeleteProduct(int id , string imgurls)
+        public async Task<JsonResult> DeleteProduct(int id, string imgurls)
         {
             try
             {
@@ -424,11 +424,11 @@ namespace OceanaAura.Web.Controllers
                 {
                     ImgUrls = imgurls.Split(',').ToList();
                 }
-                var command = new DeleteProductCommand { Id = id};
+                var command = new DeleteProductCommand { Id = id };
                 await _mediator.Send(command);
-                foreach(var img in ImgUrls)
+                foreach (var img in ImgUrls)
                 {
-                   FileExtensions.DeleteFileFromFileFolder(img, webHostEnvironment);
+                    FileExtensions.DeleteFileFromFileFolder(img, webHostEnvironment);
                 }
                 // Return success message
                 return Json(new { success = true, message = "Product deleted successfully!" });
@@ -805,23 +805,211 @@ namespace OceanaAura.Web.Controllers
             try
             {
                 var command = new DeleteAdditionalCommand { Id = id, LookUpId = lookUpId };
-                await _mediator.Send(command);  
+                await _mediator.Send(command);
 
                 // Return success message
                 return Json(new { success = true, message = "Additional product deleted successfully!" });
             }
             catch (NotFoundException ex)
             {
-                return Json(new { success = false, message = ex.Message });  
+                return Json(new { success = false, message = ex.Message });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "An error occurred while deleting the additional product." });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteOrder(int orderId)
+        {
+            // Create the DeleteOrderCommand
+            var command = new DeleteOrderCommand { Id = orderId };
+
+            try
+            {
+                // Send the command to the MediatR handler
+                await _mediator.Send(command);
+
+                // Return success response
+                return Json(new { success = true });
+            }
+            catch (NotFoundException ex)
+            {
+                // Log and return failure response if order is not found
+                return Json(new { success = false, message = "Order not found" });
+            }
+            catch (Exception ex)
+            {
+                // Log and return failure response for general errors
+                return Json(new { success = false, message = "An error occurred while deleting the order" });
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderStatus(int id, int statusId)
+        {
+            try
+            {
+                var updateOrderDto = new UpdateOrderDto { Id = id, StatusId = statusId };
+                var updatedOrderId = await _mediator.Send(updateOrderDto);
+                return Ok(new { Message = "Order status updated successfully", OrderId = updatedOrderId });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred", Details = ex.Message });
+            }
+        }
 
 
 
+        public async Task<IActionResult> Orders()
+        {
+            var Status = await _mediator.Send(new StatusQuery());
+            var StatusVM = _mapper.Map<List<StatusVM>>(Status);
+            ViewBag.Status = StatusVM;
+            var regions = await _mediator.Send(new RegionQuery());
+            var regionsVM = _mapper.Map<List<RegionVM>>(regions);
+            ViewBag.Regions = regionsVM;
+            var payments = await _mediator.Send(new PaymentQuery());
+            var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
+            ViewBag.Payments = paymentsVM;
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+            ViewBag.Colors = colorsVM;
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
+            var products = await _mediator.Send(new ProductQuery());
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
 
+            // Return the view for displaying colors.
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetOrders()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"], "][name]")];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+
+            // Fetch paginated data using Mediator
+            var (Orders, totalRecords) = await _mediator.Send(new PaginatedOrdersQuery
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+
+            });
+
+            // Prepare JSON response for DataTable
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = Orders
+            };
+            return Ok(jsonData);
+        }
+        public IActionResult Invoice()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GetInvoices()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"], "][name]")];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+
+            // Fetch paginated data using Mediator
+            var (Invoices, totalRecords) = await _mediator.Send(new PaginatedInvoiceDetails
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+                SortColumn = sortColumn,
+                SortDirection = sortColumnDirection
+            });
+
+            // Prepare JSON response for DataTable
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = Invoices
+            };
+            return Ok(jsonData);
+        }
+        // Action to render the Feedback view
+        public IActionResult Feedback()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetFeedbacks()
+        {
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+            var sortColumn = Request.Form[string.Concat("columns[", Request.Form["order[0][column]"].FirstOrDefault(), "][name]")].FirstOrDefault();
+            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+            var (feedbacks, totalRecords) = await _mediator.Send(new PaginatedFeedback
+            {
+                Start = start,
+                Length = length,
+                SearchValue = searchValue,
+                SortColumn = sortColumn,
+                SortDirection = sortColumnDirection
+            });
+
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = feedbacks
+            };
+
+            return Ok(jsonData);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFeedback(int id)
+        {
+            var result = await _mediator.Send(new DeleteFeedbackCommand { FeedbackId = id });
+            return Json(new { success = result });
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateVisibilityFeedback(int id, bool statusId)
+        {
+            try
+            {
+                var updateVisibilityFeedback = new VisibilityFeedback { FeedbackId = id, IsShow = statusId };
+                var VisibilityFeedbackId = await _mediator.Send(updateVisibilityFeedback);
+                return Ok(new { Message = "Visibility Feedback updated successfully", FeedbackId = VisibilityFeedbackId });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred", Details = ex.Message });
+            }
+        }
     }
 }

@@ -24,7 +24,6 @@
                 <th>Price (JOR)</th>
                 <th>Price (UAE)</th>
                 <th>Price (USD)</th>
-                <th>Discount</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -80,11 +79,7 @@
                         <strong>Description:</strong> <span id="productDescription" class="fw-semibold"></span>
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-12 col-md-6">
-                        <strong>Discount:</strong> <span id="productDiscount" class="fw-semibold"></span>
-                    </div>
-                </div>
+
 
                 <div class="row" id="productImages">
                     <!-- Images will be appended here -->
@@ -162,12 +157,6 @@
                 return "$ " + data; // Append "$" to the price if available
             }
         },
-
-                    { "data": "discount", "name": "Discount", "autoWidth": true,
-                     "render": function (data) {
-                                return data  + "%"; 
-                     }
-                    },
                     {
                         "data": null,
                         "orderable": false,
@@ -188,7 +177,6 @@
                                data-price-jor="${row.priceJOR}"
                                data-price-uae="${row.priceUAE}"
                                data-price-usd="${row.priceUSD}"
-                               data-discount="${row.discount}"
                                data-imgurls="${row.imageUrls}"
                                data-created-on="${row.createdOn}"
                                data-modify-on="${row.modifyOn || 'N/A'}">

@@ -1,16 +1,21 @@
 ﻿using OceanaAura.Domain.Common;
 using OceanaAura.Domain.Entities.LookUp;
+using OceanaAura.Domain.Entities.ProductsEntities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OceanaAura.Domain.Entities
 {
-    public class Order : BaseEntity
+    public class Order
     {
+        [Key]
+        public int OrderId { get; set; }
         public string Email {  get; set; }
+        public string Region { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
@@ -18,17 +23,10 @@ namespace OceanaAura.Domain.Entities
         public string City { get; set; }
         public string? PostalCode { get; set; } //optional
         public string? Apartment { get; set; } //optional
-
-        public LookUpEntity Region { get; set; } //lookup
+        public int StatusId { get; set; }
         public int RegionId { get; set; }
-        public LookUpEntity Payment { get; set; } //lookup
-        public int PaymentId { get; set; }
 
-        //  منتج البيع القالب 
-
-        public decimal SubTotal { get; set; }
-        public decimal Shipping {  get; set; }
-        public decimal TotalPrice { get; set; }
+        public List<Cart> carts { get; set; }
 
     }
 }

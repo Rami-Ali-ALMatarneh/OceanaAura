@@ -15,6 +15,5 @@ namespace OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs
         public string SortColumn { get; set; }
         public string SortDirection { get; set; }
         public string SearchDate { get; set; } // New field for date search
-
     }
 }

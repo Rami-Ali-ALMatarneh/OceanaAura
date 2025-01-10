@@ -36,6 +36,11 @@ namespace OceanaAura.Persistence.Repositories
         {
             return await _appDbContext.products.Where(x => x.Id != id).FirstOrDefaultAsync(x => x.Name == name);
         }
+       public async Task<List<Product>> GetAllProducts()
+        {
+            return await _appDbContext.products.Include(x=>x.ProductImages).ToListAsync();
+
+        }
 
     }
 }

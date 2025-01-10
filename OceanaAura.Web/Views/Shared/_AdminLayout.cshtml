@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="~/File/Images/HeadLogo.png" type="image/png">
 
     <title>Admin - Dashboard</title>
 
@@ -41,7 +42,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" asp-action="Dashboard" asp-controller="Admin">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -62,27 +63,29 @@
                     <span>Products</span>
                 </a>
             </li>
-           <!-- Nav Item - Customers -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-user-friends"></i>
-                    <span>Customers</span>
-                </a>
-            </li>
+
             <!-- Nav Item - Orders -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" asp-action="Orders" asp-controller="Admin">
                     <i class="fas fa-shopping-cart"></i>
                     <span>Orders</span>
                 </a>
             </li>
             <!-- Nav Item - Invoices -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" asp-action="Invoice" asp-controller="Admin">
                     <i class="fas fa-file-invoice"></i>
                     <span>Invoices</span>
                 </a>
             </li>
+            <!-- Nav Item - Feedback -->
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Feedback" asp-controller="Admin">
+                    <i class="fas fa-comment"></i>
+                    <span>Feedback</span>
+                </a>
+            </li>
+
             <!-- Nav Item - Orders -->
             <li class="nav-item">
                 <a class="nav-link" asp-action="ContactMessages" asp-controller="Admin">
@@ -296,7 +299,7 @@
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.Name</span>
                                  <img class="img-profile rounded-circle"
-                                src="~/File/Images/LoginLogo.png">
+                                src="~/File/Images/HeadLogo.png">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

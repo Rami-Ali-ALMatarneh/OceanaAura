@@ -19,7 +19,6 @@ namespace OceanaAura.Infrastructure.RenderServices
         {
             _serviceProvider = serviceProvider;
         }
-
         public async Task<string> RenderToStringAsync(string viewName, object model)
         {
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };

@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿using DinkToPdf.Contracts;
+using DinkToPdf;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OceanaAura.Application.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +19,7 @@ namespace OceanaAura.Application
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             return services;
         }
     }

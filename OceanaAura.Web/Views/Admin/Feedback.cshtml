@@ -1,0 +1,239 @@
+﻿@{
+    Layout = "../Shared/_AdminLayout.cshtml";
+}
+
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="w-100">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Feedbacks</h1>
+    </div>
+    <hr />
+    <!-- DataTable -->
+    <table id="feedbacksTable" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Feedback ID</th>
+                <th>Product ID</th>
+                <th>Email</th>
+                <th>Submitted On</th>
+                <th>Rating</th>
+                <th>Is Show</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Feedback Details -->
+<div class="modal fade" id="feedbackDetailsModal" tabindex="-1" aria-labelledby="feedbackDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="feedbackDetailsModalLabel">
+                    <i class="fas fa-info-circle"></i> Feedback Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row g-3">
+                        <!-- Feedback Information -->
+                        <div class="col-12 mt-2 mb-2">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-secondary text-white">
+                                    <h6><i class="fas fa-comment"></i> Feedback Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Feedback ID:</strong> <span id="feedbackId"></span></p>
+                                    <p><strong>Product ID:</strong> <span id="feedbackProductId"></span></p>
+                                    <p><strong>Email:</strong> <span id="feedbackEmail"></span></p>
+                                    <p><strong>Submitted On:</strong> <span id="feedbackSubmittedOn"></span></p>
+                                    <p><strong>Rating:</strong> <span id="feedbackRating"></span></p>
+                                    <p><strong>Content:</strong> <span id="feedbackContent"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ScriptsAuth {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            var table = $('#feedbacksTable').DataTable({
+                "serverSide": true,
+                "processing": true,
+                "ajax": {
+                    "url": "@Url.Action("GetFeedbacks", "Admin")",
+                    "type": "POST",
+                    "datatype": "json",
+                },
+                "scrollX": true,
+                "responsive": true,
+                "columns": [
+                    { "data": "feedbackId", "name": "FeedbackId", "autoWidth": true },
+                    { "data": "productId", "name": "ProductId", "autoWidth": true },
+                    { "data": "email", "name": "Email", "autoWidth": true },
+                    {
+                        "data": "submittedOn",
+                        "name": "SubmittedOn",
+                        "autoWidth": true,
+                        "render": function (data, type, row) {
+                            return new Date(data).toLocaleString(); // Format date
+                        }
+                    },
+                    { "data": "rating", "name": "Rating", "autoWidth": true },
+                    {
+                        "data": "isShow",
+                        "name": "IsShow",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var statuses = [
+                                { statusId: true, nameEn: "Show" },
+                                { statusId: false, nameEn: "Don't Show" }
+                            ];
+                            var options = statuses.map(function (status) {
+                                var selected = status.statusId === data ? "selected" : "";
+                                return `<option value="${status.statusId}" ${selected}>${status.nameEn}</option>`;
+                            }).join("");
+
+                            return `
+                                <select class="form-select form-select-sm"
+                                        onchange="UpdateVisibilityFeedback(${row.feedbackId}, this.value)">
+                                    ${options}
+                                </select>
+                            `;
+                        }
+                    },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            return `
+                                <a href="#" class="view-details btn btn-sm btn-info"
+                                   data-details='${JSON.stringify(row)}'>
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="#" class="delete-feedback btn btn-sm btn-danger"
+                                   data-feedback-id="${row.feedbackId}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            `;
+                        }
+                    }
+                ],
+                "order": [[0, 'desc']], // Default sort by FeedbackId descending
+                "pageLength": 10
+            });
+
+       
+            // Show feedback details in modal
+            $('#feedbacksTable').on('click', '.view-details', function () {
+                var feedback = $(this).data('details');
+
+                // Populate feedback information
+                $('#feedbackId').text(feedback.feedbackId);
+                $('#feedbackProductId').text(feedback.productId);
+                $('#feedbackEmail').text(feedback.email);
+                $('#feedbackSubmittedOn').text(new Date(feedback.submittedOn).toLocaleString());
+                $('#feedbackRating').text(feedback.rating);
+                $('#feedbackContent').text(feedback.content);
+
+                // Show the modal
+                $('#feedbackDetailsModal').modal('show');
+            });
+
+            // Delete feedback
+            $('#feedbacksTable').on('click', '.delete-feedback', function () {
+                var feedbackId = $(this).data('feedback-id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send delete request
+                        $.ajax({
+                            url: '@Url.Action("DeleteFeedback", "Admin")',
+                            type: 'POST',
+                            data: { id: feedbackId },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire('Deleted!', 'The feedback has been deleted.', 'success');
+                                    table.ajax.reload(); // Reload the table
+                                } else {
+                                    Swal.fire('Error!', 'Failed to delete the feedback.', 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error!', 'An error occurred while deleting the feedback.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+         // Function to Update Visibility Feedback
+        function UpdateVisibilityFeedback(feedbackId, isShow) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to Update Visibility Feedback?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/Admin/UpdateVisibilityFeedback`,
+                        type: 'PUT',
+                        data: { id: feedbackId, statusId: isShow },
+                        success: function (response) {
+                            $('#ordersTable').DataTable().ajax.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Status Updated',
+                                text: response.Message,
+                            });
+                        },
+                        error: function (xhr) {
+                            var errorMessage = xhr.responseJSON?.Error || "An error occurred while updating the Update Visibility Feedback.";
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                            });
+                        }
+
+                    });
+                }
+            });
+        }
+    </script>
+}
