@@ -4,8 +4,6 @@ namespace OceanaAura.Web.Models.BuyVM
 {
     public class OrderRequest
     {
-        public int? Discount { get; set; }
-
         public int SizeId { get; set; }
         public string Region { get; set; }
         public string Details { get; set; }

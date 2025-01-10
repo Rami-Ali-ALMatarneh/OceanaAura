@@ -10,6 +10,8 @@ using OceanaAura.Application.Features.Order.Queries.GetAllOrder;
 using OceanaAura.Application.Models.Email;
 using OceanaAura.Application.Persistence;
 using OceanaAura.Domain.Entities;
+using PuppeteerSharp.Media;
+using PuppeteerSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,15 +84,55 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             var InvoiceDetails = await _calculateOrder.InvoiceResult(ordersDto);
             InvoiceDetails.CreateOn = Invoice.CreateOn.ToString("dd/MM/yyyy hh:mm tt");
             var emailBody = await _viewRenderService.RenderToStringAsync("_OrderEmail", InvoiceDetails);
+            // Convert HTML to PDF using PuppeteerSharp
+            var pdfBytes = await ConvertHtmlToPdfAsync(emailBody);
+
+            // Create email message
             var emailMessage = new EmailMessage
             {
                 To = order.Email,
                 Subject = "Request an Invoice",
-                Body = emailBody
+                Body = emailBody,
+                Attachments = new List<EmailAttachment>
+        {
+            new EmailAttachment
+            {
+                FileName = $"Invoice_{Invoice.InvoiceId}.pdf",
+                ContentType = "application/pdf",
+                Content = pdfBytes
+            }
+        }
             };
-
             await _emailService.SendEmailAsync(emailMessage);
             return Invoice.InvoiceId;
+        }
+
+        private async Task<byte[]> ConvertHtmlToPdfAsync(string htmlContent)
+        {
+            // Download the Chromium browser if not already installed
+            await new BrowserFetcher().DownloadAsync();
+
+            // Launch a headless browser instance
+            using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+            using var page = await browser.NewPageAsync();
+
+            // Set the HTML content of the page
+            await page.SetContentAsync(htmlContent);
+
+            // Generate PDF from the page
+            var pdfBytes = await page.PdfDataAsync(new PdfOptions
+            {
+                Format = PaperFormat.A4,
+                MarginOptions = new MarginOptions
+                {
+                    Top = "20px",
+                    Right = "20px",
+                    Bottom = "20px",
+                    Left = "20px"
+                }
+            });
+
+            return pdfBytes;
         }
     }
 }

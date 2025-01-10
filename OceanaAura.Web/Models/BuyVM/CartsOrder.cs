@@ -4,7 +4,6 @@ namespace OceanaAura.Web.Models.BuyVM
 {
     public class CartsOrder
     {
-        public int? Discount { get; set; }
         
         [Required(ErrorMessage = "Region is required.")]
         public int RegionId { get; set; }

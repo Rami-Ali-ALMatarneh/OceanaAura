@@ -4,8 +4,7 @@
     var Payments = ViewBag.Payments as OceanaAura.Web.Models.BuyVM.deliveryFee;
     var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
-    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
-    var color = new OceanaAura.Web.Models.Colors.ColorVM();
+    var Colors = ViewBag.Colors as List<OceanaAura.Web.Models.Colors.ColorVM>;
     var showSweetAlert = ViewBag.ShowSweetAlert; // Get the ViewBag condition
 }
 @model OceanaAura.Web.Models.BuyVM.CartsOrder
@@ -110,10 +109,14 @@
                                 <p class="mb-1">Name: @orderSummary.Product.Name</p>
                                 @if (orderSummary.ColorId != 0)
                                 {
-                                    <small class="text-muted">
-                                        Color: @color.NameEn
-                                    </small>
-                                    <br />
+                                    var color = Colors.FirstOrDefault(c => c.Id == orderSummary.ColorId);
+                                    if (color != null)
+                                    {
+                                        <small class="text-muted">
+                                            Color: @color.NameEn
+                                        </small>
+                                        <br />
+                                    }
                                 }
                                 <small class="text-muted">
                                     Quantity: @orderSummary.Quantity

@@ -31,7 +31,7 @@ namespace OceanaAura.Persistence.Repositories
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _context.FindAsync<T>(id);
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public void Remove(T entity)
