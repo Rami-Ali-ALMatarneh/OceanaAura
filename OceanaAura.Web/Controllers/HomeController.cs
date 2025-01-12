@@ -92,12 +92,17 @@ namespace OceanaAura.Web.Controllers
         {
             var VisibilityFeedback = await _mediator.Send(new GetIsShowFeedbackQuery());
             var VisibilityFeedbackVM = _mapper.Map<List<VisibilityFeedbackVM>>(VisibilityFeedback);
+            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
 
             var categories = await _mediator.Send(new CategoriesQuery());
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
             var products = await _mediator.Send(new ProductQuery());
             var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
 
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
