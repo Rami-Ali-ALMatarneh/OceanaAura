@@ -1,6 +1,4 @@
-﻿@model OceanaAura.Application.Features.Invoice.Commands.AddInvoice.InvoiceDetails
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <style>
@@ -28,6 +26,11 @@
                 margin: 0;
                 font-size: 24px;
                 color: #333;
+            }
+
+            .invoice-header img {
+                max-width: 150px; /* Adjust the size of the logo */
+                margin-bottom: 10px;
             }
 
         .invoice-details {
@@ -70,7 +73,9 @@
 <body>
     <div class="invoice-container">
         <div class="invoice-header">
-            <h1>Invoice for Order #@Model.OrderId</h1>
+            <!-- Add the header title -->
+            <h1>Oceana Aura</h1>
+            <h2>Invoice for Order #@Model.OrderId</h2>
         </div>
 
         <div class="invoice-details">
@@ -83,7 +88,6 @@
             <p><strong>Region:</strong> @Model.Region</p>
             <p><strong>Delivery Region:</strong> @Model.DeliveryRegion</p>
             <p><strong>Create On:</strong> @Model.CreateOn</p>
-
         </div>
 
         <table class="invoice-table">
