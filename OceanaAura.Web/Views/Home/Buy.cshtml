@@ -5,7 +5,7 @@
     var categories = (List<OceanaAura.Web.Models.Lookup.CategoryVM>)ViewBag.ProductCategory;
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
     var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
-
+    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
 }
 <div class="container mt-5">
     @if (product != null)
@@ -24,11 +24,29 @@
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+                        <span class="visually-hidden">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>السابق</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Previous</span> <!-- English text -->
+                            }
+                        </span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                        <span class="visually-hidden">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>التالي</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Next</span> <!-- English text -->
+                            }
+                        </span>
                     </button>
                 </div>
             </div>
@@ -38,34 +56,68 @@
                 <h1>@product.Name</h1>
                 <p>@product.Description</p>
                 <h5>
-                    Category:
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>الفئة:</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Category:</span> <!-- English text -->
+                    }
                     @categories.FirstOrDefault(c => c.id == product.CategoryId)?.NameEn
                 </h5>
 
                 <!-- Pricing and Sizes -->
                 @if (product.IsBottleCategory)
                 {
-                    <h5>Available Sizes</h5>
+                    <h5>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الأحجام المتاحة</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Available Sizes</span> <!-- English text -->
+                        }
+                    </h5>
                     <form id="buyForm" method="post">
                         <input type="hidden" name="ProductId" value="@product.Id" />
 
                         <!-- Size Dropdown -->
                         <div class="mb-3">
-                            <label for="size" class="form-label">Select Size</label>
+                            <label for="size" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اختر الحجم</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Select Size</span> <!-- English text -->
+                                }
+                            </label>
                             <select class="form-select" id="size" name="SizeId">
-                                <option value="" disabled selected>Select Size</option>
+                                <option value="" disabled selected>
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        <span>اختر الحجم</span> <!-- Arabic text -->
+                                    }
+                                    else
+                                    {
+                                        <span>Select Size</span> <!-- English text -->
+                                    }
+                                </option>
                                 @foreach (var size in sizes)
                                 {
                                     <option value="@size.Id">
                                         <span class="size-name">@size.NameEn</span> -
-                                            @if(SelectedRegionPage =="Jordan")
-                                            {
+                                        @if (SelectedRegionPage == "Jordan")
+                                        {
                                             <span class="size-price">@size.PriceJOR JOD</span>
-                                            }
-                                            @if (SelectedRegionPage == "United Arab Emirates")
-                                            {
+                                        }
+                                        @if (SelectedRegionPage == "United Arab Emirates")
+                                        {
                                             <span class="size-price">@size.PriceUAE AED</span>
-                                            }
+                                        }
                                     </option>
                                 }
                             </select>
@@ -79,17 +131,23 @@
                             </label>
                         }
 
-
                         <!-- Quantity -->
                         <div class="mb-3">
-                            <label for="quantity" class="form-label">Quantity</label>
+                            <label for="quantity" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الكمية</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Quantity</span> <!-- English text -->
+                                }
+                            </label>
                             <div class="input-group quantity-selector" style="max-width: 1000px;">
                                 <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity">
                                     <i class="bi bi-dash"></i>
                                 </button>
-
                                 <input type="number" class="form-control text-center" id="quantity" name="Quantity" min="1" value="1" style="max-width: 60px;" />
-
                                 <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity">
                                     <i class="bi bi-plus"></i>
                                 </button>
@@ -97,14 +155,41 @@
                         </div>
 
                         <!-- Buy Now Button -->
-                        <button type="submit" class="btn btn-lg btn-dark mt-4">Buy Now</button>
+                        <button type="submit" class="btn btn-lg btn-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>اشتري الآن</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Buy Now</span> <!-- English text -->
+                            }
+                        </button>
                         <!-- Add to Cart Button -->
-                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">Add to Cart</button>
+                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>أضف إلى السلة</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Add to Cart</span> <!-- English text -->
+                            }
+                        </button>
                     </form>
                 }
                 else
                 {
-                    <h5>Price:</h5>
+                    <h5>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>السعر:</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Price:</span> <!-- English text -->
+                        }
+                    </h5>
                     @if (SelectedRegionPage == "Jordan")
                     {
                         <span class="size-price">@product.PriceJOR JOD</span>
@@ -119,7 +204,16 @@
 
                         <!-- Quantity -->
                         <div class="mb-3">
-                            <label for="quantitySimple" class="form-label">Quantity</label>
+                            <label for="quantitySimple" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الكمية</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Quantity</span> <!-- English text -->
+                                }
+                            </label>
                             <div class="input-group quantity-selector" style="max-width: 1000px;">
                                 <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity-simple">
                                     <i class="bi bi-dash"></i>
@@ -132,52 +226,125 @@
                         </div>
 
                         <!-- Buy Now Button -->
-                        <button type="submit" class="btn btn-lg btn-dark mt-4">Buy Now</button>
+                        <button type="submit" class="btn btn-lg btn-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>اشتري الآن</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Buy Now</span> <!-- English text -->
+                            }
+                        </button>
                         <!-- Add to Cart Button -->
-                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">Add to Cart</button>
+                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>أضف إلى السلة</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Add to Cart</span> <!-- English text -->
+                            }
+                        </button>
                     </form>
                 }
             </div>
         </div>
-
-        <!-- Exchange Request Section -->
-        <div class="exchange-request p-4 mt-5 border rounded shadow-sm bg-light">
-            <h3 class="text-black mb-3">Request an Exchange</h3>
-            <p class="text-muted fs-5">Need to request an exchange item?</p>
-            <p class="alert alert-warning mt-3">
-                <strong>Note:</strong> No refund is applicable. Exchange is only allowed within <strong>2 days</strong>.
-            </p>
-        </div>
     }
     else
     {
-        <h2 class="text-danger">Product not found!</h2>
+        <h2 class="text-danger">
+            @if (SelectedLanguage == "ar")
+            {
+                <span>المنتج غير موجود!</span> <!-- Arabic text -->
+            }
+            else
+            {
+                <span>Product not found!</span> <!-- English text -->
+            }
+        </h2>
     }
+
     <!-- Feedback Form Section -->
     <div class="feedback-form p-4 mt-5 border rounded shadow-sm bg-light">
-        <h3 class="text-black mb-3">Leave Your Feedback</h3>
+        <h3 class="text-black mb-3">
+            @if (SelectedLanguage == "ar")
+            {
+                <span>اترك تعليقك</span> <!-- Arabic text -->
+            }
+            else
+            {
+                <span>Leave Your Feedback</span> <!-- English text -->
+            }
+        </h3>
         <form id="feedbackForm">
             <input type="hidden" name="ProductId" value="@product.Id" />
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>البريد الإلكتروني</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Email</span> <!-- English text -->
+                    }
+                </label>
                 <input type="email" class="form-control" id="email" name="Email" required />
             </div>
             <div class="mb-3">
-                <label for="rating" class="form-label">Rating</label>
+                <label for="rating" class="form-label">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>التقييم</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Rating</span> <!-- English text -->
+                    }
+                </label>
                 <select class="form-select" id="rating" name="Rating" required>
-                    <option value="" disabled selected>Select Rating</option>
-                    <option value="1">1 Star</option>
-                    <option value="2">2 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="5">5 Stars</option>
+                    <option value="" disabled selected>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>اختر التقييم</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Select Rating</span> <!-- English text -->
+                        }
+                    </option>
+                    <option value="1">1 @(SelectedLanguage == "ar" ? "نجمة" : "Star")</option>
+                    <option value="2">2 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                    <option value="3">3 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                    <option value="4">4 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                    <option value="5">5 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">Feedback</label>
+                <label for="content" class="form-label">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>التعليق</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Feedback</span> <!-- English text -->
+                    }
+                </label>
                 <textarea class="form-control" id="content" name="Content" rows="3" required></textarea>
             </div>
-            <button type="submit" class="btn btn-dark">Submit Feedback</button>
+            <button type="submit" class="btn btn-dark">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>إرسال التعليق</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>Submit Feedback</span> <!-- English text -->
+                }
+            </button>
         </form>
         <div class="alert-container mt-3"></div>
     </div>
@@ -196,6 +363,7 @@
     input[type=number] {
         -moz-appearance: textfield;
     }
+
     /* Highlight invalid color circle */
     .color-circle.is-invalid {
         border: 2px solid red;
@@ -206,7 +374,6 @@
         margin-top: 10px;
         display: none;
     }
-
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -216,8 +383,6 @@
 
     <script>
         $(document).ready(function () {
-
-
             // Function to display error messages dynamically
             function showError(form, message) {
                 const alertContainer = $(form).find('.alert-container');
@@ -233,7 +398,7 @@
                 const sizeDropdown = $(form).find('#size');
                 if (sizeDropdown.length && !sizeDropdown.val()) {
                     isValid = false;
-                    showError(form, 'Please select a size.');
+                    showError(form, '@(SelectedLanguage == "ar" ? "يرجى اختيار الحجم." : "Please select a size.")');
                     sizeDropdown.addClass('is-invalid');
                 } else {
                     sizeDropdown.removeClass('is-invalid');
@@ -243,7 +408,7 @@
                 const colorInput = $(form).find('input[name="ColorId"]');
                 if (colorInput.length && !$('input[name="ColorId"]:checked').val()) {
                     isValid = false;
-                    showError(form, 'Please select a color.');
+                    showError(form, '@(SelectedLanguage == "ar" ? "يرجى اختيار اللون." : "Please select a color.")');
                     $('.color-circle').addClass('is-invalid');
                 } else {
                     $('.color-circle').removeClass('is-invalid');
@@ -253,7 +418,7 @@
                 const quantityInput = $(form).find('input[name="Quantity"]');
                 if (quantityInput.length && (!quantityInput.val() || quantityInput.val() <= 0)) {
                     isValid = false;
-                    showError(form, 'Quantity must be at least 1.');
+                    showError(form, '@(SelectedLanguage == "ar" ? "يجب أن تكون الكمية على الأقل 1." : "Quantity must be at least 1.")');
                     quantityInput.addClass('is-invalid');
                 } else {
                     quantityInput.removeClass('is-invalid');
@@ -297,113 +462,114 @@
                 const currentValue = parseInt(quantityInput.val());
                 quantityInput.val(currentValue + 1);
             });
-          $('#buyForm, #buyFormSimple').on('submit', function (e) {
-            e.preventDefault(); // Prevent traditional form submission
 
-            const form = $(this);
-            const formId = form.attr('id'); // Identify the form
-            const formData = form.serialize(); // Serialize form data
+            $('#buyForm, #buyFormSimple').on('submit', function (e) {
+                e.preventDefault(); // Prevent traditional form submission
 
-            let url = '';
-            let details = '';
+                const form = $(this);
+                const formId = form.attr('id'); // Identify the form
+                const formData = form.serialize(); // Serialize form data
 
-            if (formId === 'buyForm') {
-                url = '@Url.Action("OrderRequest", "Home")'; // For OrderRequest
-                details = 'OrderDetails';
-            } else if (formId === 'buyFormSimple') {
-                url = '@Url.Action("SubOrderRequest", "Home")'; // For SubOrderRequest
-                details = 'SubOrderDetails';
-            }
+                let url = '';
+                let details = '';
 
-            // Add Details parameter to the form data
-            const dataToSend = formData 
-            // Validate the form before sending data
-            if (validateForm(form)) {
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                        data: formData,
-                              success: function (response) {
-                    if (response.success) {
-                        // Redirect to the Order action with the Details parameter in the query string
-                              window.location.href = `@Url.Action("Order", "Home")?Details=${details}`;
-                            }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error submitting:', error);
+                if (formId === 'buyForm') {
+                    url = '@Url.Action("OrderRequest", "Home")'; // For OrderRequest
+                    details = 'OrderDetails';
+                } else if (formId === 'buyFormSimple') {
+                    url = '@Url.Action("SubOrderRequest", "Home")'; // For SubOrderRequest
+                    details = 'SubOrderDetails';
                 }
+
+                // Validate the form before sending data
+                if (validateForm(form)) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                // Redirect to the Order action with the Details parameter in the query string
+                                window.location.href = `@Url.Action("Order", "Home")?Details=${details}`;
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error submitting:', error);
+                        }
+                    });
+                }
+            });
+
+            $('#addToCart').on('click', function () {
+                const form = $(this).closest('form'); // Select the closest form (either buyForm or buyFormSimple)
+                const formId = form.attr('id'); // Identify the form
+                let details = '';
+                debugger
+                if (formId === 'buyForm') {
+                    details = 'OrderDetails';
+                } else if (formId === 'buyFormSimple') {
+                    details = 'SubOrderDetails';
+                }
+
+                const formData = form.serialize(); // Serialize form data
+                const url = '@Url.Action("AddToCart", "Home")'; // URL for the AddToCart action
+
+                // Append the Details parameter to the formData
+                const dataToSend = formData + '&Details=' + encodeURIComponent(details);
+
+                // Validate the form before sending data
+                if (validateForm(form)) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: dataToSend, // Send the data including Details
+                        success: function (response) {
+                            if (response.success) {
+                                alert('@(SelectedLanguage == "ar" ? "تمت إضافة المنتج إلى السلة بنجاح!" : "Product added to cart successfully!")');
+                                window.location.reload();
+                            } else {
+                                showError(form, '@(SelectedLanguage == "ar" ? "فشل إضافة المنتج إلى السلة. يرجى المحاولة مرة أخرى." : "Failed to add the product to the cart. Please try again.")');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error adding to cart:', error);
+                        }
+                    });
+                }
+            });
+
+            $('#feedbackForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent traditional form submission
+
+                const form = $(this);
+                const formData = form.serializeArray(); // Get form data as an array of key-value pairs
+                const jsonData = {}; // Convert to JSON object
+
+                // Convert form data to JSON
+                $.each(formData, function (index, field) {
+                    jsonData[field.name] = field.value;
                 });
-            }
-        });
-        $('#addToCart').on('click', function () {
-            const form = $(this).closest('form'); // Select the closest form (either buyForm or buyFormSimple)
-            const formId = form.attr('id'); // Identify the form
-            let details = '';
-            debugger
-            if (formId === 'buyForm') {
-                details = 'OrderDetails';
-            } else if (formId === 'buyFormSimple') {
-                details = 'SubOrderDetails';
-            }
 
-            const formData = form.serialize(); // Serialize form data
-            const url = '@Url.Action("AddToCart", "Home")'; // URL for the AddToCart action
-
-            // Append the Details parameter to the formData
-            const dataToSend = formData + '&Details=' + encodeURIComponent(details);
-
-            // Validate the form before sending data
-            if (validateForm(form)) {
+                const url = '@Url.Action("AddFeedback", "Home")'; // URL for the AddFeedback action
                 $.ajax({
                     url: url,
                     type: 'POST',
-                    data: dataToSend, // Send the data including Details
+                    contentType: 'application/json', // Set content type to JSON
+                    data: JSON.stringify(jsonData), // Convert JSON object to string
                     success: function (response) {
-                        if (response.success) {
-                            alert('Product added to cart successfully!');
-                            window.location.reload();
-                            } else {
-                            showError(form, 'Failed to add the product to the cart. Please try again.');
+                        if (response.feedbackId) {
+                            alert('@(SelectedLanguage == "ar" ? "تم إرسال التعليق بنجاح!" : "Feedback submitted successfully!")');
+                            form.trigger("reset"); // Reset the form
+                        } else {
+                            showError(form, '@(SelectedLanguage == "ar" ? "فشل إرسال التعليق. يرجى المحاولة مرة أخرى." : "Failed to submit feedback. Please try again.")');
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('Error adding to cart:', error);
+                        console.error('Error submitting feedback:', error);
+                        showError(form, '@(SelectedLanguage == "ar" ? "حدث خطأ أثناء إرسال التعليق. يرجى المحاولة مرة أخرى." : "An error occurred while submitting feedback. Please try again.")');
                     }
                 });
-            }
-        });
-         $('#feedbackForm').on('submit', function (e) {
-            e.preventDefault(); // Prevent traditional form submission
-
-            const form = $(this);
-            const formData = form.serializeArray(); // Get form data as an array of key-value pairs
-            const jsonData = {}; // Convert to JSON object
-
-            // Convert form data to JSON
-            $.each(formData, function (index, field) {
-                jsonData[field.name] = field.value;
-            });
-
-            const url = '@Url.Action("AddFeedback", "Home")'; // URL for the AddFeedback action
-            $.ajax({
-                url: url,
-                type: 'POST',
-                contentType: 'application/json', // Set content type to JSON
-                data: JSON.stringify(jsonData), // Convert JSON object to string
-                success: function (response) {
-                    if (response.feedbackId) {
-                        alert('Feedback submitted successfully!');
-                        form.trigger("reset"); // Reset the form
-                    } else {
-                        showError(form, 'Failed to submit feedback. Please try again.');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error submitting feedback:', error);
-                    showError(form, 'An error occurred while submitting feedback. Please try again.');
-                }
             });
         });
-    });
     </script>
 }

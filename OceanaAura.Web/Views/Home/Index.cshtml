@@ -6,18 +6,37 @@
     var VisibilityFeedback = ViewBag.VisibilityFeedback as List<OceanaAura.Web.Models.Home.VisibilityFeedbackVM>;
     var sizes = (List<OceanaAura.Web.Models.Size.SizeVM>)ViewBag.Sizes;
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
-
+    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
 }
 
+<!-- Billboard Section -->
 <section id="billboard" class="bg-light py-5 pt-1">
     <div class="container">
         <div class="row justify-content-center">
             <h3 class="section-title text-center mt-4" data-aos="fade-up">
-                MOVE WITH STYLE
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>تحرك بأناقة</span>
+                }
+                else
+                {
+                    <span>MOVE WITH STYLE</span>
+                }
             </h3>
             <div class="col-md-6 text-center" data-aos="fade-up" data-aos-delay="300">
                 <p>
-                    Discover the perfect blend of style, elegance and performance with OA bottles. Designed to keep you moving in style, our bottles are available in a variety of sizes and colors to meet your taste. From sleek elegance to bold vibrance, OA has the ideal bottle for every moment that will keep your drinks cold and hot for hours.
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>
+                            اكتشف المزيج المثالي من الأناقة والأداء مع زجاجات OA. مصممة لإبقائك تتحرك بأناقة، تتوفر زجاجاتنا بمجموعة متنوعة من الأحجام والألوان لتلبي ذوقك. من الأناقة البسيطة إلى الحيوية الجريئة، OA لديها الزجاجة المثالية لكل لحظة تحافظ على مشروباتك باردة أو ساخنة لساعات.
+                        </span>
+                    }
+                    else
+                    {
+                        <span>
+                            Discover the perfect blend of style, elegance, and performance with OA bottles. Designed to keep you moving in style, our bottles are available in a variety of sizes and colors to meet your taste. From sleek elegance to bold vibrance, OA has the ideal bottle for every moment that will keep your drinks cold and hot for hours.
+                        </span>
+                    }
                 </p>
             </div>
         </div>
@@ -49,7 +68,6 @@
                                     <img src="~/File/HomeImg/home3.jpeg" alt="product" class="img-fluid">
                                 </a>
                             </div>
-
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -77,54 +95,21 @@
         </div>
     </div>
 </section>
-
-<section class="features py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 text-center" data-aos="fade-in" data-aos-delay="0">
-                <div class="py-5">
-                    <svg width="38" height="38" viewBox="0 0 24 24">
-                        <use xlink:href="#calendar"></use>
-                    </svg>
-                    <h4 class="element-title text-capitalize my-3">Book An Appointment</h4>
-                    <p>At imperdiet dui accumsan sit amet nulla risus est ultricies quis.</p>
-                </div>
-            </div>
-            <div class="col-md-3 text-center" data-aos="fade-in" data-aos-delay="300">
-                <div class="py-5">
-                    <svg width="38" height="38" viewBox="0 0 24 24">
-                        <use xlink:href="#shopping-bag"></use>
-                    </svg>
-                    <h4 class="element-title text-capitalize my-3">Pick up in store</h4>
-                    <p>At imperdiet dui accumsan sit amet nulla risus est ultricies quis.</p>
-                </div>
-            </div>
-            <div class="col-md-3 text-center" data-aos="fade-in" data-aos-delay="600">
-                <div class="py-5">
-                    <svg width="38" height="38" viewBox="0 0 24 24">
-                        <use xlink:href="#gift"></use>
-                    </svg>
-                    <h4 class="element-title text-capitalize my-3">Special packaging</h4>
-                    <p>At imperdiet dui accumsan sit amet nulla risus est ultricies quis.</p>
-                </div>
-            </div>
-            <div class="col-md-3 text-center" data-aos="fade-in" data-aos-delay="900">
-                <div class="py-5">
-                    <svg width="38" height="38" viewBox="0 0 24 24">
-                        <use xlink:href="#arrow-cycle"></use>
-                    </svg>
-                    <h4 class="element-title text-capitalize my-3">free global returns</h4>
-                    <p>At imperdiet dui accumsan sit amet nulla risus est ultricies quis.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Gallery Section -->
 
 <section class="categories overflow-hidden">
     <div class="container py-5">
         <div class="open-up py-5" data-aos="zoom-out">
-            <h3 class="element-title text-uppercase text-center mb-5">OUR GALLARY</h3>
+            <h3 class="element-title text-uppercase text-center mb-5">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>معرضنا</span>
+                }
+                else
+                {
+                    <span>OUR GALLERY</span>
+                }
+            </h3>        
             <div class="row">
                 <div class="col-md-4 p-0">
                     <div class="cat-item image-zoom-effect">
@@ -216,15 +201,33 @@
     </div>
 </section>
 
+<!-- Products Section -->
 <section id="related-products" class="related-products product-carousel py-5 position-relative overflow-hidden">
     <div class="container">
         <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-3">
-            <h4 class="text-uppercase m-0 d-flex align-item">Our Products</h4>
-            <a asp-action="Store" asp-controller="Home" class="btn-link">View All Products</a>
+            <h4 class="text-uppercase m-0 d-flex align-item">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>منتجاتنا</span>
+                }
+                else
+                {
+                    <span>Our Products</span>
+                }
+            </h4>
+            <a asp-action="Store" asp-controller="Home" class="btn-link">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>عرض جميع المنتجات</span>
+                }
+                else
+                {
+                    <span>View All Products</span>
+                }
+            </a>
         </div>
         <div class="swiper product-swiper open-up" data-aos="zoom-out">
             <div class="swiper-wrapper d-flex" style="gap:0">
-
                 @foreach (var Product in Products.Take(2))
                 {
                     <div class="col-md-6 col-sm-6 col-12 p-4">
@@ -237,7 +240,16 @@
                                     <h5 class="text-uppercase fs-5 mt-3">
                                         <a>@Product.Name</a>
                                     </h5>
-                                    <a asp-action="Store" asp-controller="Home" class="text-decoration-none" data-after="Products"><span>Go to Shop</span></a>
+                                    <a asp-action="Store" asp-controller="Home" class="text-decoration-none" data-after="Products">
+                                        @if (SelectedLanguage == "ar")
+                                        {
+                                            <span>اذهب إلى المتجر</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Go to Shop</span>
+                                        }
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -248,28 +260,30 @@
         </div>
     </div>
 </section>
+
+<!-- Bottle Sizes Section -->
 <section class="bottle-sizes py-5 bg-light">
     <div class="container">
-        <!-- Section Title -->
         <h3 class="section-title text-center mb-5 display-4 text-uppercase position-relative">
-            Choose Your Bottle Size
+            @if (SelectedLanguage == "ar")
+            {
+                <span>اختر حجم الزجاجة</span>
+            }
+            else
+            {
+                <span>Choose Your Bottle Size</span>
+            }
             <span class="position-absolute bottom-0 start-50 translate-middle-x bg-dark" style="width: 80px; height: 3px;"></span>
         </h3>
-
-        <!-- Bottle Size Cards -->
         <div class="row justify-content-center g-4">
             @foreach (var size in sizes)
             {
                 <div class="col-lg-2 col-md-4 col-sm-6 col-12" data-aos="fade-up" data-aos-delay="0">
                     <div class="card text-center shadow h-100 transition-all hover-shadow">
-                        <!-- Card Header -->
                         <div class="card-header bg-dark text-white py-3">
                             <h5 class="card-title mb-0 fw-bold">@size.NameEn</h5>
                         </div>
-
-                        <!-- Card Body -->
                         <div class="card-body d-flex flex-column justify-content-between py-4">
-                            <!-- Price -->
                             <p class="card-text h4 fw-bold text-primary mb-3">
                                 @if (SelectedRegionPage == "Jordan")
                                 {
@@ -280,10 +294,15 @@
                                     @size.PriceUAE <span class="fs-6">AED</span>
                                 }
                             </p>
-
-                            <!-- Buy Now Button -->
                             <a asp-action="store" asp-controller="Home" class="btn btn-outline-dark btn-lg w-100 fw-bold">
-                                Buy Now
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اشتري الآن</span>
+                                }
+                                else
+                                {
+                                    <span style="z-index:100">Buy Now</span>
+                                }
                             </a>
                         </div>
                     </div>
@@ -293,11 +312,20 @@
     </div>
 </section>
 
-
+<!-- About Section -->
 <section class="collection bg-light position-relative py-5">
     <div class="container">
         <div class="row">
-            <div class="title-xlarge text-uppercase txt-fx domino">Collection</div>
+            <div class="title-xlarge text-uppercase txt-fx domino">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>المجموعة</span>
+                }
+                else
+                {
+                    <span>Collection</span>
+                }
+            </div>
             <div class="collection-item d-flex flex-wrap my-5">
                 <div class="col-md-6 column-container">
                     <div class="image-holder">
@@ -306,14 +334,40 @@
                 </div>
                 <div class="col-md-6 column-container p-5 bg-white">
                     <div class="collection-content m-0 m-md-5">
-                        <h3 class="element-title text-uppercase">About Oceana Aura</h3>
+                        <h3 class="element-title text-uppercase">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>عن Oceana Aura</span>
+                            }
+                            else
+                            {
+                                <span>About Oceana Aura</span>
+                            }
+                        </h3>
                         <p>
-                            Dignissim lacus, turpis ut suspendisse vel tellus. Turpis purus, gravida orci, fringilla a. Ac sed eu
-                            fringilla odio mi. Consequat pharetra at magna imperdiet cursus ac faucibus sit libero. Ultricies quam
-                            nunc, lorem sit lorem urna, pretium aliquam ut. In vel, quis donec dolor id in. Pulvinar commodo mollis
-                            diam sed facilisis at cursus imperdiet cursus ac faucibus sit faucibus sit libero.
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>
+                                    ديجنيسيم لاكوس، توربيس أوت سوسبينديس فيل تيلوس. توربيس بوروس، جرافيدا أورسي، فرينجيلا أ. أس سيد يو فرينجيلا أوديو مي. كونسيكوات فاريترا أت ماجنا إمبيرديت كورسوس أس فوبيبوس سيت ليبرو. أولتريسيس كوام نونك، لوريم سيت لوريم أورنا، بريتيوم أليكوام أوت. إن فيل، كويس دونك دولور إد إن. بولفينار كومودو موليس ديام سيد فاسيليسيس أت كورسوس إمبيرديت كورسوس أس فوبيبوس سيت فوبيبوس سيت ليبرو.
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    Dignissim lacus, turpis ut suspendisse vel tellus. Turpis purus, gravida orci, fringilla a. Ac sed eu fringilla odio mi. Consequat pharetra at magna imperdiet cursus ac faucibus sit libero. Ultricies quam nunc, lorem sit lorem urna, pretium aliquam ut. In vel, quis donec dolor id in. Pulvinar commodo mollis diam sed facilisis at cursus imperdiet cursus ac faucibus sit faucibus sit libero.
+                                </span>
+                            }
                         </p>
-                        <a href="#" class="btn btn-dark text-uppercase mt-3">Buy Now</a>
+                        <a href="#" class="btn btn-dark text-uppercase mt-3">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>اشتري الآن</span>
+                            }
+                            else
+                            {
+                                <span>Buy Now</span>
+                            }
+                        </a>
                     </div>
                 </div>
             </div>
@@ -321,7 +375,7 @@
     </div>
 </section>
 
-
+<!-- Video Section -->
 <section class="video py-5 pt-0 pb-0 overflow-hidden">
     <div class="">
         <div class="row">
@@ -330,7 +384,8 @@
                     <img src="~/File/HomeImg/insta1.jpeg" alt="video" class="video-image img-fluid">
                 </div>
                 <div class="video-player">
-                    <a class="instagram" target="_blank" href="https://www.instagram.com/reel/DCHIR5bojuu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==">
+                    <!-- Play Icon to Trigger Modal -->
+                    <a class="instagram" data-bs-toggle="modal" data-bs-target="#videoModal">
                         <svg width="50" height="50" viewBox="0 0 24 24">
                             <use xlink:href="#play"></use>
                         </svg>
@@ -341,9 +396,32 @@
     </div>
 </section>
 
+<!-- Video Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0 m-sm-3">
+                <!-- Video Element -->
+                <video class="w-100" muted loop autoplay>
+                    <source src="~/File/HomeImg/video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
 <section class="testimonials py-5 bg-light">
     <div class="section-header text-center mt-5">
-        <h3 class="section-title">WE LOVE GOOD COMPLIMENT</h3>
+        <h3 class="section-title">
+            @if (SelectedLanguage == "ar")
+            {
+                <span>نحب الإطراء الجيد</span>
+            }
+            else
+            {
+                <span>WE LOVE GOOD COMPLIMENT</span>
+            }
+        </h3>
     </div>
     <div class="swiper testimonial-swiper overflow-hidden my-5">
         <div class="swiper-wrapper d-flex">
@@ -389,7 +467,16 @@
 </section>
 <section class="instagram position-relative">
     <div class="d-flex justify-content-center w-100 position-absolute bottom-0 z-1">
-        <a href="https://www.instagram.com/oaforce/?hl=en" class="btn btn-dark px-5">Follow us on Instagram</a>
+        <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank" class="btn btn-dark px-5">
+            @if (SelectedLanguage == "ar")
+            {
+                <span>تابعنا على إنستغرام</span>
+            }
+            else
+            {
+                <span>Follow us on Instagram</span>
+            }
+        </a>
     </div>
     <div class="row g-0">
         <div class="col-6 col-sm-4 col-md-2">
@@ -436,3 +523,18 @@
         </div>
     </div>
 </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var videoModal = document.getElementById('videoModal');
+        var videoElement = videoModal.querySelector('video');
+
+        videoModal.addEventListener('shown.bs.modal', function () {
+            videoElement.play();
+        });
+
+        videoModal.addEventListener('hidden.bs.modal', function () {
+            videoElement.pause();
+            videoElement.currentTime = 0; // Reset video to the beginning
+        });
+    });
+</script>

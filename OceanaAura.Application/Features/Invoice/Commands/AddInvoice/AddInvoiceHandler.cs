@@ -31,7 +31,7 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
 
 
 
-        public AddInvoiceHandler(CalculateOrder calculateOrder,IEmailService emailService,IViewRenderService viewRenderService,IMapper mapper, IUnitOfWork unitOfWork, IAppLogger<AddInvoiceHandler> appLogger)
+        public AddInvoiceHandler(CalculateOrder calculateOrder, IEmailService emailService, IViewRenderService viewRenderService, IMapper mapper, IUnitOfWork unitOfWork, IAppLogger<AddInvoiceHandler> appLogger)
         {
             _calculateOrder = calculateOrder;
             _emailService = emailService;
@@ -45,7 +45,7 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
         public async Task<int> Handle(InvoiceCommand request, CancellationToken cancellationToken)
         {
             var OrderRepository = _unitOfWork.GenericRepository<Domain.Entities.Order>();
-            var order =await OrderRepository.GetByIdAsync(request.OrderId);
+            var order = await OrderRepository.GetByIdAsync(request.OrderId);
             var ordersDto = new GetOrdersDto
             {
                 Id = order.OrderId,
@@ -84,8 +84,11 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             var InvoiceDetails = await _calculateOrder.InvoiceResult(ordersDto);
             InvoiceDetails.CreateOn = Invoice.CreateOn.ToString("dd/MM/yyyy hh:mm tt");
             var emailBody = await _viewRenderService.RenderToStringAsync("_OrderEmail", InvoiceDetails);
+            var emailBodyAdmin = await _viewRenderService.RenderToStringAsync("_OrderEmailAdmin", InvoiceDetails);
+
             // Convert HTML to PDF using PuppeteerSharp
             var pdfBytes = await ConvertHtmlToPdfAsync(emailBody);
+            var pdfBytesAdmin = await ConvertHtmlToPdfAsync(emailBodyAdmin);
 
             // Create email message
             var emailMessage = new EmailMessage
@@ -101,9 +104,28 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
                 ContentType = "application/pdf",
                 Content = pdfBytes
             }
+
+        }
+            };
+            var emailMessageAdmin = new EmailMessage
+            {
+                To = "sam.samer200@gmail.com",
+                Subject = "Request an Invoice",
+                Body = emailBodyAdmin,
+                Attachments = new List<EmailAttachment>
+        {
+            new EmailAttachment
+            {
+                FileName = $"Invoice_{Invoice.InvoiceId}.pdf",
+                ContentType = "application/pdf",
+                Content = pdfBytesAdmin
+            }
+
         }
             };
             await _emailService.SendEmailAsync(emailMessage);
+            await _emailService.SendEmailAsync(emailMessageAdmin);
+
             return Invoice.InvoiceId;
         }
 

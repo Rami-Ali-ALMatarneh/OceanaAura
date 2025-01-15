@@ -77,7 +77,7 @@ namespace OceanaAura.Web.Models.Products
 
         private bool HaveValidImagesExtension(IFormFile file)
         {
-            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif",".svg" };
             var fileExtension = System.IO.Path.GetExtension(file.FileName).ToLower();
             return validExtensions.Contains(fileExtension);
         }

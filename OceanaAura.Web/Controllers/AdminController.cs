@@ -12,7 +12,9 @@ using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
 using OceanaAura.Application.Features.Feedback.Command.DeleteFeedback;
 using OceanaAura.Application.Features.Feedback.Command.UpdateVisabilityFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
+using OceanaAura.Application.Features.Feedback.Queries.GetFeedbacks;
 using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
+using OceanaAura.Application.Features.Invoice.Queries.GetInvoices;
 using OceanaAura.Application.Features.LidProduct.Command.AddLid;
 using OceanaAura.Application.Features.LookUp.Commands.AddCagegory;
 using OceanaAura.Application.Features.LookUp.Commands.Additional;
@@ -27,11 +29,14 @@ using OceanaAura.Application.Features.LookUp.Queries.GetProductCategories;
 using OceanaAura.Application.Features.Order.Commands.DeleteOrder;
 using OceanaAura.Application.Features.Order.Commands.UpdateOrder;
 using OceanaAura.Application.Features.Order.Queries.GetAllOrder;
+using OceanaAura.Application.Features.Order.Queries.GetOrders;
+using OceanaAura.Application.Features.Order.Queries.GetOrdersWithStatus;
 using OceanaAura.Application.Features.Product.Command.AddProduct;
 using OceanaAura.Application.Features.Product.Command.DeleteImg;
 using OceanaAura.Application.Features.Product.Command.DeleteProduct;
 using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetAllProduct;
+using OceanaAura.Application.Features.Product.Queries.GetCategoryWithNumberProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
@@ -72,9 +77,26 @@ namespace OceanaAura.Web.Controllers
             _mediator = mediator;
             this.webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
-            return View();
+            var ProductNumber = await _mediator.Send(new ProductQuery());
+            var OrderNumber  = await _mediator.Send(new OrdersQuery());
+            var FeedbackNumber = await _mediator.Send(new GetAllFeedbacksQuery());
+            var InvoiceNumber = await _mediator.Send(new InvoicesQuery());
+            var OrdersWithStatus = await _mediator.Send(new GetOrdersWithStatusQuery());
+            var CategoryWithNumberProduct = await _mediator.Send(new GetCategoryWithNumberProductQuery());
+
+            var DashboardVM = new DashboardVM()
+            {
+                ProductNumber = ProductNumber.Count(),
+                OrderNumber = OrderNumber.Count(),
+                FeedbackNumber = FeedbackNumber.Count(),
+                InvoiceNumber = InvoiceNumber.Count(),
+                OrdersWithStatus = OrdersWithStatus,
+                CategoryWithNumberProduct = CategoryWithNumberProduct
+
+            };
+            return View(DashboardVM);
         }
         public async Task<IActionResult> Logout()
         {

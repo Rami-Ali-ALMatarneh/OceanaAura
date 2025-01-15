@@ -45,6 +45,26 @@ namespace OceanaAura.Web.Controllers
             this.calculateOrder = calculateOrder;
         }
 
+        [HttpPost]
+        public IActionResult SetLanguage(string culture)
+        {
+            // Save the selected culture in the session
+            HttpContext.Session.SetString("SelectedLanguage", culture);
+
+            // Redirect to the previous page or home page
+            return Json(new { success = true });
+        }
+
+        private string GetSelectedLanguageFromSession()
+        {
+            var selectedLanguage = HttpContext.Session.GetString("SelectedLanguage");
+            if (string.IsNullOrEmpty(selectedLanguage))
+            {
+                selectedLanguage = "en"; // Default to English if not set
+            }
+            return selectedLanguage;
+        }
+
         private string GetSelectedRegionFromSession()
         {
             var selectedRegion = HttpContext.Session.GetString("SelectedRegionPage");
@@ -76,6 +96,7 @@ namespace OceanaAura.Web.Controllers
             }
             return regions;
         }
+
         [HttpPost]
         public IActionResult RemoveFromCart(int orderNumber)
         {
@@ -85,7 +106,6 @@ namespace OceanaAura.Web.Controllers
             HttpContext.Session.SetObjectAsJson("CartSummaryList", cart);
 
             return Json(new { success = true }); // Respond with success for the AJAX request
-
         }
 
         public async Task<IActionResult> Index()
@@ -93,6 +113,7 @@ namespace OceanaAura.Web.Controllers
             var VisibilityFeedback = await _mediator.Send(new GetIsShowFeedbackQuery());
             var VisibilityFeedbackVM = _mapper.Map<List<VisibilityFeedbackVM>>(VisibilityFeedback);
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
 
             var categories = await _mediator.Send(new CategoriesQuery());
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
@@ -112,7 +133,6 @@ namespace OceanaAura.Web.Controllers
             ViewBag.ProductCategory = categoriesVM;
             ViewBag.VisibilityFeedback = VisibilityFeedbackVM;
 
-            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
 
             return View();
@@ -127,8 +147,9 @@ namespace OceanaAura.Web.Controllers
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
 
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
-            return View();
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
 
+            return View();
         }
 
         [HttpPost]
@@ -139,6 +160,7 @@ namespace OceanaAura.Web.Controllers
             ViewBag.Regions = regionsVM;
 
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
 
             if (ModelState.IsValid)
             {
@@ -166,6 +188,7 @@ namespace OceanaAura.Web.Controllers
 
             ViewBag.Products = productsVM;
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
 
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
@@ -198,6 +221,7 @@ namespace OceanaAura.Web.Controllers
             ViewBag.Colors = colorsVM;
             ViewBag.ProductCategory = categoriesVM;
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
             ViewBag.CartSummaryList = GetCartSummaryFromSession(ViewBag.SelectedRegionPage);
 
             return View();
@@ -210,12 +234,14 @@ namespace OceanaAura.Web.Controllers
 
             return Json(new { success = true }); // Respond with success for the AJAX request
         }
+
         [HttpPost]
         public IActionResult SubOrderRequest([FromForm] SubOrderDetails subOrderDetails)
         {
             HttpContext.Session.SetString("SubOrderDetails", JsonConvert.SerializeObject(subOrderDetails));
             return Json(new { success = true }); // Respond with success for the AJAX request
         }
+
         [HttpGet]
         [Route("order")]
         public async Task<IActionResult> Order(string Details)
@@ -225,29 +251,30 @@ namespace OceanaAura.Web.Controllers
             ViewBag.Colors = colorsVM;
 
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
+
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
+
             if (Details == "SubOrderDetails")
             {
                 var SubOrderDetailsJson = HttpContext.Session.GetString("SubOrderDetails");
                 var SubOrderDetails = SubOrderDetailsJson != null ? JsonConvert.DeserializeObject<SubOrderDetails>(SubOrderDetailsJson) : null;
 
-
                 // Fetch payment options and map to ViewModel
                 var payments = await _mediator.Send(new PaymentQuery());
                 var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
                 ViewBag.Payments = paymentsVM.FirstOrDefault(x => x.NameEn == "Delivery Fee" || x.NameAr == "رسوم التوصيل");
-                // Attempt to find the selected region by its Id
-                //var selectedRegion = regionsVM.FirstOrDefault(x => x.Id == regionId)?.NameEn ?? "Jordan";
+
                 var orderSummary = await calculateOrder.SubOrderSummaryDetails(SubOrderDetails, ViewBag.SelectedRegionPage);
                 ViewBag.OrderSummary = orderSummary; // Pass OrderSummary to the view
             }
+
             if (Details == "OrderDetails")
             {
                 var orderDetailsJson = HttpContext.Session.GetString("OrderDetails");
                 var orderDetails = orderDetailsJson != null ? JsonConvert.DeserializeObject<OrderDetails>(orderDetailsJson) : null;
-
 
                 // Fetch payment options and map to ViewModel
                 var payments = await _mediator.Send(new PaymentQuery());
@@ -256,31 +283,28 @@ namespace OceanaAura.Web.Controllers
 
                 ViewBag.SelectedColorId = orderDetails?.ColorId;
 
-                // Attempt to find the selected region by its Id
-                //var selectedRegion = regionsVM.FirstOrDefault(x => x.Id == regionId)?.NameEn ?? "Jordan";
                 var orderSummary = await calculateOrder.NormalOrderSummaryDetails(orderDetails, ViewBag.SelectedRegionPage);
                 ViewBag.OrderSummary = orderSummary; // Pass OrderSummary to the view
-
             }
+
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
             ViewBag.Details = Details;
+
             return View();
         }
+
         [HttpPost]
         [Route("order")]
         public async Task<IActionResult> Order(OrderRequest orderRequest)
         {
-
-
             // Set ViewBag data similar to the GET request
+            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
 
             // Fetch color options
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;
-
-            // Set the selected region from session
-            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession();
 
             // Fetch regions
             var regions = await _mediator.Send(new RegionQuery());
@@ -320,6 +344,7 @@ namespace OceanaAura.Web.Controllers
                 var orderSummary = await calculateOrder.NormalOrderSummaryDetails(orderDetails, ViewBag.SelectedRegionPage);
                 ViewBag.OrderSummary = orderSummary;
             }
+
             ViewBag.Details = orderRequest.Details;
             // Set cart summary from session
             ViewBag.CartSummaryList = GetCartSummaryFromSession(ViewBag.SelectedRegionPage);
@@ -364,10 +389,12 @@ namespace OceanaAura.Web.Controllers
             // Filter the list based on the specified region
             return cartSummaryList.Where(order => order.Region == region).ToList();
         }
+
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromForm] CartItem cartItem, string Details)
         {
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
 
             // Create a list to hold cart summaries if it doesn't exist in session
             var cartSummaryList = HttpContext.Session.GetObjectFromJson<List<OrderSummary>>("CartSummaryList") ?? new List<OrderSummary>();
@@ -438,24 +465,30 @@ namespace OceanaAura.Web.Controllers
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;
+
             var payments = await _mediator.Send(new PaymentQuery());
             var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
             ViewBag.Payments = paymentsVM.FirstOrDefault(x => x.NameEn == "Delivery Fee" || x.NameAr == "رسوم التوصيل");
 
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
+
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
-            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
+
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> BuyCart(CartsOrder cartsOrder)
         {
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;
+
             var payments = await _mediator.Send(new PaymentQuery());
             var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
             ViewBag.Payments = paymentsVM.FirstOrDefault(x => x.NameEn == "Delivery Fee" || x.NameAr == "رسوم التوصيل");
@@ -463,8 +496,12 @@ namespace OceanaAura.Web.Controllers
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
+
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
+
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
+
             if (!ModelState.IsValid)
             {
                 return View(cartsOrder);
@@ -491,28 +528,32 @@ namespace OceanaAura.Web.Controllers
                     carts.Add(cart);
                 }
             }
+
             OrderDto.carts = carts;
             OrderDto.Region = ViewBag.SelectedRegionPage;
             var result = await _mediator.Send(OrderDto);
+
             if (result > 0)
             {
-                await _mediator.Send(new InvoiceCommand(){ OrderId = result});
+                await _mediator.Send(new InvoiceCommand() { OrderId = result });
                 ViewBag.OrderSuccessMessage = "Your order has been placed successfully!";
+
                 var cartSession = HttpContext.Session.GetObjectFromJson<List<OrderSummary>>("CartSummaryList") ?? new List<OrderSummary>();
                 // Remove all items from the cart
                 cartSession.Clear();
                 HttpContext.Session.SetObjectAsJson("CartSummaryList", cartSession);
-                ViewBag.ShowSweetAlert = "Your order has been placed successfully and send to your email"; // Set this based on your condition
+
+                ViewBag.ShowSweetAlert = "Your order has been placed successfully and sent to your email"; // Set this based on your condition
                 return View();
             }
             else
             {
-                ViewBag.ShowSweetAlert = "Invalid to make order, please try again."; // Set this based on your condition
+                ViewBag.ShowSweetAlert = "Failed to place the order. Please try again."; // Set this based on your condition
                 return View();
             }
         }
-        [HttpPost]
 
+        [HttpPost]
         public async Task<IActionResult> AddFeedback([FromBody] AddFeedbackCommand command)
         {
             if (!ModelState.IsValid)
@@ -525,7 +566,4 @@ namespace OceanaAura.Web.Controllers
             return Ok(new { FeedbackId = feedbackId }); // Return the created feedback ID
         }
     }
-
-
 }
-

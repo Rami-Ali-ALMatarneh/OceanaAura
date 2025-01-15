@@ -10,8 +10,11 @@
     var color = new OceanaAura.Web.Models.Colors.ColorVM();
     var OrderSuccessMessage = ViewBag.OrderSuccessMessage;
     var TotalOrder = OrderSummary.Total;
-    if(OrderSummary.ColorId!=0){
-            color = colors.FirstOrDefault(x => x.Id == OrderSummary.ColorId);
+    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
+
+    if (OrderSummary.ColorId != 0)
+    {
+        color = colors.FirstOrDefault(x => x.Id == OrderSummary.ColorId);
     }
 }
 @model OceanaAura.Web.Models.BuyVM.OrderRequest
@@ -21,15 +24,42 @@
         <!-- Left Side: Contact, Delivery, Shipping, Payment -->
         <div class="col-lg-8">
             <div class="p-4 bg-light">
-                <h3 class="mb-4">Checkout</h3>
+                <h3 class="mb-4">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>الدفع</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Checkout</span> <!-- English text -->
+                    }
+                </h3>
 
                 <!-- Contact Section -->
-                <h4>Contact</h4>
+                <h4>
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>معلومات الاتصال</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Contact</span> <!-- English text -->
+                    }
+                </h4>
                 <form method="post" asp-action="Order" asp-controller="Home" class="needs-validation" novalidate>
                     <!-- Contact Section -->
                     <div class="form-group mb-4">
-                        <input type="email" class="form-control" id="Email" name="Email" asp-for="Email" placeholder="Email" required>
-                        <div class="invalid-feedback">Please provide a valid email.</div>
+                        <input type="email" class="form-control" id="Email" name="Email" asp-for="Email" placeholder="@(SelectedLanguage == "ar" ? "البريد الإلكتروني" : "Email")" required>
+                        <div class="invalid-feedback">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>يرجى تقديم بريد إلكتروني صالح.</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Please provide a valid email.</span> <!-- English text -->
+                            }
+                        </div>
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
@@ -46,94 +76,225 @@
                     <input type="hidden" name="Region" value="@SelectedRegionPage" />
 
                     <!-- Delivery Section -->
-                    <h4>Delivery</h4>
+                    <h4>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>التوصيل</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Delivery</span> <!-- English text -->
+                        }
+                    </h4>
                     <div class="form-group mb-3">
-                        <label for="CountryRegion">Country/Region</label>
+                        <label for="CountryRegion">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>البلد/المنطقة</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Country/Region</span> <!-- English text -->
+                            }
+                        </label>
                         <select id="CountryRegion" class="form-select" asp-for="RegionId" required>
                             @foreach (var region in Regions)
                             {
                                 <option value="@region.Id" data-region-name="@region.NameEn">@region.NameEn</option>
                             }
                         </select>
-                        <div class="invalid-feedback">Please select your country or region.</div>
+                        <div class="invalid-feedback">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>يرجى اختيار بلدك أو منطقتك.</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Please select your country or region.</span> <!-- English text -->
+                            }
+                        </div>
                         <span asp-validation-for="RegionId" class="text-danger"></span>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" id="FirstName" name="FirstName" asp-for="FirstName" placeholder="First name" required>
-                            <div class="invalid-feedback">First name is required.</div>
+                            <input type="text" class="form-control" id="FirstName" name="FirstName" asp-for="FirstName" placeholder="@(SelectedLanguage == "ar" ? "الاسم الأول" : "First name")" required>
+                            <div class="invalid-feedback">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الاسم الأول مطلوب.</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>First name is required.</span> <!-- English text -->
+                                }
+                            </div>
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" id="LastName" name="LastName" asp-for="LastName" placeholder="Last name" required>
-                            <div class="invalid-feedback">Last name is required.</div>
+                            <input type="text" class="form-control" id="LastName" name="LastName" asp-for="LastName" placeholder="@(SelectedLanguage == "ar" ? "الاسم الأخير" : "Last name")" required>
+                            <div class="invalid-feedback">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الاسم الأخير مطلوب.</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Last name is required.</span> <!-- English text -->
+                                }
+                            </div>
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-group mb-3">
-                        <input type="text" class="form-control" id="Address" name="Address" asp-for="Address" placeholder="Address" required>
-                        <div class="invalid-feedback">Please enter your address.</div>
+                        <input type="text" class="form-control" id="Address" name="Address" asp-for="Address" placeholder="@(SelectedLanguage == "ar" ? "العنوان" : "Address")" required>
+                        <div class="invalid-feedback">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>يرجى إدخال عنوانك.</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Please enter your address.</span> <!-- English text -->
+                            }
+                        </div>
                         <span asp-validation-for="Address" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                        <input type="text" class="form-control" id="Apartment" name="Apartment" asp-for="Apartment" placeholder="Apartment, suite, etc. (optional)">
+                        <input type="text" class="form-control" id="Apartment" name="Apartment" asp-for="Apartment" placeholder="@(SelectedLanguage == "ar" ? "الشقة، الطابق، إلخ. (اختياري)" : "Apartment, suite, etc. (optional)")">
                         <span asp-validation-for="Apartment" class="text-danger"></span>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" id="City" name="City" asp-for="City" placeholder="City" required>
-                            <div class="invalid-feedback">City is required.</div>
+                            <input type="text" class="form-control" id="City" name="City" asp-for="City" placeholder="@(SelectedLanguage == "ar" ? "المدينة" : "City")" required>
+                            <div class="invalid-feedback">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>المدينة مطلوبة.</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>City is required.</span> <!-- English text -->
+                                }
+                            </div>
                             <span asp-validation-for="City" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" id="PostalCode" name="PostalCode" asp-for="PostalCode" placeholder="Postal code (optional)">
+                            <input type="text" class="form-control" id="PostalCode" name="PostalCode" asp-for="PostalCode" placeholder="@(SelectedLanguage == "ar" ? "الرمز البريدي (اختياري)" : "Postal code (optional)")">
                             <span asp-validation-for="PostalCode" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-group mb-4">
-                        <input type="tel" class="form-control" id="Phone" name="PhoneNumber" asp-for="PhoneNumber" placeholder="Phone number" required>
-                        <div class="invalid-feedback">Please provide a phone number.</div>
+                        <input type="tel" class="form-control" id="Phone" name="PhoneNumber" asp-for="PhoneNumber" placeholder="@(SelectedLanguage == "ar" ? "رقم الهاتف" : "Phone number")" required>
+                        <div class="invalid-feedback">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>يرجى تقديم رقم هاتف.</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Please provide a phone number.</span> <!-- English text -->
+                            }
+                        </div>
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
 
                     <!-- Payment Section -->
-                    <h4>Payment</h4>
+                    <h4>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الدفع</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Payment</span> <!-- English text -->
+                        }
+                    </h4>
                     <div class="form-check mb-4">
                         <input class="form-check-input m-0" type="radio" name="PaymentId" asp-for="PaymentId" id="Payment" value="@Payments?.Id" checked>
-                        <label class="form-check-label" for="Payment">Delivery Fee</label>
+                        <label class="form-check-label" for="Payment">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>رسوم التوصيل</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Delivery Fee</span> <!-- English text -->
+                            }
+                        </label>
                     </div>
 
-                    <button type="submit" class="btn btn-dark btn-lg btn-block mt-3">Complete Order</button>
+                    <button type="submit" class="btn btn-dark btn-lg btn-block mt-3">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>إكمال الطلب</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Complete Order</span> <!-- English text -->
+                        }
+                    </button>
                 </form>
-
             </div>
         </div>
 
         <!-- Right Side: Order Summary -->
         <div class="col-lg-4 mt-4 mt-lg-0">
             <div class="p-4 bg-light">
-                <h4 class="mb-3">Order Summary</h4>
+                <h4 class="mb-3">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>ملخص الطلب</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Order Summary</span> <!-- English text -->
+                    }
+                </h4>
 
                 <!-- Order Item -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
                         <!-- Product Image -->
                         <img src="~/File/ColorsImg/@OrderSummary.Product.ImageUrls[0]" alt="@OrderSummary.Product.Name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                        <div>
-                            <p class="mb-1">Name: @OrderSummary.Product.Name</p>
-                             @if(OrderSummary.ColorId!=0){
+                        <div class="m-3">
+                            <p class="mb-1">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الاسم: @OrderSummary.Product.Name</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Name: @OrderSummary.Product.Name</span> <!-- English text -->
+                                }
+                            </p>
+                            @if (OrderSummary.ColorId != 0)
+                            {
                                 <small class="text-muted">
-                                    Color: @color.NameEn
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        <span>اللون: @color.NameEn</span> <!-- Arabic text -->
+                                    }
+                                    else
+                                    {
+                                        <span>Color: @color.NameEn</span> <!-- English text -->
+                                    }
                                 </small>
                                 <br />
-                             }
+                            }
                             <small class="text-muted">
-                                Quantity: @OrderSummary.Quantity
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الكمية: @OrderSummary.Quantity</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Quantity: @OrderSummary.Quantity</span> <!-- English text -->
+                                }
                             </small>
                         </div>
                     </div>
@@ -141,18 +302,45 @@
 
                 <!-- Subtotal, Shipping, and Total -->
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>Subtotal</span>
+                    <span>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>المجموع الفرعي</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Subtotal</span> <!-- English text -->
+                        }
+                    </span>
                     <span>@OrderSummary.ProductPrice</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span>Payment</span>
+                    <span>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الدفع</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Payment</span> <!-- English text -->
+                        }
+                    </span>
                     <span id="ShippingFee">@OrderSummary.deliveryFee</span>
                 </div>
 
                 <hr class="my-3">
 
                 <div class="d-flex justify-content-between align-items-center font-weight-bold">
-                    <span>Total</span>
+                    <span>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الإجمالي</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Total</span> <!-- English text -->
+                        }
+                    </span>
                     @if (SelectedRegionPage == "Jordan")
                     {
                         <span id="TotalFee">JOD @TotalOrder</span>
@@ -166,15 +354,16 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (OrderSuccessMessage != null)
 {
     <script>
         Swal.fire({
             icon: 'success',
-            title: 'Success!',
+            title: '@(SelectedLanguage == "ar" ? "نجاح!" : "Success!")',
             text: '@OrderSuccessMessage',
-            confirmButtonText: 'OK'
+            confirmButtonText: '@(SelectedLanguage == "ar" ? "موافق" : "OK")'
         }).then(function() {
             // Redirect to the desired page after user clicks "OK"
             window.location.href = '@Url.Action("Store", "Home")';
