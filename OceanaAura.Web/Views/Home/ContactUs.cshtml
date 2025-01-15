@@ -1,19 +1,78 @@
 ﻿@{
     Layout = "../Shared/_Layout.cshtml";
     var CartSummaryList = ViewBag.CartSummaryList;
-
+    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
 }
 @model OceanaAura.Web.Models.Home.ContactUsVM
+<style>
+    html[dir="rtl"] body {
+        text-align: right;
+        direction: rtl;
+    }
 
+    html[dir="rtl"] .form-control {
+        text-align: right;
+    }
+
+    html[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+        float: right;
+        padding-left: 0.5rem;
+        padding-right: 0;
+    }
+
+    html[dir="rtl"] .me-4 {
+        margin-left: 1.5rem !important;
+        margin-right: 0 !important;
+    }
+
+    html[dir="rtl"] .text-start {
+        text-align: right !important;
+    }
+
+    html[dir="rtl"] .text-end {
+        text-align: left !important;
+    }
+</style>
 <!-- Navigation Header -->
 <div class="container my-4">
     <div class="row">
         <div class="col d-flex justify-content-center align-items-center flex-column">
-            <h1 class="display-6">Contact Us</h1>
+            <h1 class="display-6">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>اتصل بنا</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>Contact Us</span> <!-- English text -->
+                }
+            </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
-                    <li class="breadcrumb-item active"><a asp-action="ContactUs" asp-controller="Home">Contact Us</a></li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" asp-controller="Home">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>الرئيسية</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Home</span> <!-- English text -->
+                            }
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        <a asp-action="ContactUs" asp-controller="Home">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>اتصل بنا</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Contact Us</span> <!-- English text -->
+                            }
+                        </a>
+                    </li>
                 </ol>
             </nav>
         </div>
@@ -25,9 +84,25 @@
     <div class="row shadow-lg">
         <!-- Contact Info Section -->
         <div class="col-md-5 p-4 bg-light">
-            <h6 class="h4 mb-3 text-black">Let's get in touch</h6>
+            <h6 class="h4 mb-3 text-black">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>لنتواصل</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>Let's get in touch</span> <!-- English text -->
+                }
+            </h6>
             <p class="mb-4">
-                The best way to contact us is to use our contact form below. Please fill out all of the required fields and we will get back to you as soon as possible.
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>أفضل طريقة للتواصل معنا هي استخدام نموذج الاتصال أدناه. يرجى ملء جميع الحقول المطلوبة وسنرد عليك في أقرب وقت ممكن.</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>The best way to contact us is to use our contact form below. Please fill out all of the required fields and we will get back to you as soon as possible.</span> <!-- English text -->
+                }
             </p>
 
             <!-- Phone Section -->
@@ -36,7 +111,16 @@
                     <i class="fas fa-phone-alt" style="font-size: 32px;"></i>
                 </div>
                 <div>
-                    <h5 class="mb-2">Phone</h5>
+                    <h5 class="mb-2">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الهاتف</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Phone</span> <!-- English text -->
+                        }
+                    </h5>
                     <p class="mb-0">
                         <a class="link-secondary text-decoration-none" href="tel:+1235235598">+1235 2355 98</a>
                     </p>
@@ -49,7 +133,16 @@
                     <i class="fas fa-envelope" style="font-size: 32px;"></i>
                 </div>
                 <div>
-                    <h5 class="mb-2">Email</h5>
+                    <h5 class="mb-2">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>البريد الإلكتروني</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Email</span> <!-- English text -->
+                        }
+                    </h5>
                     <p class="mb-0">
                         <a class="link-secondary text-decoration-none" href="mailto:info@yoursite.com">info@yoursite.com</a>
                     </p>
@@ -62,7 +155,16 @@
                     <i class="fas fa-globe" style="font-size: 32px;"></i>
                 </div>
                 <div>
-                    <h5 class="mb-2">Website</h5>
+                    <h5 class="mb-2">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الموقع الإلكتروني</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Website</span> <!-- English text -->
+                        }
+                    </h5>
                     <p class="mb-0">
                         <a class="link-secondary text-decoration-none" href="https://www.yoursite.com" target="_blank">yoursite.com</a>
                     </p>
@@ -72,31 +174,85 @@
 
         <!-- Contact Form -->
         <div class="col-md-7 bg-white p-4">
-            <h5>Get in touch</h5>
+            <h5>
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>تواصل معنا</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>Get in touch</span> <!-- English text -->
+                }
+            </h5>
             <form asp-action="ContactUs" asp-controller="Home" method="post">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="Name" class="form-label">Name</label>
-                        <input type="text" id="Name" class="form-control" placeholder="Name" asp-for="Name" />
+                        <label for="Name" class="form-label">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>الاسم</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Name</span> <!-- English text -->
+                            }
+                        </label>
+                        <input type="text" id="Name" class="form-control" placeholder="@(SelectedLanguage == "ar" ? "الاسم" : "Name")" asp-for="Name" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="Email" class="form-label">Email Address</label>
-                        <input type="email" id="Email" class="form-control" placeholder="Email" asp-for="Email" />
+                        <label for="Email" class="form-label">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>البريد الإلكتروني</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Email Address</span> <!-- English text -->
+                            }
+                        </label>
+                        <input type="email" id="Email" class="form-control" placeholder="@(SelectedLanguage == "ar" ? "البريد الإلكتروني" : "Email")" asp-for="Email" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="Subject" class="form-label">Subject</label>
-                    <input type="text" id="Subject" class="form-control" placeholder="Subject" asp-for="Subject" />
+                    <label for="Subject" class="form-label">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الموضوع</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Subject</span> <!-- English text -->
+                        }
+                    </label>
+                    <input type="text" id="Subject" class="form-control" placeholder="@(SelectedLanguage == "ar" ? "الموضوع" : "Subject")" asp-for="Subject" />
                     <span asp-validation-for="Subject" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label for="Message" class="form-label">Message</label>
-                    <textarea id="Message" class="form-control" rows="4" placeholder="Message" asp-for="Message"></textarea>
+                    <label for="Message" class="form-label">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الرسالة</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Message</span> <!-- English text -->
+                        }
+                    </label>
+                    <textarea id="Message" class="form-control" rows="4" placeholder="@(SelectedLanguage == "ar" ? "الرسالة" : "Message")" asp-for="Message"></textarea>
                     <span asp-validation-for="Message" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-dark mt-4">Send Message</button>
+                <button type="submit" class="btn btn-dark mt-4">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>إرسال الرسالة</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Send Message</span> <!-- English text -->
+                    }
+                </button>
             </form>
         </div>
     </div>
@@ -108,19 +264,20 @@
         <script>
             Swal.fire({
                 icon: 'success',
-                title: 'Message Sent',
+                title: '@(SelectedLanguage == "ar" ? "تم الإرسال" : "Message Sent")',
                 text: '@TempData["SuccessMessage"]',
-                confirmButtonText: 'OK'
+                confirmButtonText: '@(SelectedLanguage == "ar" ? "موافق" : "OK")'
             });
         </script>
     }
-    @if (TempData["ErrorMessage"] != null){
+    @if (TempData["ErrorMessage"] != null)
+    {
         <script>
             Swal.fire({
                 icon: 'error',
-                title: 'Message Sent',
+                title: '@(SelectedLanguage == "ar" ? "خطأ" : "Error")',
                 text: '@TempData["ErrorMessage"]',
-                confirmButtonText: 'OK'
+                confirmButtonText: '@(SelectedLanguage == "ar" ? "موافق" : "OK")'
             });
         </script>
     }

@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "../Shared/_AdminLayout.cshtml";
 }
+@model OceanaAura.Web.Models.Auth.DashboardVM
 <!-- Include Flatpickr CSS -->
 <!-- Begin Page Content -->
 <div class="w-100">
@@ -13,390 +14,140 @@
     <!-- Content Row -->
     <div class="row">
 
-        <!-- Earnings (Monthly) Card Example -->
+        <!-- Invoice Number Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Earnings (Monthly)
+                                Invoice Number
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.InvoiceNumber</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="fas fa-file-invoice fa-2x text-primary"></i> <!-- Updated Icon -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Earnings (Monthly) Card Example -->
+        <!-- Product Number Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Earnings (Annual)
+                                Product Number
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ProductNumber</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            <i class="fas fa-box-open fa-2x text-success"></i> <!-- Updated Icon -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Earnings (Monthly) Card Example -->
+        <!-- Feedback Number Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Tasks
+                                Feedback Number
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                             style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">@Model.FeedbackNumber</div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            <i class="fas fa-comment-dots fa-2x text-info"></i> <!-- Updated Icon -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Requests Card Example -->
+        <!-- Order Number Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Requests
+                                Order Number
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OrderNumber</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                            <i class="fas fa-shopping-cart fa-2x text-warning"></i> <!-- Updated Icon -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 <!-- Content Row -->
 <div class="row equal-height">
-    <!-- Bar Chart Section with Filter Form -->
-    <div class="col-xl-6 col-12 col-md-12 col-lg-12">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                <!-- Filter Form -->
-                <form id="filterForm" class="d-flex justify-content-between align-content-center">
-                    <div>
-                        <select class="form-control" id="yearSelect">
-                            <!-- Dynamically filled options -->
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-primary" style="margin-left:10px">Filter</button>
-                </form>
-            </div>
-            <div class="card-body h-100 d-flex align-items-center justify-content-center">
-                <!-- Bar Chart -->
-                <div class="chart-bar d-flex justify-content-center align-items-center">
-                    <canvas id="myBarChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Pie Chart -->
-    <div class="col-xl-3 col-12 col-lg-6 col-md-6 mb-4">
-        <div class="card shadow h-100">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Dropdown Header:</div>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+
+		<!-- Pie Chart -->
+		<div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-4">
+            <div class="card shadow h-100">
+                <div class="card">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Orders by Status</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ordersPieChart" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
                     </div>
                 </div>
-            </div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-                <div class="chart-pie">
-                    <canvas id="myPieChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+		</div>
 
-    <!-- Project Card Example -->
-    <div class="col-xl-3 col-lg-6 col-md-6 col-12 mb-4">
-        <div class="card shadow h-100">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Products</h6>
-            </div>
-            <div class="card-body" style="padding-bottom: 1.5rem;">
-                <h4 class="small font-weight-bold pt-2">
-                    Water Bottles <span class="float-right">20%</span>
-                </h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                        aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+
+        <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Products by Category</h6>
                 </div>
-                <h4 class="small font-weight-bold pt-2">
-                    Sales Tracking <span class="float-right">40%</span>
-                </h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                        aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold pt-2">
-                    Customer Database <span class="float-right">60%</span>
-                </h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" style="width: 60%"
-                        aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold pt-2">
-                    Payout Details <span class="float-right">80%</span>
-                </h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                        aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold pt-2">
-                    Account Setup <span class="float-right">Complete!</span>
-                </h4>
-                <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-            <a class="dropdown-item text-center text-body border-top pt-2  hover-underline" href="#">read more</a>
-        </div>
-    </div>
- <div class="col-12 col-lg-12 col-xxl-12 mb-4">
-        <div class="card shadow h-100">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Top Selling Products</h6>
-            </div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-               <table class="table table-borderless my-0">
-									<thead>
-										<tr>
-											<th>Name</th>
-											<th class="d-none d-xxl-table-cell">Company</th>
-											<th class="d-none d-xl-table-cell">Assigned</th>
-											<th class="d-none d-xl-table-cell text-end">Orders</th>
-											<th>Status</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="d-flex">
-													<div class="flex-shrink-0">
-														<div class="bg-light rounded-2">
-															<img class="p-2 img-profile" src="https://via.placeholder.com/150">
-														</div>
-													</div>
-													<div class="flex-grow-1 ms-3">
-														<strong>Aurora</strong>
-														<div class="text-muted">
-															UI Kit
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="d-none d-xxl-table-cell">
-												<strong>Lechters</strong>
-												<div class="text-muted">
-													Real Estate
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell">
-												<strong>Vanessa Tucker</strong>
-												<div class="text-muted">
-													HTML, JS, React
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell text-end">
-												520
-											</td>
-											<td>
-												<span class="badge badge-success-light">In progress</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex">
-													<div class="flex-shrink-0">
-														<div class="bg-light rounded-2">
-															<img class="p-2 img-profile"  src="https://via.placeholder.com/150">
-														</div>
-													</div>
-													<div class="flex-grow-1 ms-3">
-														<strong>Bender</strong>
-														<div class="text-muted">
-															Dashboard
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="d-none d-xxl-table-cell">
-												<strong>Cellophane Transportation</strong>
-												<div class="text-muted">
-													Transportation
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell">
-												<strong>William Harris</strong>
-												<div class="text-muted">
-													HTML, JS, Vue
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell text-end">
-												240
-											</td>
-											<td>
-												<span class="badge badge-warning-light">Paused</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex">
-													<div class="flex-shrink-0">
-														<div class="bg-light rounded-2">
-															<img class="p-2 img-profile" src="https://via.placeholder.com/150" />
-														</div>
-													</div>
-													<div class="flex-grow-1 ms-3">
-														<strong>Camelot</strong>
-														<div class="text-muted">
-															Dashboard
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="d-none d-xxl-table-cell">
-												<strong>Clemens</strong>
-												<div class="text-muted">
-													Insurance
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell">
-												<strong>Darwin</strong>
-												<div class="text-muted">
-													HTML, JS, Laravel
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell text-end">
-												180
-											</td>
-											<td>
-												<span class="badge badge-success-light">In progress</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex">
-													<div class="flex-shrink-0">
-														<div class="bg-light rounded-2">
-															<img class="p-2 img-profile" src="https://via.placeholder.com/150">
-														</div>
-													</div>
-													<div class="flex-grow-1 ms-3">
-														<strong>Edison</strong>
-														<div class="text-muted">
-															UI Kit
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="d-none d-xxl-table-cell">
-												<strong>Affinity Investment Group</strong>
-												<div class="text-muted">
-													Finance
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell">
-												<strong>Vanessa Tucker</strong>
-												<div class="text-muted">
-													HTML, JS, React
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell text-end">
-												410
-											</td>
-											<td>
-												<span class="badge badge-danger-light">Cancelled</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex">
-													<div class="flex-shrink-0">
-														<div class="bg-light rounded-2">
-															<img class="p-2 img-profile" src="https://via.placeholder.com/150">
-														</div>
-													</div>
-													<div class="flex-grow-1 ms-3">
-														<strong>Fusion</strong>
-														<div class="text-muted">
-															Dashboard
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="d-none d-xxl-table-cell">
-												<strong>Konsili</strong>
-												<div class="text-muted">
-													Retail
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell">
-												<strong>Christina Mason</strong>
-												<div class="text-muted">
-													HTML, JS, Vue
-												</div>
-											</td>
-											<td class="d-none d-xl-table-cell text-end">
-												250
-											</td>
-											<td>
-												<span class="badge badge-warning-light">Paused</span>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var category in Model.CategoryWithNumberProduct.Take(4))
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-left-primary shadow-sm h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    @category.CategoryName
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">@category.NumberOfProductInCategory Products</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-boxes fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-            <a class="dropdown-item text-center text-body border-top pt-2  hover-underline" href="#">read more</a>
+                            </div>
+                        }
+                    </div>
+                    @if (Model.CategoryWithNumberProduct.Count > 4)
+                    {
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-primary btn-sm">View More</a>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -405,91 +156,48 @@
 <!-- Include Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!-- /.container-fluid -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    // Example data for earnings (Bar Chart)
-    const exampleEarningsData = {
-        2024: [65, 59, 80, 81, 56, 55, 40, 67, 87, 92, 104, 45],
-        2023: [45, 50, 70, 65, 75, 80, 60, 85, 90, 100, 110, 120],
-        2022: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140]
-    };
-
-    // Set the initial data for current year
-    let currentData = exampleEarningsData[2024];
-
-    // Initialize Bar Chart
-    const ctx = document.getElementById('myBarChart').getContext('2d');
-    const myBarChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: [{
-                label: 'Earnings',
-                data: currentData, // This is where we pass the data based on the selected year
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // Function to get earnings data based on selected year
-    function getEarningsData(year) {
-        return exampleEarningsData[year] || exampleEarningsData[2024];
-    }
-
-    // Event listener for the year filter form submission
-    document.getElementById('filterForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent form submission and page reload
-        const selectedYear = document.getElementById('yearSelect').value;
-        currentData = getEarningsData(selectedYear); // Get the data for the selected year
-        myBarChart.data.datasets[0].data = currentData; // Update the chart data
-        myBarChart.update(); // Re-render the chart
-    });
-
-    // Populate the year select dropdown
-    const yearSelect = document.getElementById('yearSelect');
-    Object.keys(exampleEarningsData).forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-    });
-
-    // Initialize Pie Chart
-    const pieCtx = document.getElementById('myPieChart').getContext('2d');
-    new Chart(pieCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Direct', 'Social', 'Referral'], // Labels for the segments
-            datasets: [{
-                data: [55, 30, 15], // Data for the pie chart segments
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'], // Segment colors
-                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-                hoverBorderColor: '#ffffff',
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        usePointStyle: true,
-                    },
-                },
-            },
-        },
-    });
-
-</script>
+	document.addEventListener("DOMContentLoaded", function () {
+		var ctx = document.getElementById('ordersPieChart').getContext('2d');
+		var ordersPieChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: @Html.Raw(Json.Serialize(Model.OrdersWithStatus.Select(x => x.StatusName))),
+				datasets: [{
+					data: @Html.Raw(Json.Serialize(Model.OrdersWithStatus.Select(x => x.NumberOfOrders))),
+					backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+					],
+					borderColor: [
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'Orders by Status'
+					}
+				}
+			}
+		});
+	});
+	</script>

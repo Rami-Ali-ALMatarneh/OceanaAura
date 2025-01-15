@@ -2,12 +2,23 @@
     ViewData["Title"] = "Store Page";
     var Products = ViewBag.Products as List<OceanaAura.Web.Models.Products.ProductVMHome>;
     var CartSummaryList = ViewBag.CartSummaryList;
-
+    var SelectedLanguage = ViewBag.SelectedLanguage;
 }
+
 <section id="related-products" class="related-products product-carousel py-2 position-relative overflow-hidden">
     <div class="container">
         <div class="d-flex flex-wrap justify-content-center align-items-center mt-5 mb-3">
-            <h4 class="text-uppercase m-0 d-flex align-items-center">Our Products</h4>
+            <!-- Dynamic Heading Based on Language -->
+            <h4 class="text-uppercase m-0 d-flex align-items-center">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>منتجاتنا</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>Our Products</span> <!-- English text -->
+                }
+            </h4>
         </div>
         <div class="row g-4">
             <!-- Bootstrap grid with spacing between rows and columns -->
@@ -25,7 +36,17 @@
                             <h5 class="card-title text-uppercase fs-5 mt-3">
                                 <a>@Product.Name</a>
                             </h5>
-                            <a asp-action="Buy" asp-controller="Home" asp-route-id="@Product.Id" class="btn btn-dark text-uppercase mt-2">Buy Now</a>
+                            <!-- Dynamic Button Text Based on Language -->
+                            <a asp-action="Buy" asp-controller="Home" asp-route-id="@Product.Id" class="btn btn-dark text-uppercase mt-2">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اشتري الآن</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Buy Now</span> <!-- English text -->
+                                }
+                            </a>
                         </div>
                     </div>
                 </div>
