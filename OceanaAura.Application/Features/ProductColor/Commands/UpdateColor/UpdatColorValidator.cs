@@ -35,7 +35,7 @@ namespace OceanaAura.Application.Features.ProductColor.Commands.UpdateColor
 
             RuleFor(p => p.ImageUrl)
                .NotEmpty().WithMessage("{PropertyName} is required")
-                .Must(BeAValidImageUrl).WithMessage("{PropertyName} must have a valid image file extension (.jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp)")
+                .Must(BeAValidImageUrl).WithMessage("{PropertyName} must have a valid image file extension (.jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp, .svg, .jfif)")
                .MaximumLength(1000).WithMessage("{PropertyName} can have a maximum of {MaxLength} characters");
             _unitOfWork = unitOfWork;
         }
@@ -43,7 +43,7 @@ namespace OceanaAura.Application.Features.ProductColor.Commands.UpdateColor
         {
             if (string.IsNullOrWhiteSpace(url))
                 return false;
-            var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp)$";
+            var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp|svg|jfif)$";
             return Regex.IsMatch(url.ToLower(), imageExtensionsPattern, RegexOptions.IgnoreCase);
         }
         private async Task<bool> EnUnique(string name,int id, CancellationToken token)

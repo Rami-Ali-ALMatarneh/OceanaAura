@@ -97,6 +97,7 @@
                     <th>Size</th>
                     <th>Color</th>
                     <th>Quantity</th>
+                    <th>Lid</th>
                     <th>Price</th>
                 </tr>
             </thead>
@@ -108,6 +109,7 @@
                         <td>@cart.SizeName</td>
                         <td>@cart.ColorName</td>
                         <td>@cart.Quantity</td>
+                        <td>@cart.LidName - @cart.LidPriceString</td>
                         <td>@cart.ProductPriceString</td>
                     </tr>
                 }
@@ -117,6 +119,7 @@
         <div class="invoice-total">
             <p><strong>Subtotal:</strong> @Model.SubTotalString</p>
             <p><strong>Shipping:</strong> @Model.ShippingString</p>
+            <p><strong>Lids Price:</strong> @Model.TotalLidPriceString</p>
             <p><strong>Total Price:</strong> @Model.TotalPriceString</p>
         </div>
     </div>

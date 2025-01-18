@@ -23,6 +23,8 @@ namespace OceanaAura.Web.Models.Products
         public string? PriceUSD { get; set; }
         public int CategoryId { get; set; }
         public bool IsBottleCategory => CategoryId == 900;
+        public bool IsMagneticLid { get; set; }
+
     }
     public class ProductVMalidator : AbstractValidator<ProductVM>
     {
@@ -46,19 +48,19 @@ namespace OceanaAura.Web.Models.Products
             RuleFor(p => p.PriceJOR)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .Must(BeValidPrice).WithMessage("Price JOR must be a valid number greater than zero.")
-                .When(p => !p.IsBottleCategory && p.CategoryId!=0);
+                .When(p => !p.IsBottleCategory && p.CategoryId != 0 && p.IsMagneticLid); // Only validate if IsMagneticLid is true
 
             RuleFor(p => p.PriceUAE)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .Must(BeValidPrice).WithMessage("Price UAE must be a valid number greater than zero.")
-                .When(p => !p.IsBottleCategory && p.CategoryId != 0);
+                .When(p => !p.IsBottleCategory && p.CategoryId != 0 && p.IsMagneticLid); // Only validate if IsMagneticLid is true
 
             RuleFor(p => p.PriceUSD)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .Must(BeValidPrice).WithMessage("Price USD must be a valid number greater than zero.")
-                .When(p => !p.IsBottleCategory && p.CategoryId != 0);
+                .When(p => !p.IsBottleCategory && p.CategoryId != 0 && p.IsMagneticLid); // Only validate if IsMagneticLid is true
 
-          
+
 
             RuleFor(p => p.CategoryId)
                 .NotEmpty().WithMessage("Product Category is required.")
@@ -79,7 +81,7 @@ namespace OceanaAura.Web.Models.Products
 
         private bool HaveValidImagesExtension(IFormFile file)
         {
-            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif",".svg" };
             var fileExtension = System.IO.Path.GetExtension(file.FileName).ToLower();
             return validExtensions.Contains(fileExtension);
         }

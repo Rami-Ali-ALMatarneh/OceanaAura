@@ -12,8 +12,8 @@ using OceanaAura.Identity.DbContext;
 namespace OceanaAura.Identity.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    [Migration("20250109093337_identity")]
-    partial class identity
+    [Migration("20250118142459_Identity")]
+    partial class Identity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -258,7 +258,7 @@ namespace OceanaAura.Identity.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ebc289e2-44a1-489e-bc9b-d7cf762e4702",
+                            ConcurrencyStamp = "4c31f443-e97a-4ba3-81dc-700d2174b2cf",
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "opscode59@gmail.com",
@@ -266,9 +266,9 @@ namespace OceanaAura.Identity.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "OPSCODE59@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAECBdRhaZ7n/LTb3W1/NRWzHZqOq3yBLEVQ3qaxuTa78pZeYXbWosFfuDQmq7qWduBw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEESVm9M11/8g/k5Zlo39HL6s9/0jKI45VcnbZKzaQZn6uzHVlTnQKlqpiBnASol4QQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a9ae4d10-7a57-4c49-9351-59cb4acd6c2d",
+                            SecurityStamp = "9807d018-b248-4e8b-9efd-4d6e14123880",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

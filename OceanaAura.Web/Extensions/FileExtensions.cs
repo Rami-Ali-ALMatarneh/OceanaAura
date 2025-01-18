@@ -39,7 +39,7 @@ namespace OceanaAura.Web.Extensions
         public static string TypeOfFile(string FileName)
         {
             string type = null;
-            string regex = @"^.+\.(jpg|jpeg|png|gif|bmp|tiff|webp)$";
+            string regex = @"^.+\.(jpg|jpeg|png|gif|bmp|tiff|webp|svg)$";
             if (Regex.IsMatch(FileName.ToLower(), regex))
             {
                 int indexDot = FileName.LastIndexOf(".");

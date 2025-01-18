@@ -20,6 +20,7 @@ namespace OceanaAura.Web.Models.Products
         public int CategoryId { get; set; }
         public List<CategoryVM> categoryVMs { get; set; }
         public bool IsBottleCategory => CategoryId == 900;
+        public bool IsHide { get; set; }
     }
     public class EditProductVMalidator : AbstractValidator<EditProductVM>
     {
@@ -67,6 +68,9 @@ namespace OceanaAura.Web.Models.Products
             RuleForEach(p => p.Images)
                        .Must(HaveValidImagesExtension).WithMessage("Each image must have a valid file extension. Supported formats: .jpg, .jpeg, .png, .gif, jfif.")
                        .When(p => p.Images != null && p.Images.Any());
+            // Add validation for IsHide if necessary
+            RuleFor(p => p.IsHide)
+                .NotNull().WithMessage("{PropertyName} is required.");
         }
 
         private bool BeValidPrice(string price)

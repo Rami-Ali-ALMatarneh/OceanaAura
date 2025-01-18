@@ -11,6 +11,9 @@ namespace OceanaAura.Web.Models.BuyVM
         public decimal Shipping { get; set; }
         public decimal ProductPrice { get; set; }
         public decimal TotalPrice { get; set; }
+        public int LidId { get; set; }
+        public string LidName { get; set; }
+        public decimal LidPrice { get; set; }
         public int Quantity { get; set; }
         public int ColorId { get; set; }
         public int PaymentId { get; set; }

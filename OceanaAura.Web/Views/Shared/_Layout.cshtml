@@ -61,6 +61,10 @@
         html[dir="rtl"] .text-end {
             text-align: left !important;
         }
+        /* Custom CSS to make hover text color black in dropdowns */
+        .dropdown-item:hover {
+            color: black !important; /* Force black text on hover */
+        }
     </style>
 </head>
 <body class="homepage">
@@ -189,13 +193,16 @@
     </svg>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-light text-uppercase fs-6 p-3 border-bottom align-items-center">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-uppercase fs-6 p-3 border-bottom align-items-center">
         <div class="container-fluid">
             <div class="row justify-content-between align-items-center w-100">
                 <!-- Logo Section -->
                 <div class="col-auto d-flex justify-content-center align-items-center">
-                    <a class="navbar-brand text-white" asp-action="Index" asp-controller="Home">
-                        <p class="m-0 text-black" style="font-size:20px">Oceana Aura</p>
+                    <a class="navbar-brand text-white d-flex align-items-center" asp-action="Index" asp-controller="Home">
+                        <!-- Logo Image -->
+                        <img src="~/File/HomeImg/logo.png" style="height: 70px;">
+                        <!-- Logo Text -->
+                        <p class="m-0 text-white" style="font-size:20px">Oceana Aura</p>
                     </a>
                 </div>
 
@@ -205,7 +212,7 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                         <div class="offcanvas-header">
                             <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
                                 @if (SelectedLanguage == "ar")
@@ -222,7 +229,7 @@
                         <div class="offcanvas-body">
                             <ul class="navbar-nav justify-content-end flex-grow-1 gap-1 gap-md-5 pe-3">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="Index" asp-controller="Home">
+                                    <a class="nav-link text-white" asp-action="Index" asp-controller="Home">
                                         @if (SelectedLanguage == "ar")
                                         {
                                             <span>الرئيسية</span>
@@ -234,7 +241,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="dropdownShop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="dropdownShop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @if (SelectedLanguage == "ar")
                                         {
                                             <span>المتجر</span>
@@ -244,9 +251,9 @@
                                             <span>Shop</span>
                                         }
                                     </a>
-                                    <ul class="dropdown-menu list-unstyled" aria-labelledby="dropdownShop">
+                                    <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownShop">
                                         <li>
-                                            <a asp-action="Store" asp-controller="Home" class="dropdown-item">
+                                            <a asp-action="Store" asp-controller="Home" class="dropdown-item text-white">
                                                 @if (SelectedLanguage == "ar")
                                                 {
                                                     <span>منتجات المتجر</span>
@@ -258,7 +265,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="index.html" class="dropdown-item">
+                                            <a href="index.html" class="dropdown-item text-white">
                                                 @if (SelectedLanguage == "ar")
                                                 {
                                                     <span>اصنع زجاجتك الخاصة</span>
@@ -272,7 +279,7 @@
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="ContactUs" asp-controller="Home">
+                                    <a class="nav-link text-white" asp-action="ContactUs" asp-controller="Home">
                                         @if (SelectedLanguage == "ar")
                                         {
                                             <span>اتصل بنا</span>
@@ -293,7 +300,7 @@
                     <ul class="list-unstyled d-flex flex-wrap align-items-center m-0">
                         <!-- Language Dropdown -->
                         <li class="nav-item dropdown me-2 mb-2 mb-lg-0">
-                            <a class="nav-link dropdown-toggle" id="dropdownLanguage" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-white" id="dropdownLanguage" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 @if (SelectedLanguage == "en")
                                 {
                                     <span>English</span>
@@ -303,14 +310,14 @@
                                     <span>العربية</span>
                                 }
                             </a>
-                            <ul class="dropdown-menu list-unstyled" aria-labelledby="dropdownLanguage">
+                            <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownLanguage">
                                 <li style="cursor: pointer">
-                                    <a class="dropdown-item d-flex align-items-center" onclick="setSelectedLanguage('en')">
+                                    <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('en')">
                                         <span>English</span>
                                     </a>
                                 </li>
                                 <li style="cursor: pointer">
-                                    <a class="dropdown-item d-flex align-items-center" onclick="setSelectedLanguage('ar')">
+                                    <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('ar')">
                                         <span>العربية</span>
                                     </a>
                                 </li>
@@ -319,7 +326,7 @@
 
                         <!-- Region Dropdown -->
                         <li class="nav-item dropdown me-2 mb-2 mb-lg-0">
-                            <a class="nav-link dropdown-toggle" id="dropdownRegion" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-white" id="dropdownRegion" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 @if (SelectedRegion == "Jordan")
                                 {
                                     <span>JOD</span>
@@ -329,13 +336,13 @@
                                     <span>AED</span>
                                 }
                             </a>
-                            <ul class="dropdown-menu list-unstyled" aria-labelledby="dropdownRegion">
+                            <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownRegion">
                                 @if (ViewBag.Regions != null)
                                 {
                                     foreach (var region in ViewBag.Regions as List<RegionVM>)
                                     {
                                         <li style="cursor: pointer">
-                                            <a class="dropdown-item d-flex align-items-center" onclick="setSelectedRegion('@region.NameEn')">
+                                            <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedRegion('@region.NameEn')">
                                                 @if (region.NameEn == "Jordan")
                                                 {
                                                     <img src="~/File/Images/Flag_of_Jordan.svg" alt="Jordan" style="width: 20px; height: 15px;" class="me-2"> <span>JOD</span>
@@ -353,7 +360,7 @@
 
                         <!-- Cart Button -->
                         <li class="me-2 mb-2 mb-lg-0">
-                            <a href="index.html" class="text-uppercase" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                            <a href="index.html" class="text-uppercase text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                                 @if (SelectedLanguage == "ar")
                                 {
                                     <span>السلة</span>
@@ -370,7 +377,6 @@
             </div>
         </div>
     </nav>
-
     <!-- Cart Offcanvas -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCartLabel">
         <div class="offcanvas-header">
@@ -387,7 +393,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <ul class="list-group mb-3">
+            <ul class="list-group mb-3" style="padding-right:0">
                 @if (CartSummaryList.Count() > 0)
                 {
                     foreach (var cart in CartSummaryList)
@@ -397,11 +403,11 @@
                                 <span>@cart.Product.Name</span>
                                 @if (SelectedRegion == "Jordan")
                                 {
-                                    <span>المجموع: JOD @cart.ProductPrice </span>
+                                    <span>: JOD @cart.ProductPrice </span>
                                 }
                                 else if (SelectedRegion == "United Arab Emirates")
                                 {
-                                    <span>المجموع: AED @cart.ProductPrice</span>
+                                    <span>: AED @cart.ProductPrice</span>
                                 }
                             </div>
                             <button class="btn btn-sm btn-danger" onclick="removeFromCart(@cart.OrderNumber)">

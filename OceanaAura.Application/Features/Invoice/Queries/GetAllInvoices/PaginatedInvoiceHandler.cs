@@ -134,7 +134,10 @@ namespace OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices
                         ColorId = cart.ColorId,
                         ProductPrice = cart.ProductPrice,
                         Shipping = cart.Shipping,
-                        TotalPrice = cart.TotalPrice
+                        TotalPrice = cart.TotalPrice,
+                        LidName = cart.LidName,
+                        LidPrice = cart.LidPrice,
+                        LidId = (int)cart.LidId
                     }).ToList()
                 };
 
@@ -142,6 +145,7 @@ namespace OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices
                 invoiceDetails.CreateOn = invoice.CreateOn.ToString("dd/MM/yyyy hh:mm tt");
                 invoiceDetails.InvoiceId = invoice.InvoiceId;
                 var invoiceDetailsDto = _mapper.Map<InvoiceDetailsDto>(invoiceDetails);
+                invoiceDetailsDto.TotalLidPriceString = invoiceDetails.TotalLidPriceString;
                 invoiceDetailsDtos.Add(invoiceDetailsDto);
             }
 

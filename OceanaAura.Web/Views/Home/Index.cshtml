@@ -8,7 +8,6 @@
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
     var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
 }
-
 <!-- Billboard Section -->
 <section id="billboard" class="bg-light py-5 pt-1">
     <div class="container">
@@ -202,7 +201,8 @@
 </section>
 
 <!-- Products Section -->
-<section id="related-products" class="related-products product-carousel py-5 position-relative overflow-hidden">
+@if(Products.Count>0){
+    <section id="related-products" class="related-products product-carousel py-5 position-relative overflow-hidden">
     <div class="container">
         <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-3">
             <h4 class="text-uppercase m-0 d-flex align-item">
@@ -261,9 +261,10 @@
     </div>
 </section>
 
+}
 <!-- Bottle Sizes Section -->
 <section class="bottle-sizes py-5 bg-light">
-    <div class="container">
+    <div class="container text-center">
         <h3 class="section-title text-center mb-5 display-4 text-uppercase position-relative">
             @if (SelectedLanguage == "ar")
             {
@@ -410,61 +411,67 @@
         </div>
     </div>
 </div>
-<section class="testimonials py-5 bg-light">
-    <div class="section-header text-center mt-5">
-        <h3 class="section-title">
-            @if (SelectedLanguage == "ar")
-            {
-                <span>نحب الإطراء الجيد</span>
-            }
-            else
-            {
-                <span>WE LOVE GOOD COMPLIMENT</span>
-            }
-        </h3>
-    </div>
-    <div class="swiper testimonial-swiper overflow-hidden my-5">
-        <div class="swiper-wrapper d-flex">
-            @functions {
-                public string GenerateStarRating(int rating)
+<!-- start Feedback section  -->
+@if(VisibilityFeedback!=null){
+    <section class="feedback-section py-5 bg-light">
+        <div class="container text-center">
+            <h3 class="section-title text-center mb-5">
+                @if (SelectedLanguage == "ar")
                 {
-                    var fullStars = rating;
-                    var emptyStars = 5 - rating;
-
-                    var stars = new System.Text.StringBuilder();
-                    for (int i = 0; i < fullStars; i++)
-                    {
-                        stars.Append("<i class='fas fa-star'></i>"); // Full star
-                    }
-                    for (int i = 0; i < emptyStars; i++)
-                    {
-                        stars.Append("<i class='far fa-star'></i>"); // Empty star
-                    }
-
-                    return stars.ToString();
+                    <span>نحب الإطراء الجيد</span>
                 }
-            }
-
-            @foreach (var Feedback in VisibilityFeedback)
-            {
-                <div class="swiper-slide">
-                    <div class="testimonial-item text-center">
-                        <blockquote>
-                            <p>“@Feedback.Content”</p>
-                            <div class="review-title text-uppercase">
-                                <p>Submitted by: @Feedback.Email</p>
-                                <div class="star-rating">
-                                    @Html.Raw(GenerateStarRating(Feedback.Rating))
+                else
+                {
+                    <span>WE LOVE GOOD COMPLIMENT</span>
+                }
+            </h3>
+            <div id="feedbackCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    @for (int i = 0; i < VisibilityFeedback.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#feedbackCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                    }
+                </div>
+                <div class="carousel-inner">
+                    @foreach (var feedback in VisibilityFeedback.Select((value, index) => new { value, index }))
+                    {
+                        <div class="carousel-item w-100 mb-5 @(feedback.index == 0 ? "active" : "")">
+                            <div class="card feedback-card mx-auto w-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="quote-icon mb-3">
+                                        <i class="fas fa-quote-left fa-2x text-primary"></i>
+                                    </div>
+                                    <p class="feedback-content mb-4">@feedback.value.Content</p>
+                                    <div class="rating-stars mb-3">
+                                        @for (int i = 0; i < feedback.value.Rating; i++)
+                                        {
+                                            <span class="star">★</span>
+                                        }
+                                        @for (int i = feedback.value.Rating; i < 5; i++)
+                                        {
+                                            <span class="star">☆</span>
+                                        }
+                                    </div>
+                                    <small class="text-muted">Submitted by: @feedback.value.Email</small>
                                 </div>
                             </div>
-                        </blockquote>
-                    </div>
+                        </div>
+                    }
                 </div>
-            }
+                <button class="carousel-control-prev" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden p-3">Next</span>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="testimonial-swiper-pagination d-flex justify-content-center mb-5"></div>
-</section>
+    </section>
+
+}
+<!-- end Feedback section  -->
 <section class="instagram position-relative">
     <div class="d-flex justify-content-center w-100 position-absolute bottom-0 z-1">
         <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank" class="btn btn-dark px-5">
@@ -538,3 +545,74 @@
         });
     });
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .feedback-section {
+        background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
+        padding: 60px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        position: relative;
+        display: inline-block;
+    }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: black;
+            margin: 10px auto 0;
+        }
+
+    .feedback-card {
+        max-width: 600px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        background: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .feedback-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+    .quote-icon {
+        color: black;
+        opacity: 0.8;
+    }
+
+    .feedback-content {
+        font-size: 1.2rem;
+        color: #555;
+        line-height: 1.8;
+    }
+
+    .rating-stars {
+        font-size: 1.5rem;
+        color: #ffc107;
+    }
+
+        .rating-stars .star {
+            margin: 0 2px;
+        }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: black;
+        border-radius: 50%;
+        padding: 15px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 5%;
+    }
+</style>

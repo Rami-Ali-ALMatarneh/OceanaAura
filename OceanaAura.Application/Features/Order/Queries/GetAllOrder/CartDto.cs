@@ -16,6 +16,11 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
 
         //  منتج البيع القالب 
         public int Quantity { get; set; }
+        public int LidId { get; set; }
+        public string LidName { get; set; }
+        public decimal LidPrice { get; set; }
+        public string LidPriceString { get; set; }
+
         public int SizeId { get; set; }
         public string SizeName { get; set; }
         public int ColorId { get; set; }

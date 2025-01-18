@@ -29,7 +29,6 @@ namespace OceanaAura.Application.Features.Product.Queries.GetProduct
         {
             // Query the database
             var products = await _unitOfWork.productRepository.GetAllProducts();
-
             // convert data objects to DTO objects
             var data = _mapper.Map<List<ProductHomeDto>>(products);
 

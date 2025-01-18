@@ -7,6 +7,7 @@
     var Colors = ViewBag.Colors as List<OceanaAura.Web.Models.Colors.ColorVM>;
     var showSweetAlert = ViewBag.ShowSweetAlert; // Get the ViewBag condition
     var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
+    var TotalLidPricing = CartSummaryList.Sum(x => x.LidPrice);
 }
 @model OceanaAura.Web.Models.BuyVM.CartsOrder
 
@@ -64,35 +65,23 @@
                             <span>Delivery</span> <!-- English text -->
                         }
                     </h4>
-                    <div class="form-group mb-3">
-                        <label for="CountryRegion">
-                            @if (SelectedLanguage == "ar")
+                    <select id="CountryRegion" class="form-select mt-3 mb-3" asp-for="RegionId" required disabled>
+                        @foreach (var region in Regions)
+                        {
+                            if (SelectedRegionPage == "Jordan" && region.NameEn == "Jordan")
                             {
-                                <span>البلد/المنطقة</span> <!-- Arabic text -->
+                                <option value="@region.Id" data-region-name="@region.NameEn" selected>@region.NameEn</option>
+                            }
+                            else if (SelectedRegionPage == "United Arab Emirates" && region.NameEn == "United Arab Emirates")
+                            {
+                                <option value="@region.Id" data-region-name="@region.NameEn" selected>@region.NameEn</option>
                             }
                             else
-                            {
-                                <span>Country/Region</span> <!-- English text -->
-                            }
-                        </label>
-                        <select id="CountryRegion" class="form-select" asp-for="RegionId" required>
-                            @foreach (var region in Regions)
                             {
                                 <option value="@region.Id" data-region-name="@region.NameEn">@region.NameEn</option>
                             }
-                        </select>
-                        <div class="invalid-feedback">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>يرجى اختيار بلدك أو منطقتك.</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Please select your country or region.</span> <!-- English text -->
-                            }
-                        </div>
-                        <span asp-validation-for="RegionId" class="text-danger"></span>
-                    </div>
+                        }
+                    </select>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -205,8 +194,127 @@
                             }
                         </label>
                     </div>
+                    <!-- Refund and Exchange Policy -->
+                    <div class="card mb-4 bg-transparent border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-black fw-bold">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span class="fw-bold">سياسة الاسترجاع والاستبدال</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Refund and Exchange Policy</span> <!-- English text -->
+                                }
+                            </h5>
+                            <p class="card-text">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>
+                                        نريدك أن تكون راضيًا عن شرائك. توضح سياسة الاسترجاع والاستبدال هذه الظروف التي يمكنك بموجبها طلب استرداد أو استبدال.
+                                        <br><br>
+                                        <strong>الأهلية للاسترداد:</strong>
+                                        <br>
+                                        - يجب إرجاع المنتجات أو الخدمات خلال يومين من الشراء.
+                                        <br>
+                                        - يجب أن تكون المنتجات غير مستخدمة وبحالتها الأصلية.
+                                        <br>
+                                        - قد لا تكون المنتجات الرقمية قابلة للاسترداد إلا إذا كانت معيبة.
+                                        <br><br>
+                                        <strong>كيفية طلب الاسترداد:</strong> اتصل بفريق خدمة العملاء على [معلومات الاتصال الخاصة بك] مع تفاصيل طلبك وسبب الاسترداد. سيقوم فريقنا بتقييم طلبك.
+                                        <br><br>
+                                        <strong>عملية الاسترداد:</strong> بمجرد الموافقة، سيتم إصدار المبالغ المستردة إلى طريقة الدفع الأصلية. عادةً ما تستغرق المبالغ المستردة [عدد] أيام عمل للمعالجة.
+                                    </span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>
+                                        We want you to be satisfied with your purchase. This Refund and Exchange Policy outlines the circumstances under which you can request a refund or exchange.
+                                        <br><br>
+                                        <strong>Eligibility for Refund:</strong>
+                                        <br>
+                                        - Products or services must be returned within 2 days of purchase.
+                                        <br>
+                                        - Products must be unused and in original condition.
+                                        <br>
+                                        - Digital products may be non-refundable unless defective.
+                                        <br><br>
+                                        <strong>How to Request a Refund:</strong> Contact our customer service team at [Your Contact Info] with your order details and reason for refund. Our team will assess your request.
+                                        <br><br>
+                                        <strong>Refund Process:</strong> Once approved, refunds will be issued to the original payment method. Refunds typically take [number] business days to process.
+                                    </span> <!-- English text -->
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Shipping Policy -->
+                    <div class="card mb-4 bg-transparent border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-black fw-bold">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>سياسة الشحن</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Shipping Policy</span> <!-- English text -->
+                                }
+                            </h5>
+                            <p class="card-text">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>
+                                        <strong>وقت الشحن:</strong> يتم معالجة الطلبات خلال 1-3 أيام عمل. تختلف أوقات الشحن حسب موقعك، عادةً بين [X] و [Y] يومًا.
+                                        <br><br>
+                                        <strong>رسوم الشحن:</strong>
+                                        <br>
+                                        - شحن مجاني للطلبات التي تزيد عن [$X].
+                                        <br>
+                                        - رسوم شحن قياسية بقيمة [$X] تنطبق على الطلبات الأقل من [$X].
+                                    </span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>
+                                        <strong>Shipping Time:</strong> Orders are processed within 1-3 business days. Shipping times vary depending on your location, typically between [X] and [Y] days.
+                                        <br><br>
+                                        <strong>Shipping Fees:</strong>
+                                        <br>
+                                        - Free shipping on orders over [$X].
+                                        <br>
+                                        - Standard shipping fee of [$X] applies to orders under [$X].
+                                    </span> <!-- English text -->
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Checkbox for Agreement -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input m-0" type="checkbox" id="agreeToPolicy" required>
+                        <label class="form-check-label" for="agreeToPolicy">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>أوافق على سياسة الاسترجاع والاستبدال وسياسة الشحن.</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>I agree to the Refund and Exchange Policy and Shipping Policy.</span> <!-- English text -->
+                            }
+                        </label>
+                        <div class="invalid-feedback">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>يجب الموافقة على السياسات قبل إكمال الطلب.</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>You must agree to the policies before completing the order.</span> <!-- English text -->
+                            }
+                        </div>
+                    </div>
 
-                    <button type="submit" class="btn btn-dark btn-lg btn-block mt-3">
+                    <!-- Complete Order Button -->
+                    <button type="submit" class="btn btn-dark btn-lg btn-block mt-3" id="completeOrderButton" disabled>
                         @if (SelectedLanguage == "ar")
                         {
                             <span>إكمال الطلب</span> <!-- Arabic text -->
@@ -280,6 +388,43 @@
                                         <span>Quantity: @orderSummary.Quantity</span> <!-- English text -->
                                     }
                                 </small>
+                                <br />
+
+                                <small class="text-muted">
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        <span>الغطاء: @orderSummary.LidName - </span>
+                                        @if (SelectedRegionPage == "Jordan")
+                                        {
+                                            <span>JOD @orderSummary.LidPrice</span>
+                                        }
+                                        else if (SelectedRegionPage == "United Arab Emirates")
+                                        {
+                                            <span>AED @orderSummary.LidPrice</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@orderSummary.LidPrice</span> <!-- Fallback if no region is selected -->
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>Lid: @orderSummary.LidName - </span>
+                                        @if (SelectedRegionPage == "Jordan")
+                                        {
+                                            <span>JOD @orderSummary.LidPrice</span>
+                                        }
+                                        else if (SelectedRegionPage == "United Arab Emirates")
+                                        {
+                                            <span>AED @orderSummary.LidPrice</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@orderSummary.LidPrice</span> <!-- Fallback if no region is selected -->
+                                        }
+                                    }
+                                </small>
+                                <br />
                             </div>
                         </div>
                         <!-- Delete Button -->
@@ -303,22 +448,30 @@
                         </span>
                         <span>@orderSummary.ProductPrice</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span>
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>الدفع</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Payment</span> <!-- English text -->
-                            }
-                        </span>
-                        <span>@orderSummary.deliveryFee</span>
-                    </div>
-                    <hr class="my-3">
                 }
+                <hr class="my-3">
 
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الدفع</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Payment</span> <!-- English text -->
+                        }
+                    </span>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        <span>@Payments.PriceJOR</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+
+                        <span>@Payments.PriceUAE</span>
+                    }
+                </div>
                 <!-- Total Calculation -->
                 <div class="d-flex justify-content-between align-items-center font-weight-bold">
                     <span>
@@ -333,12 +486,12 @@
                     </span>
                     @if (SelectedRegionPage == "Jordan")
                     {
-                        var TotalPriceJOD = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity)) + @Payments.PriceJOR;
+                        var TotalPriceJOD = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity)) + @Payments.PriceJOR + TotalLidPricing;
                         <span id="TotalFee">JOD @TotalPriceJOD</span>
                     }
                     @if (SelectedRegionPage == "United Arab Emirates")
                     {
-                        var TotalPriceAED = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity)) + @Payments.PriceUAE;
+                        var TotalPriceAED = @CartSummaryList.Sum(x => (x.ProductPrice * x.Quantity)) + @Payments.PriceUAE + TotalLidPricing;
 
                         <span id="TotalFee">AED @TotalPriceAED</span>
                     }
@@ -368,3 +521,9 @@
         });
     </script>
 }
+<script>
+    // Enable/disable the "Complete Order" button based on checkbox state
+    document.getElementById('agreeToPolicy').addEventListener('change', function() {
+        document.getElementById('completeOrderButton').disabled = !this.checked;
+    });
+</script>

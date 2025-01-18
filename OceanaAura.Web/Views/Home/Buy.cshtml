@@ -4,9 +4,40 @@
     var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
     var categories = (List<OceanaAura.Web.Models.Lookup.CategoryVM>)ViewBag.ProductCategory;
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
+    var Lids = (List<OceanaAura.Web.Models.BuyVM.LidsVM>)ViewBag.Lids;
     var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
     var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
 }
+
+<style>
+    .color-circle {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: 5px;
+        cursor: pointer;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+        .color-circle.sold-out {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .sold-out-mark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        color: gray;
+        font-weight: bold;
+    }
+</style>
+
 <div class="container mt-5">
     @if (product != null)
     {
@@ -123,11 +154,62 @@
                             </select>
                         </div>
 
+                        <!-- Lids Dropdown -->
+                        <div class="mb-3">
+                            <label for="lid" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اختر الغطاء</span> <!-- Arabic text -->
+                                }
+                                else
+                                {
+                                    <span>Select Lid</span> <!-- English text -->
+                                }
+                            </label>
+                            <select class="form-select" id="lid" name="LidId">
+                                <option value="" disabled selected>
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        <span>اختر الغطاء</span> <!-- Arabic text -->
+                                    }
+                                    else
+                                    {
+                                        <span>Select Lid</span> <!-- English text -->
+                                    }
+                                </option>
+                                @foreach (var lid in Lids)
+                                {
+                                    <option value="@lid.Id">
+                                        <span>@lid.Name</span>
+                                        @if (lid.IsMagneticLid)
+                                        {
+                                            if (SelectedRegionPage == "Jordan")
+                                            {
+                                                <span> - @lid.PriceJOR JOD</span>
+                                            }
+                                            else if (SelectedRegionPage == "United Arab Emirates")
+                                            {
+                                                <span> - @lid.PriceUAE AED</span>
+                                            }
+                                        }
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
                         <!-- Colors -->
                         @foreach (var color in colors)
                         {
-                            <label class="color-circle @(color.Id == ViewBag.SelectedColorId ? "selected" : "")" style="background-image: url('/File/ColorsImg/@color.ImageURL');">
-                                <input type="radio" name="ColorId" value="@color.Id" @(color.Id == ViewBag.SelectedColorId ? "checked" : "") style="display: none;" />
+                            <label class="color-circle @(color.Id == ViewBag.SelectedColorId ? "selected" : "") @(color.IsSoldOut ? "sold-out" : "")"
+                                   style="background-image: url('/File/ColorsImg/@color.ImageURL');">
+                                <input type="radio" name="ColorId" value="@color.Id"
+                                @(color.Id == ViewBag.SelectedColorId ? "checked" : "")
+                                       style="display: none;"
+                                @(color.IsSoldOut ? "disabled" : "") />
+                                @if (color.IsSoldOut)
+                                {
+                                    <span class="sold-out-mark">X</span>
+                                }
                             </label>
                         }
 
@@ -404,6 +486,16 @@
                     sizeDropdown.removeClass('is-invalid');
                 }
 
+                // Validate lid (only for bottle category)
+                const lidDropdown = $(form).find('#lid');
+                if (lidDropdown.length && !lidDropdown.val()) {
+                    isValid = false;
+                    showError(form, '@(SelectedLanguage == "ar" ? "يرجى اختيار الغطاء." : "Please select a lid.")');
+                    lidDropdown.addClass('is-invalid');
+                } else {
+                    lidDropdown.removeClass('is-invalid');
+                }
+
                 // Validate color
                 const colorInput = $(form).find('input[name="ColorId"]');
                 if (colorInput.length && !$('input[name="ColorId"]:checked').val()) {
@@ -569,6 +661,28 @@
                         showError(form, '@(SelectedLanguage == "ar" ? "حدث خطأ أثناء إرسال التعليق. يرجى المحاولة مرة أخرى." : "An error occurred while submitting feedback. Please try again.")');
                     }
                 });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Handle click on color circles
+            $('.color-circle').on('click', function () {
+                // Check if the clicked color is sold out
+                if ($(this).hasClass('sold-out')) {
+                    const selectedLanguage = '@SelectedLanguage'; // Assuming SelectedLanguage is a Razor variable
+                    const message = selectedLanguage === 'ar' ? 'هذا اللون غير متوفر!' : 'This color is sold out!';
+                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                    // Show SweetAlert notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                        confirmButtonText: confirmButtonText
+                    });
+                }
             });
         });
     </script>
