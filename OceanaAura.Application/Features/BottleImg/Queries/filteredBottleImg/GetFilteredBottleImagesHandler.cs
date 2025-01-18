@@ -23,9 +23,8 @@ namespace OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImg
 
         public async Task<List<BottleImgDto>> Handle(GetFilteredBottleImagesQuery request, CancellationToken cancellationToken)
         {
-            // Start with the base query
-            var query = _unitOfWork.GenericRepository<OceanaAura.Domain.Entities.BottleImg>().Query();
-
+            var BottleImgRepository = _unitOfWork.GenericRepository<Domain.Entities.BottleImg>();
+            var query = BottleImgRepository.Query();
             // Apply filters step-by-step
             if (request.SizeId > 0)
             {
@@ -44,7 +43,8 @@ namespace OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImg
 
             // Execute the query and map to DTO
             var filteredImages = await query.ToListAsync(cancellationToken);
-            return _mapper.Map<List<BottleImgDto>>(filteredImages);
+           var BottleImgsDto = _mapper.Map<List<BottleImgDto>>(filteredImages);
+            return BottleImgsDto;
         }
     }
 }

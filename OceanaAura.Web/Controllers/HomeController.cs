@@ -19,6 +19,7 @@ using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Domain.Entities;
 using OceanaAura.Domain.Entities.ProductsEntities;
+using OceanaAura.Domain.Enums;
 using OceanaAura.Web.Extensions;
 using OceanaAura.Web.Models;
 using OceanaAura.Web.Models.BuyVM;
@@ -204,7 +205,7 @@ namespace OceanaAura.Web.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GetFilteredBottleImages(int sizeId, int? lidId, int? colorId)
+        public async Task<IActionResult> GetFilteredBottleImages(int productId, int sizeId, int? lidId, int? colorId)
         {
             try
             {
@@ -216,13 +217,24 @@ namespace OceanaAura.Web.Controllers
                     ColorId = colorId
                 });
 
-                // Return the filtered images as JSON
+                // If no filtered images are found, return the default product images
+                if (filteredImages == null || !filteredImages.Any())
+                {
+                    var product = await _mediator.Send(new ProductDetailsQuery(productId));
+                    var defaultImages = product.ImageUrls.Select(imgUrl => new BottleImgDto
+                    {
+                        ImgUrl = imgUrl
+                    }).ToList();
+
+                    return Ok(defaultImages);
+                }
+
                 return Ok(filteredImages);
             }
             catch (Exception ex)
             {
                 // Log the error and return a 500 status code
-                return StatusCode(500, "An error occurred while fetching filtered bottle images.");
+                return StatusCode(500, ex.Message);
             }
         }
         public async Task<IActionResult> Buy(int id)
@@ -342,7 +354,14 @@ namespace OceanaAura.Web.Controllers
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
-
+            if(ViewBag.SelectedRegionPage == "Jordan")
+            {
+                orderRequest.RegionId = regions.FirstOrDefault(x => x.NameEn == "Jordan").Id;
+            }
+            if (ViewBag.SelectedRegionPage == "United Arab Emirates")
+            {
+                orderRequest.RegionId = regions.FirstOrDefault(x => x.NameEn == "United Arab Emirates").Id;
+            }
             // If Details is "SubOrderDetails", set SubOrderDetails and OrderSummary
             if (orderRequest.Details == "SubOrderDetails")
             {

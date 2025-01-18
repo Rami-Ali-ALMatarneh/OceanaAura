@@ -686,4 +686,64 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            // Function to fetch and update images based on selected filters
+            function updateImages() {
+                const productId = @product.Id; // Get the product ID from the Razor variable
+                const sizeId = $('#size').val();
+                const lidId = $('#lid').val();
+                const colorId = $('input[name="ColorId"]:checked').val();
+
+                // Make an AJAX request to fetch filtered images
+                $.ajax({
+                    url: '@Url.Action("GetFilteredBottleImages", "Home")', // Replace with your controller name
+                    type: 'GET',
+                    data: {
+                        productId: productId, // Pass the productId
+                        sizeId: sizeId,
+                        lidId: lidId,
+                        colorId: colorId
+                    },
+                    success: function (response) {
+                        // Clear existing images
+                        $('#productCarousel .carousel-inner').empty();
+
+                        // If no images are returned, use the default product images
+                        if (response.length === 0) {
+                            const defaultImages = @Html.Raw(Json.Serialize(product.ImageUrls));
+                            defaultImages.forEach((imgUrl, index) => {
+                                const activeClass = index === 0 ? 'active' : '';
+                                $('#productCarousel .carousel-inner').append(`
+                                    <div class="carousel-item ${activeClass}">
+                                        <img src="/File/ColorsImg/${imgUrl}" class="d-block w-100" alt="Product Image">
+                                    </div>
+                                `);
+                            });
+                        } else {
+                            // Add new images to the carousel
+                            response.forEach((img, index) => {
+                                const activeClass = index === 0 ? 'active' : '';
+                                $('#productCarousel .carousel-inner').append(`
+                                    <div class="carousel-item ${activeClass}">
+                                        <img src="/File/ColorsImg/${img.imgUrl}" class="d-block w-100" alt="Product Image">
+                                    </div>
+                                `);
+                            });
+                        }
+
+                        // Reinitialize the carousel if needed
+                        $('#productCarousel').carousel();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching filtered images:', error);
+                    }
+                });
+            }
+
+            // Attach event listeners to filter dropdowns and color circles
+            $('#size, #lid').on('change', updateImages);
+            $('input[name="ColorId"]').on('change', updateImages);
+        });
+    </script>
 }
