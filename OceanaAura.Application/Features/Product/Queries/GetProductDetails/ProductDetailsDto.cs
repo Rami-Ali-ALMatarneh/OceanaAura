@@ -23,5 +23,6 @@ namespace OceanaAura.Application.Features.Product.Queries.GetProductDetails
 
         public int CategoryId { get; set; }
         public LookUpEntity Category { get; set; }
+        public bool IsHide { get; set; }
     }
 }

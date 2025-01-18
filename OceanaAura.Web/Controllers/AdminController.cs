@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using OceanaAura.Application.Contracts.Identity;
 using OceanaAura.Application.Exceptions;
+using OceanaAura.Application.Features.BottleImg.Command.AddBottleImg;
+using OceanaAura.Application.Features.BottleImg.Command.DeleteBottleImg;
+using OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImg;
 using OceanaAura.Application.Features.ContactUs.Commands.DeleteContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
@@ -44,12 +47,15 @@ using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
 using OceanaAura.Application.Features.ProductColor.Commands.DeleteColor;
 using OceanaAura.Application.Features.ProductColor.Commands.UpdateColor;
+using OceanaAura.Application.Features.ProductColor.Commands.UpdateSoldOutColor;
 using OceanaAura.Application.Features.ProductColor.Queries.GetAllProductColors;
 using OceanaAura.Application.Features.ProductSize.Command.AddSize;
 using OceanaAura.Application.Features.ProductSize.Command.DeleteSize;
 using OceanaAura.Application.Features.ProductSize.Queries.GetAllSize;
 using OceanaAura.Application.Models.Identity.Password;
 using OceanaAura.Application.Models.Identity.UserInfo;
+using OceanaAura.Domain.Entities.ProductsEntities;
+using OceanaAura.Domain.Enums;
 using OceanaAura.Web.Extensions;
 using OceanaAura.Web.Models.Auth;
 using OceanaAura.Web.Models.BuyVM;
@@ -59,6 +65,7 @@ using OceanaAura.Web.Models.Products;
 using OceanaAura.Web.Models.Size;
 using System.Drawing;
 using System.Linq;
+using System.Security.Policy;
 
 namespace OceanaAura.Web.Controllers
 {
@@ -353,6 +360,7 @@ namespace OceanaAura.Web.Controllers
 
             var productCommand = _mapper.Map<EditProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
+            productCommand.IsHide = productVM.IsHide;
             var result = await _mediator.Send(productCommand);
             return RedirectToAction("Products", "Admin");
 
@@ -384,7 +392,6 @@ namespace OceanaAura.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the image." });
             }
         }
-
         public async Task<IActionResult> AddProduct()
         {
             var categories = await _mediator.Send(new CategoriesQuery());
@@ -392,7 +399,139 @@ namespace OceanaAura.Web.Controllers
             ViewBag.Categories = CategoriesVM;
             return View();
         }
+        public async Task<IActionResult> AddBottleImg()
+        {
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
 
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+            ViewBag.Colors = colorsVM;
+
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(p => p.CategoryId == (int)LookUpEnums.ProductCategory.Lids).ToList();
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
+            return View();
+        }
+
+        // POST: AddBottleImg
+[HttpPost]
+public async Task<IActionResult> AddBottleImg(AddBottleImg model)
+{
+    // Validate the model
+    var validator = new AddBottleImgValidator();
+    var validationResult = await validator.ValidateAsync(model);
+
+    if (!validationResult.IsValid)
+    {
+        // Add validation errors to ModelState
+        foreach (var error in validationResult.Errors)
+        {
+            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+        }
+
+        // Repopulate ViewBag data for the form
+        var sizes = await _mediator.Send(new SizeQuery());
+        var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+        ViewBag.Sizes = sizesVM;
+
+        var colors = await _mediator.Send(new GetColorQuery());
+        var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+        ViewBag.Colors = colorsVM;
+
+        var products = await _mediator.Send(new ProductQuery());
+        products = products.Where(p => p.CategoryId == (int)LookUpEnums.ProductCategory.Lids).ToList();
+        var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+        ViewBag.Products = productsVM;
+
+        // Return the view with the model and validation errors
+        return View(model);
+    }
+
+    // Process the form data if validation passes
+    if (model.Img != null)
+    {
+        model.ImgUrl = await FileExtensions.ConvertFileToStringAsync(model.Img, webHostEnvironment);
+    }
+
+    var addBottleImgDto = _mapper.Map<AddBottleImgDto>(model);
+    var bottleImgId = await _mediator.Send(addBottleImgDto);
+
+    return RedirectToAction("BottleImg", "Admin");
+}
+        [HttpPost]
+        public async Task<IActionResult> DeleteBottleImg(int id, string imgUrl)
+        {
+            try
+            {
+                // Delete the database record
+                var result = await _mediator.Send(new DeleteBottleImg { BottleImgId = id });
+
+                // Delete the image file from the server
+                if (!string.IsNullOrEmpty(imgUrl))
+                {
+                    FileExtensions.DeleteFileFromFileFolder(imgUrl, webHostEnvironment);
+                }
+
+                return Json(new { success = true, message = "Bottle image deleted successfully." });
+            }
+            catch (NotFoundException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while deleting the bottle image." });
+            }
+        }
+        // GET: BottleImg
+        public async Task<IActionResult> BottleImg()
+        {
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
+
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+            ViewBag.Colors = colorsVM;
+
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(p => p.CategoryId == (int)LookUpEnums.ProductCategory.Lids).ToList();
+
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
+
+            return View();
+        }
+
+        // POST: BottleImg (Fetch paginated data for DataTables)
+        [HttpPost]
+        public async Task<IActionResult> GetAllBottleImg()
+        {
+            // Parse DataTables parameters
+            var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "0");
+            var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+            var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "0");
+
+            // Fetch paginated data using Mediator
+            var (bottleImgs, totalRecords) = await _mediator.Send(new PaginatedBottleImg
+            {
+                Start = start,
+                Length = length
+            });
+            // Prepare JSON response for DataTables
+            var jsonData = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = bottleImgs
+            };
+
+            return Ok(jsonData);
+        }
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductVM productVM)
         {
@@ -432,6 +571,8 @@ namespace OceanaAura.Web.Controllers
 
             var productCommand = _mapper.Map<AddProductCommand>(productVM);
             productCommand.ImageUrls = imageUrls;
+            productCommand.IsMagneticLid = productVM.IsMagneticLid;
+
             var result = await _mediator.Send(productCommand);
             return RedirectToAction("Products", "Admin");
         }
@@ -464,7 +605,29 @@ namespace OceanaAura.Web.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the Product." });
             }
         }
+        [HttpPut]
+        public async Task<IActionResult> UpdateColorSoldOutStatus(int id, bool isSoldOut)
+        {
+            try
+            {
+                var updateColorSoldOutStatusDto = new SoldOutColorCommand
+                {
+                    Id = id,
+                    IsSoldOut = isSoldOut
+                };
 
+                var updatedColorId = await _mediator.Send(updateColorSoldOutStatusDto);
+                return Ok(new { Message = "Color status updated successfully", ColorId = updatedColorId });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred", Details = ex.Message });
+            }
+        }
         public async Task<IActionResult> Colors()
         {
             // Return the view for displaying colors.
@@ -513,6 +676,7 @@ namespace OceanaAura.Web.Controllers
         {
             try
             {
+                colorVM.IsSoldOut = false;
                 // Step 1: Validate the ViewModel using FluentValidation
                 var validator = new ColorVMValidator();
                 var validationResult = await validator.ValidateAsync(colorVM);

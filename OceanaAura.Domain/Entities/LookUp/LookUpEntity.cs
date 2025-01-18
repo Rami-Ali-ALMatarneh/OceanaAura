@@ -15,6 +15,7 @@ namespace OceanaAura.Domain.Entities.LookUp
         public string NameEn { get; set; }
         public string NameAr { get; set; }
         public string? Details { get; set; }
+        public bool IsSoldOut { get; set; } = false;
         public LookUpCategory LookupCategory { get; set; }
         public int LookupCategoryId { get; set; }
     }

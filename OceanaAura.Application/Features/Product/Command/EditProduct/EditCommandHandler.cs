@@ -66,6 +66,7 @@ namespace OceanaAura.Application.Features.Product.Command.EditProduct
                 }
                 await _unitOfWork.GenericRepository<Domain.Entities.Image>().AddRangeAsync(images);
             }
+            product.IsHide = request.IsHide;
             _unitOfWork.GenericRepository<Domain.Entities.ProductsEntities.Product>().Update(product);
             await _unitOfWork.CompleteSaveAppDbAsync();
 

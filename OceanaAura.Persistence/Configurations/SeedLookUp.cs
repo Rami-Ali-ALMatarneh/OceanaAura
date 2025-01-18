@@ -15,6 +15,18 @@ namespace OceanaAura.Persistence.Configurations
         public static void Seed(ModelBuilder builder)
         {
             builder.Entity<LookUpCategory>().HasData(
+                 new LookUpCategory
+                 {
+                     CategoryId = (int)LookUpEnums.CategoryCode.MagneticLid,
+                     NameEn = "Magnetic Lid",
+                     NameAr = "غطاء مغناطيسي",
+                     Description = "MagneticLid",
+                     CreatedBy = "admin",
+                     IsDeleted = false,
+                     CreatedOn = DateTime.Now,
+                     ModifyBy = null,
+                     ModifyOn = null,
+                 },
                  //LookUpCategory
                  new LookUpCategory
                  {

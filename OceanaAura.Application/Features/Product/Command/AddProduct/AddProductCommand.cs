@@ -17,5 +17,7 @@ namespace OceanaAura.Application.Features.Product.Command.AddProduct
         public decimal? PriceUSD { get; set; }
         public int? Discount { get; set; } = 0;
         public int CategoryId { get; set; }
+        public bool? IsMagneticLid { get; set; }
+
     }
 }

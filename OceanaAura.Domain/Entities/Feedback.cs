@@ -19,6 +19,6 @@ namespace OceanaAura.Domain.Entities
         public string Email { get; set; }
         public DateTime SubmittedOn { get; set; } = DateTime.Now;
         public int Rating { get; set; } = 0;
-        public bool IsShow { get; set; }
+        public bool? IsShow { get; set; }
     }
 }

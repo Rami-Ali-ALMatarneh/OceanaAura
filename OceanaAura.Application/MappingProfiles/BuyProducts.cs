@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using OceanaAura.Application.Features.BottleImg.Command.AddBottleImg;
+using OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImg;
 using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
 using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.Invoice.Queries.GetInvoices;
@@ -7,11 +9,13 @@ using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
 using OceanaAura.Application.Features.Order.Commands.CreateOrder;
 using OceanaAura.Application.Features.Order.Queries.GetAllOrder;
+using OceanaAura.Application.Features.Product.Queries.Lids;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Application.Features.ProductSize.Queries.GetSizeDetails;
 using OceanaAura.Domain.Entities;
 using OceanaAura.Domain.Entities.LookUp;
+using OceanaAura.Domain.Entities.ProductsEntities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -63,6 +67,13 @@ namespace OceanaAura.Application.MappingProfiles
             CreateMap<InvoiceDetailsDto,InvoiceDetails>()
         .ReverseMap();
             CreateMap<Invoice, InvoiceDtos>()
+.ReverseMap();
+            CreateMap<Product, LidsDto>()
+.ReverseMap();
+
+            CreateMap<GetBottleImg, BottleImg>()
+.ReverseMap();
+            CreateMap<AddBottleImgDto, BottleImg>()
 .ReverseMap();
         }
     }

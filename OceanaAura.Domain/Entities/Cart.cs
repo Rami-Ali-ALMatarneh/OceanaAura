@@ -25,6 +25,9 @@ namespace OceanaAura.Domain.Entities
         public int Quantity { get; set; }
         public int SizeId { get; set; }
         public int ColorId { get; set; }
+        public int? LidId { get; set; }
+        public string LidName { get; set; }
+        public decimal LidPrice { get; set; } = 0;
         public decimal ProductPrice { get; set; }
         public decimal Shipping { get; set; }
         public decimal TotalPrice { get; set; }

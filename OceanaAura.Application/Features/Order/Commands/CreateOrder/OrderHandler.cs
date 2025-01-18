@@ -30,6 +30,7 @@ namespace OceanaAura.Application.Features.Order.Commands.CreateOrder
         {
             // Map the OrderDto to the Order entity
             var order = _mapper.Map<OceanaAura.Domain.Entities.Order>(request);
+           
             order.StatusId = (int)LookUpEnums.OrderStatusCategory.Pending;
 
             // Add the Order to the database

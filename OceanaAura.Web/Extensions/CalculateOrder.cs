@@ -32,6 +32,7 @@ namespace OceanaAura.Web.Extensions
 
             var orderSummary = new OrderSummary();
             var product = await _mediator.Send(new ProductDetailsQuery(orderDetails.ProductId));
+            var lid = await _mediator.Send(new ProductDetailsQuery(orderDetails.LidId));
             var paymentList = await _mediator.Send(new PaymentQuery());
             var size = await _mediator.Send(new SizeDetailsQuery(orderDetails.SizeId));
             var deliveryFee = paymentList?.FirstOrDefault();
@@ -41,18 +42,26 @@ namespace OceanaAura.Web.Extensions
             {
                 if (Region == "Jordan")
                 {
+                    if (lid.PriceJOR != null)
+                    {
+                        orderSummary.LidPrice = lid.PriceJOR.Value;
+                    }
                     orderSummary.ProductPrice = size.PriceJor;
                     orderSummary.deliveryFee = deliveryFee.PriceJOR;
 
                 }
                 if (Region == "United Arab Emirates")
                 {
+                    if (lid.PriceUAE != null)
+                    {
+                        orderSummary.LidPrice = lid.PriceUAE.Value;
+                    }
                     orderSummary.ProductPrice = size.PriceUae;
                     orderSummary.deliveryFee = deliveryFee.PriceUAE;
 
                 }
-
-                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity)  + orderSummary.deliveryFee;
+                orderSummary.LidName = lid.Name;
+                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity)  + orderSummary.deliveryFee + orderSummary.LidPrice;
             }
             else
             {
@@ -74,6 +83,7 @@ namespace OceanaAura.Web.Extensions
             orderSummary.SizeId = size.Id;
             orderSummary.Quantity = orderDetails.Quantity;
             orderSummary.ColorId = orderDetails.ColorId;
+            orderSummary.LidId = orderDetails.LidId;
             return orderSummary;
         }
         public async Task<OrderSummary> SubOrderSummaryDetails(SubOrderDetails  subOrderDetails, string Region = "Jordan")

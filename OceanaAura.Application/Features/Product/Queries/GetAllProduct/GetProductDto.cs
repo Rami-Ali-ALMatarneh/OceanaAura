@@ -28,5 +28,7 @@ namespace OceanaAura.Application.Features.Product.Queries.GetAllProduct
         public string? ModifyOn { get; set; } = "N/A";
         public int CategoryId { get; set; }
         public LookUpEntity Category { get; set; }
+        public bool IsMagneticLid { get; set; }
+
     }
 }

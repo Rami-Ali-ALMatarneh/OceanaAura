@@ -1,0 +1,75 @@
+﻿@model OceanaAura.Web.Models.Auth.AddBottleImg
+
+@{
+    Layout = "../Shared/_AdminLayout.cshtml";
+    var Sizes = ViewBag.Sizes as List<OceanaAura.Web.Models.Size.SizeVM> ?? new List<OceanaAura.Web.Models.Size.SizeVM>();
+    var Colors = ViewBag.Colors as List<OceanaAura.Web.Models.Colors.ColorVM> ?? new List<OceanaAura.Web.Models.Colors.ColorVM>();
+    var Products = ViewBag.Products as List<OceanaAura.Web.Models.Products.ProductVMHome> ?? new List<OceanaAura.Web.Models.Products.ProductVMHome>();
+}
+
+<div>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Add Bottle Image</h1>
+        <a asp-action="BottleImg" asp-controller="Admin" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Bottle Images List
+        </a>
+    </div>
+    <hr />
+
+    <!-- Bottle Image Form Card -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Add New Bottle Image</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Validation Summary -->
+
+                    <form asp-action="AddBottleImg" method="post" enctype="multipart/form-data">
+                        <!-- Image Upload -->
+                        <div class="mb-3">
+                            <label for="Img" class="form-label">Upload Image</label>
+                            <div class="custom-file">
+                                <input asp-for="Img" type="file" class="form-control-file" id="Img" accept="image/*" />
+                            </div>
+                            <span asp-validation-for="Img" class="text-danger"></span>
+                        </div>
+
+
+                        <!-- Size Dropdown -->
+                        <div class="mb-3">
+                            <label asp-for="SizeId" Name="Size" class="form-label">Size</label>
+                            <select asp-for="SizeId" class="form-control" asp-items="@(new SelectList(Sizes, "Id", "NameEn"))" required>
+                                <option value="">Select Size</option> <!-- Default option -->
+                            </select>
+                            <span asp-validation-for="SizeId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Color Dropdown -->
+                        <div class="mb-3">
+                            <label asp-for="ColorId" class="form-label">Color</label>
+                            <select asp-for="ColorId" class="form-control" asp-items="@(new SelectList(Colors, "Id", "NameEn"))" required>
+                                <option value="">Select Color</option> <!-- Default option -->
+                            </select>
+                            <span asp-validation-for="ColorId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Lid Dropdown -->
+                        <div class="mb-3">
+                            <label asp-for="LidId" class="form-label">Lid</label>
+                            <select asp-for="LidId" class="form-control" asp-items="@(new SelectList(Products, "Id", "Name"))" required>
+                                <option value="">Select Lid</option> <!-- Default option -->
+                            </select>
+                            <span asp-validation-for="LidId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-block">Add Bottle Image</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

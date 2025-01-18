@@ -71,7 +71,10 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
                     ColorId = cart.ColorId,
                     ProductPrice = cart.ProductPrice,
                     Shipping = cart.Shipping,
-                    TotalPrice = cart.TotalPrice
+                    TotalPrice = cart.TotalPrice,
+                    LidId = (int)cart.LidId,
+                    LidName = cart.LidName,
+                    LidPrice = cart.LidPrice,
                 }).ToList()
             };
             var Invoice = new OceanaAura.Domain.Entities.Invoice
@@ -83,7 +86,7 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             await _unitOfWork.CompleteSaveAppDbAsync();
             var InvoiceDetails = await _calculateOrder.InvoiceResult(ordersDto);
             InvoiceDetails.CreateOn = Invoice.CreateOn.ToString("dd/MM/yyyy hh:mm tt");
-            var emailBody = await _viewRenderService.RenderToStringAsync("_OrderEmail", InvoiceDetails);
+             var emailBody = await _viewRenderService.RenderToStringAsync("_OrderEmail", InvoiceDetails);
             var emailBodyAdmin = await _viewRenderService.RenderToStringAsync("_OrderEmailAdmin", InvoiceDetails);
 
             // Convert HTML to PDF using PuppeteerSharp

@@ -49,6 +49,14 @@
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
                     </div>
+                    <div class="mb-3 card d-flex align-items-center gap-3 p-2">
+                        <!-- Bootstrap Switch Design -->
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" role="switch" id="IsHide" name="IsHide" asp-for="IsHide" checked="@Model.IsHide" />
+                            <label class="form-check-label" for="IsHide">Hide Product</label>
+                        </div>
+                        <span asp-validation-for="IsHide" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
@@ -360,7 +368,6 @@
                     pricingDiscountSection.style.display = "none";
                 }
             }
-
             // Add event listener for change in category
             categoryDropdown.addEventListener("change", toggleFields);
 

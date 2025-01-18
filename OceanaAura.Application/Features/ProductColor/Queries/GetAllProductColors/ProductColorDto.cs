@@ -12,5 +12,6 @@ namespace OceanaAura.Application.Features.ProductColor.Queries.GetAllProductColo
         public string ImageUrl { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; }
+        public bool IsSoldOut { get; set; }
     }
 }

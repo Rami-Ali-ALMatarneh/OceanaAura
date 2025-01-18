@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImg;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Application.Features.Feedback.Command.AddFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetIsShowFeedback;
@@ -13,6 +14,7 @@ using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
 using OceanaAura.Application.Features.Order.Commands.CreateOrder;
 using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
+using OceanaAura.Application.Features.Product.Queries.Lids;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Domain.Entities;
@@ -119,6 +121,8 @@ namespace OceanaAura.Web.Controllers
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
             var products = await _mediator.Send(new ProductQuery());
+                    products = products.Where(x => !x.IsHide).ToList();
+
             var productsVM = _mapper.Map<List<ProductVMHome>>(products);
 
             var sizes = await _mediator.Send(new SizeQuery());
@@ -184,6 +188,8 @@ namespace OceanaAura.Web.Controllers
         public async Task<IActionResult> Store()
         {
             var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
+
             var productsVM = _mapper.Map<List<ProductVMHome>>(products);
 
             ViewBag.Products = productsVM;
@@ -197,7 +203,28 @@ namespace OceanaAura.Web.Controllers
 
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> GetFilteredBottleImages(int sizeId, int? lidId, int? colorId)
+        {
+            try
+            {
+                // Call the handler to get filtered images
+                var filteredImages = await _mediator.Send(new GetFilteredBottleImagesQuery
+                {
+                    SizeId = sizeId,
+                    LidId = lidId,
+                    ColorId = colorId
+                });
 
+                // Return the filtered images as JSON
+                return Ok(filteredImages);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return a 500 status code
+                return StatusCode(500, "An error occurred while fetching filtered bottle images.");
+            }
+        }
         public async Task<IActionResult> Buy(int id)
         {
             var categories = await _mediator.Send(new CategoriesQuery());
@@ -209,6 +236,11 @@ namespace OceanaAura.Web.Controllers
 
             var product = await _mediator.Send(new ProductDetailsQuery(id));
             var productVM = _mapper.Map<ProductVM>(product);
+
+            var Lids  = await _mediator.Send(new LidsQuery());
+            var LidsVM = _mapper.Map<List<LidsVM>>(Lids);
+            ViewBag.Lids = LidsVM;
+
 
             var sizes = await _mediator.Send(new SizeQuery());
             var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
@@ -365,7 +397,11 @@ namespace OceanaAura.Web.Controllers
                 TotalPrice = orderRequest.TotalPrice,
                 Shipping = orderRequest.Shipping,
                 ProductId = orderRequest.ProductId,
-                ProductPrice = orderRequest.ProductPrice
+                ProductPrice = orderRequest.ProductPrice,
+                LidName = orderRequest.LidName,
+                LidId = orderRequest.LidId,
+                LidPrice = orderRequest.LidPrice,
+                
             };
 
             var OrderDto = _mapper.Map<OrderDto>(orderRequest);
@@ -409,7 +445,8 @@ namespace OceanaAura.Web.Controllers
                     ColorId = cartItem.ColorId,
                     Quantity = cartItem.Quantity,
                     SizeId = cartItem.SizeId,
-                    ProductId = cartItem.ProductId
+                    ProductId = cartItem.ProductId,
+                    LidId = cartItem.LidId
                 };
 
                 var cartSummary1 = await calculateOrder.NormalOrderSummaryDetails(orderDetails, "Jordan");
@@ -461,7 +498,7 @@ namespace OceanaAura.Web.Controllers
         }
 
         public async Task<IActionResult> BuyCartAsync()
-        {
+       {
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;
@@ -524,6 +561,9 @@ namespace OceanaAura.Web.Controllers
                         Shipping = item.deliveryFee,
                         ProductId = (int)item.Product.Id,
                         ProductPrice = item.ProductPrice,
+                        LidName = item.LidName,
+                        LidId = item.LidId,
+                        LidPrice = item.LidPrice,
                     };
                     carts.Add(cart);
                 }

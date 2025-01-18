@@ -103,6 +103,7 @@
                                                 <th>Quantity</th>
                                                 <th>Size</th>
                                                 <th>Color</th>
+                                                <th>Lid & Price</th>
                                                 <th>Product Price</th>
                                                 <th>Shipping</th>
                                                 <th>Total Price</th>
@@ -129,6 +130,9 @@
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Shipping:</strong> <span id="invoiceShippingCost"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Lids Pricing:</strong> <span id="lidsPricing"></span></p>
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Total Price:</strong> <span id="invoiceTotalPrice"></span></p>
@@ -230,6 +234,7 @@
                             <td>${cart.quantity}</td>
                             <td>${cart.sizeName}</td>
                             <td>${cart.colorName}</td>
+                            <td>${cart.lidName} - ${cart.lidPrice}</td>
                             <td>${cart.productPrice}</td>
                             <td>${cart.shipping}</td>
                             <td>${cart.totalPrice}</td>
@@ -242,6 +247,7 @@
                 $('#invoiceSubtotal').text(invoice.subTotalString);
                 $('#invoiceShippingCost').text(invoice.shippingString);
                 $('#invoiceTotalPrice').text(invoice.totalPriceString);
+                $('#lidsPricing').text(invoice.totalLidPriceString);
 
                 // Show the modal
                 $('#invoiceDetailsModal').modal('show');

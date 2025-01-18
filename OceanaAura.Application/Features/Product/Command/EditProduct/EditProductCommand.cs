@@ -18,5 +18,7 @@ namespace OceanaAura.Application.Features.Product.Command.EditProduct
         public decimal? PriceUSD { get; set; }
         public int? Discount { get; set; } = 0;
         public int CategoryId { get; set; }
+        public bool IsHide { get; set; }
+
     }
 }

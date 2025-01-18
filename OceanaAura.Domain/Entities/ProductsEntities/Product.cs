@@ -22,9 +22,11 @@ namespace OceanaAura.Domain.Entities.ProductsEntities
         public decimal? PriceUAE { get; set; }
         public decimal? PriceUSD { get; set; }
         public bool GradientColor { get; set; } 
+        public bool? IsMagneticLid { get; set; }
         // Foreign key for category
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public LookUpEntity Category { get; set; }
+        public bool IsHide { get; set; } 
     }
 }

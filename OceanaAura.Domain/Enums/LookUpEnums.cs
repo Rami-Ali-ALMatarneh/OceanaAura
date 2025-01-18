@@ -20,6 +20,7 @@ namespace OceanaAura.Domain.Enums
             ProductAdditional= 7,
             OrderStatus = 8,
             ProductCategory = 9,
+            MagneticLid = 10
         }
 
         // LookUp 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OceanaAura.Application.Features.BottleImg.Command.AddBottleImg;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Application.Features.Feedback.Command.UpdateVisabilityFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
@@ -12,6 +13,7 @@ using OceanaAura.Application.Features.Product.Command.EditProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProduct;
 using OceanaAura.Application.Features.Product.Queries.GetProductByName;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
+using OceanaAura.Application.Features.Product.Queries.Lids;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetColors;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
 using OceanaAura.Application.Features.ProductColor.Commands.AddColor;
@@ -77,6 +79,10 @@ namespace OceanaAura.Web.MappingProfiles
             CreateMap<OrderDto, CartsOrder>()
 .ReverseMap();
             CreateMap<VisibilityFeedbackVM, FeedbackDto>()
+.ReverseMap();
+            CreateMap<LidsVM, LidsDto>()
+.ReverseMap();
+            CreateMap<AddBottleImg, AddBottleImgDto>()
 .ReverseMap();
         }
     }

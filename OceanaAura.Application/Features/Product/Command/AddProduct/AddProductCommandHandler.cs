@@ -37,6 +37,15 @@ namespace OceanaAura.Application.Features.Product.Command.AddProduct
             var product = _mapper.Map<Domain.Entities.ProductsEntities.Product>(request);
 
             product.CategoryId = request.CategoryId;
+            if(product.CategoryId == (int)LookUpEnums.ProductCategory.Lids)
+            {
+                product.IsHide = true;
+            }
+            else
+            {
+                product.IsHide = false;
+            }
+            product.IsMagneticLid = request.IsMagneticLid;
             product.Category = await _unitOfWork.lookUpRepository.GetByIdAsync(product.CategoryId);
             product.ProductImages = images ?? new List<Domain.Entities.Image>();
             //    ProductImages = images ?? new List<Image>() // Associate the images (if any)

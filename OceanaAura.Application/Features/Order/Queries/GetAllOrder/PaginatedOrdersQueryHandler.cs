@@ -73,6 +73,8 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
                     Quantity = cart.Quantity,
                     SizeId = cart.SizeId,
                     ColorId = cart.ColorId,
+                    LidName = cart.LidName,
+                    LidPrice = cart.LidPrice,
                     ProductPrice = cart.ProductPrice,
                     Shipping = cart.Shipping,
                     TotalPrice = cart.TotalPrice

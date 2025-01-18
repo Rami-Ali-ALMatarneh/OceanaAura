@@ -34,11 +34,9 @@ namespace OceanaAura.Application.Features.Product.Queries.GetProductDetails
             // Include related data
             query = query.Include(ap => ap.ProductImages)
                          .Include(p => p.Category);
-
             // Use FirstOrDefaultAsync to asynchronously fetch the product by its Id
             var product = await query
                                 .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken); // Fetch the product by its Id
-
 
             var ProductDetailsDto = _mapper.Map<ProductDetailsDto>(product);
            

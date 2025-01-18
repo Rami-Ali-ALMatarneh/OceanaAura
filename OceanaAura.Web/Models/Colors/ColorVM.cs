@@ -11,6 +11,8 @@ namespace OceanaAura.Web.Models.Colors
         public string NameAr { get; set; }
         public string? ImageURL { get; set; }
         public IFormFile FormFile { get; set; }
+        public bool IsSoldOut { get; set; }
+
     }
     public class ColorVMValidator : AbstractValidator<ColorVM>
     {
