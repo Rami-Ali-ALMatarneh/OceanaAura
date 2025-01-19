@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MimeKit;
 
 namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
 {
@@ -96,7 +97,10 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             // Create email message
             var emailMessage = new EmailMessage
             {
-                To = order.Email,
+                To = new List<MailboxAddress>
+                    {
+                     new MailboxAddress("Ocean Aura", order.Email)
+                    },
                 Subject = "Request an Invoice",
                 Body = emailBody,
                 Attachments = new List<EmailAttachment>
@@ -112,7 +116,10 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             };
             var emailMessageAdmin = new EmailMessage
             {
-                To = "sam.samer200@gmail.com",
+                To = new List<MailboxAddress>
+                {
+                    new MailboxAddress("Admin", "sam.samer200@gmail.com")
+                },
                 Subject = "Request an Invoice",
                 Body = emailBodyAdmin,
                 Attachments = new List<EmailAttachment>

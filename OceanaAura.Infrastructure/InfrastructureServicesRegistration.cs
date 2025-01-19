@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using EcommerceOnion.Application.Services;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ using OceanaAura.Application.Contracts.Logging;
 using OceanaAura.Application.Contracts.OTP;
 using OceanaAura.Application.Contracts.RenderView;
 using OceanaAura.Application.Models.Email;
-using OceanaAura.Infrastructure.EmailService;
+using OceanaAura.Infrastructure.RenderServices;
 using OceanaAura.Infrastructure.Logging;
 using OceanaAura.Infrastructure.OTPService;
 using OceanaAura.Infrastructure.RenderServices;
