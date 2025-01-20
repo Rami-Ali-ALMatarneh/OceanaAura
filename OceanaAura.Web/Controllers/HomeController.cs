@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImg;
+using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImgCustomize;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Application.Features.Feedback.Command.AddFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetIsShowFeedback;
@@ -223,7 +224,7 @@ namespace OceanaAura.Web.Controllers
                     var product = await _mediator.Send(new ProductDetailsQuery(productId));
                     var defaultImages = product.ImageUrls.Select(imgUrl => new BottleImgDto
                     {
-                        ImgUrl = imgUrl
+                        ImgUrlFront = imgUrl
                     }).ToList();
 
                     return Ok(defaultImages);
@@ -646,6 +647,24 @@ namespace OceanaAura.Web.Controllers
             ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
             return View();
+        }
+        public async Task<IActionResult> GetFilteredBottleImg(int sizeId, int colorId, int lidId)
+        {
+            var query = new filteredBottleImgCustomizeQuery
+            {
+                SizeId = sizeId,
+                ColorId = colorId,
+                LidId = lidId
+            };
+
+            var result = await _mediator.Send(query);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
     }
 }

@@ -30,14 +30,19 @@
                     <form asp-action="AddBottleImg" method="post" enctype="multipart/form-data">
                         <!-- Image Upload -->
                         <div class="mb-3">
-                            <label for="Img" class="form-label">Upload Image</label>
+                            <label for="ImgFront" class="form-label">Upload Bottle Front Image</label>
                             <div class="custom-file">
-                                <input asp-for="Img" type="file" class="form-control-file" id="Img" accept="image/*" />
+                                <input asp-for="ImgFront" type="file" class="form-control-file" id="Img" accept="image/*" />
                             </div>
-                            <span asp-validation-for="Img" class="text-danger"></span>
+                            <span asp-validation-for="ImgFront" class="text-danger"></span>
                         </div>
-
-
+                        <div class="mb-3">
+                            <label for="ImgBack" class="form-label">Upload Bottle Back Image</label>
+                            <div class="custom-file">
+                                <input asp-for="ImgBack" type="file" class="form-control-file" id="Img" accept="image/*" />
+                            </div>
+                            <span asp-validation-for="ImgBack" class="text-danger"></span>
+                        </div>
                         <!-- Size Dropdown -->
                         <div class="mb-3">
                             <label asp-for="SizeId" Name="Size" class="form-label">Size</label>

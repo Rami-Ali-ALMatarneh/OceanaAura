@@ -34,6 +34,22 @@
         height: 100% !important; /* Full height of the container */
         display: block; /* Remove extra space below the canvas */
     }
+
+    /* Style for the front image box */
+    .front-image-box {
+        border: 2px solid #000;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        cursor: pointer; /* Add pointer cursor to indicate clickability */
+    }
+
+        .front-image-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
 </style>
 
 <div class="container-fluid mt-4">
@@ -84,10 +100,22 @@
                         </select>
                     </div>
 
+                    <!-- View Bottle Button -->
+                    <div class="mb-4">
+                        <button id="view-bottle" class="btn btn-dark w-100">View Bottle</button>
+                    </div>
+
+                    <!-- Front Image Box -->
+                    <div class="mb-4">
+                        <div class="front-image-box">
+                            <img id="front-image" src="" alt="Front Image" style="display: none;">
+                        </div>
+                    </div>
+
                     <!-- Add Text Section -->
                     <div class="mb-4">
                         <h4 class="h6">Add Text</h4>
-                        <input type="text" id="text-input" class="form-control mb-4" placeholder="Enter text">
+                        <input type="text" id="text-input" class="form-control mb-4" placeholder="Enter text (2 to 10 characters)">   
                         <button id="add-text" class="btn btn-dark w-100">Add Text</button>
                     </div>
 
@@ -140,23 +168,88 @@
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
         });
-       const text = new fabric.Text('', {
+                     const text = new fabric.Text('', {
         left: 100,
         top: 100,
         fontFamily: 'Evil Empire', // Set the font family
         fontSize: 30,
-        fill: 'black'
+        fill: 'silver'
     });
            const text1 = new fabric.Text('', {
         left: 100,
         top: 100,
         fontFamily: 'DecoType-Thuluth-II', // Set the font family
         fontSize: 30,
-        fill: 'black'
+        fill: 'silver'
     });
-    // Add the text object to the canvas
     canvas.add(text);
     canvas.add(text1);
+        // View Bottle Button Click Handler
+        $('#view-bottle').click(function () {
+            const sizeId = $('#size-select').val();
+            const colorId = $('input[name="ColorId"]:checked').val();
+            const lidId = $('#lid-select').val();
+
+            // Validate if size, color, and lid are selected
+            if (!sizeId || !colorId || !lidId) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد الحجم واللون والغطاء!' : 'Please select size, color, and lid!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return;
+            }
+
+            // Make an AJAX request to fetch the filtered bottle image
+            $.ajax({
+                url: '/Home/GetFilteredBottleImg',
+                type: 'GET',
+                data: {
+                    sizeId: sizeId,
+                    colorId: colorId,
+                    lidId: lidId
+                },
+                success: function (data) {
+                    // Clear the canvas
+                    canvas.clear();
+
+                    const baseUrl = 'https://localhost:7274/File/ColorsImg/'; // Replace with your actual base URL
+
+                    // Display the front image in the box
+                    if (data.imgUrlFront) {
+                        const frontImageUrl = baseUrl + data.imgUrlFront;
+                        $('#front-image').attr('src', frontImageUrl).show();
+                    }
+
+                    // Display the back image on the canvas
+                    if (data.imgUrlBack) {
+                        const backImageUrl = baseUrl + data.imgUrlBack;
+                        fabric.Image.fromURL(backImageUrl, function (img) {
+                            img.scaleToWidth(canvas.getWidth() * 0.3); // Resize to 50% of canvas width
+                            canvas.add(img);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    const selectedLanguage = '@SelectedLanguage';
+                    const message = selectedLanguage === 'ar' ? 'فشل في تحميل صورة الزجاجة!' : 'Failed to load bottle image!';
+                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                        confirmButtonText: confirmButtonText
+                    });
+                }
+            });
+        });
+
         // Add Text with Selected Font
         $('#add-text').click(function () {
             const selectedFont = $('#font-select').val(); // Get the selected font
@@ -192,6 +285,22 @@
                 return; // Stop execution if text input is empty
             }
 
+            // Validate if text input is exactly 10 characters
+                if (textInput.length < 2 || textInput.length > 10)
+                {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'يجب أن يكون النص 10 أحرف بالضبط!' : 'Text must be exactly 10 characters!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return; // Stop execution if text input is not 10 characters
+            }
+
             // Check if a text object already exists on the canvas
             const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
             if (existingText) {
@@ -213,7 +322,7 @@
                 left: 100,
                 top: 100,
                 fontSize: 30,
-                fill: $('input[name="ColorId"]:checked').val() || '#000000', // Use selected color
+                fill: 'silver', // Use selected color
                 fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont, // Use the selected font
             });
             canvas.add(text);
@@ -303,6 +412,33 @@
             } else {
                 $('.color-circle').removeClass('selected');
                 $(this).addClass('selected');
+            }
+        });
+
+        // Click event for the front image box
+        $('.front-image-box').on('click', function () {
+            const frontImageUrl = $('#front-image').attr('src'); // Get the image URL
+            if (frontImageUrl) {
+                // Use SweetAlert2 to display the image in a popup
+                Swal.fire({
+                    imageUrl: frontImageUrl,
+                    imageAlt: 'Front Image',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    width: '70%',
+                    backdrop: true,
+                });
+            } else {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'لا توجد صورة لعرضها!' : 'No image to display!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
             }
         });
     });

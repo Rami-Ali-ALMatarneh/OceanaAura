@@ -15,7 +15,7 @@ namespace OceanaAura.Application.Persistence
         ILookUpRepository lookUpRepository { get; }
         IProductRepository productRepository { get; }
         IFeedbackRepository feedbackRepository { get; }
-
+        IBottleImgRepository bottleImgRepository { get; }
         ICartRepository cartRepository { get; }
         IAdditionalProductsRepository  additionalProductsRepository{ get; }
         Task<bool> CompleteSaveIdentityAsync();

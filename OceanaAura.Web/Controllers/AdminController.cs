@@ -451,9 +451,11 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
     }
 
     // Process the form data if validation passes
-    if (model.Img != null)
+    if (model.ImgFront != null && model.ImgBack !=null)
     {
-        model.ImgUrl = await FileExtensions.ConvertFileToStringAsync(model.Img, webHostEnvironment);
+        model.ImgUrlFront = await FileExtensions.ConvertFileToStringAsync(model.ImgFront, webHostEnvironment);
+        model.ImgUrlBack = await FileExtensions.ConvertFileToStringAsync(model.ImgBack, webHostEnvironment);
+
     }
 
     var addBottleImgDto = _mapper.Map<AddBottleImgDto>(model);
