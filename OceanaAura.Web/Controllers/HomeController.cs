@@ -624,5 +624,28 @@ namespace OceanaAura.Web.Controllers
 
             return Ok(new { FeedbackId = feedbackId }); // Return the created feedback ID
         }
+
+        public async Task<IActionResult> DesginEditor()
+        {
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+            ViewBag.Colors = colorsVM;
+            var lids = await _mediator.Send(new LidsQuery());
+            var lidsVM = _mapper.Map<List<LidsVM>>(lids);
+            ViewBag.Lids = lidsVM;
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
+            var Lids = await _mediator.Send(new LidsQuery());
+            var LidsVM = _mapper.Map<List<LidsVM>>(Lids);
+            ViewBag.Lids = LidsVM;
+            var regions = await _mediator.Send(new RegionQuery());
+            var regionsVM = _mapper.Map<List<RegionVM>>(regions);
+            ViewBag.Regions = regionsVM;
+            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
+            ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
+            return View();
+        }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using OceanaAura.Application.Contracts.Email;
 using OceanaAura.Application.Contracts.Identity;
 using OceanaAura.Application.Contracts.OTP;
@@ -137,7 +138,10 @@ namespace OceanaAura.Identity.Services
 
             var emailMessage = new EmailMessage
             {
-                To = user.Email,
+                To = new List<MailboxAddress>
+                {
+                    new MailboxAddress(user.UserName, user.Email)
+                },
                 Subject = "Reset Password",
                 Body = emailBody
             };

@@ -1,0 +1,325 @@
+﻿@{
+    var sizes = (List<OceanaAura.Web.Models.Size.SizeVM>)ViewBag.Sizes;
+    var SelectedRegionPage = ViewBag.SelectedRegionPage;
+    var Lids = (List<OceanaAura.Web.Models.BuyVM.LidsVM>)ViewBag.Lids;
+    var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
+    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
+    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors; // Add colors from ViewBag
+}
+
+<!-- Add Evil Empire Font CDN -->
+<link href="https://fonts.cdnfonts.com/css/evil-empire" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="~/css/arabicLang.css">
+
+<style>
+    /* Ensure the parent container takes full height and width */
+    .canvas-container {
+        width: 100%; /* Full width of its parent */
+        height: 100vh; /* Full viewport height (or use 100% if the parent has a defined height) */
+        position: relative; /* For positioning child elements if needed */
+    }
+
+    .upper-canvas {
+        font-family: 'Evil Empire', sans-serif;
+    }
+
+    .design-canvas {
+        font-family: 'Evil Empire', sans-serif;
+    }
+
+    /* Make the canvas take up 100% of its container */
+    #design-canvas {
+        font-family: 'Evil Empire', sans-serif;
+        width: 100% !important; /* Full width of the container */
+        height: 100% !important; /* Full height of the container */
+        display: block; /* Remove extra space below the canvas */
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row w-100 h-100">
+        <!-- Left Sidebar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm w-100 h-100">
+                <div class="card-body w-100 h-100">
+                    <!-- Size Selection -->
+                    <div class="mb-4">
+                        <h4 class="h6">Select Size</h4>
+                        <select id="size-select" class="form-select">
+                            @foreach (var size in sizes)
+                            {
+                                <option value="@size.Id">@size.NameEn</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Color Selection -->
+                    <div class="mb-4">
+                        <h4 class="h6">Select Color</h4>
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var color in colors)
+                            {
+                                <label class="color-circle @(color.IsSoldOut ? "sold-out" : "") position-relative"
+                                       style="background-image: url('/File/ColorsImg/@color.ImageURL');">
+                                    <input type="radio" name="ColorId" value="@color.Id"
+                                           class="d-none"
+                                    @(color.IsSoldOut ? "disabled" : "") />
+                                    @if (color.IsSoldOut)
+                                    {
+                                        <span class="sold-out-mark position-absolute top-50 start-50 translate-middle">X</span>
+                                    }
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Lid Selection -->
+                    <div class="mb-4">
+                        <h4 class="h6">Select Lid</h4>
+                        <select id="lid-select" class="form-select">
+                            @foreach (var lid in Lids)
+                            {
+                                <option value="@lid.Id">@lid.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Add Text Section -->
+                    <div class="mb-4">
+                        <h4 class="h6">Add Text</h4>
+                        <input type="text" id="text-input" class="form-control mb-4" placeholder="Enter text">
+                        <button id="add-text" class="btn btn-dark w-100">Add Text</button>
+                    </div>
+
+                    <!-- Remove Text Section -->
+                    <div class="mb-4">
+                        <button id="remove-text" class="btn btn-danger w-100">Remove Selected Text</button>
+                    </div>
+
+                    <!-- Font Selection -->
+                    <div class="mb-4">
+                        <h4 class="h6">Select Font</h4>
+                        <select id="font-select" class="form-select">
+                            <option value="">Select Font</option>
+                            <option value="Evil Empire">Evil Empire</option>
+                            <option value="DecoType-Thuluth-II">DecoType-Thuluth-II</option>
+                        </select>
+                    </div>
+
+                    <!-- Export Design Button -->
+                    <div class="mb-4">
+                        <button id="export-design" class="btn btn-success w-100">Export Design</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="canvas-container">
+                        <canvas id="design-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Load Fabric.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize Fabric.js canvas
+        const canvas = new fabric.Canvas('design-canvas', {
+            backgroundColor: '#ffffff',
+        });
+       const text = new fabric.Text('', {
+        left: 100,
+        top: 100,
+        fontFamily: 'Evil Empire', // Set the font family
+        fontSize: 30,
+        fill: 'black'
+    });
+           const text1 = new fabric.Text('', {
+        left: 100,
+        top: 100,
+        fontFamily: 'DecoType-Thuluth-II', // Set the font family
+        fontSize: 30,
+        fill: 'black'
+    });
+    // Add the text object to the canvas
+    canvas.add(text);
+    canvas.add(text1);
+        // Add Text with Selected Font
+        $('#add-text').click(function () {
+            const selectedFont = $('#font-select').val(); // Get the selected font
+            const textInput = $('#text-input').val(); // Get the text input value
+
+            // Validate if a font is selected
+            if (!selectedFont) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد خط أولاً!' : 'Please select a font first!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return; // Stop execution if no font is selected
+            }
+
+            // Validate if text input is empty
+            if (!textInput) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'الرجاء إدخال نص!' : 'Please enter some text!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return; // Stop execution if text input is empty
+            }
+
+            // Check if a text object already exists on the canvas
+            const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
+            if (existingText) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'يمكن إضافة نص واحد فقط!' : 'Only one text can be added!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return; // Stop execution if a text object already exists
+            }
+
+            // Add text to the canvas
+            const text = new fabric.Textbox(textInput, {
+                left: 100,
+                top: 100,
+                fontSize: 30,
+                fill: $('input[name="ColorId"]:checked').val() || '#000000', // Use selected color
+                fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont, // Use the selected font
+            });
+            canvas.add(text);
+        });
+
+        // Remove Selected Text
+        $('#remove-text').click(function () {
+            const activeObject = canvas.getActiveObject(); // Get the selected object
+            if (activeObject && activeObject.type === 'textbox') {
+                canvas.remove(activeObject); // Remove the selected text object
+            } else {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد نص لإزالته!' : 'Please select a text to remove!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+            }
+        });
+
+        // Handle Font Selection from <select> Dropdown
+        $('#font-select').change(function () {
+            const selectedFont = $(this).val(); // Get the selected font
+            const activeObject = canvas.getActiveObject();
+
+            // Update the font of the selected text on the canvas
+            if (activeObject && activeObject.type === 'textbox') {
+                activeObject.set('fontFamily', selectedFont === "Evil Empire" ? "'Evil Empire', sans-serif" : selectedFont);
+                canvas.renderAll();
+            }
+        });
+
+        // Export Design
+        $('#export-design').click(function () {
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1,
+            });
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'design.png';
+            link.click();
+        });
+
+        // Update Color
+        $('input[name="ColorId"]').change(function () {
+            const activeObject = canvas.getActiveObject();
+            if (activeObject) {
+                activeObject.set('fill', $(this).val());
+                canvas.renderAll();
+            }
+        });
+
+        // Enable Editing on Canvas
+        canvas.on('object:selected', function (e) {
+            const activeObject = e.target;
+            activeObject.set({
+                hasControls: true,
+                hasBorders: true,
+            });
+            canvas.renderAll();
+        });
+
+        // Disable Editing on Deselection
+        canvas.on('selection:cleared', function () {
+            canvas.discardActiveObject();
+            canvas.renderAll();
+        });
+
+        // Handle click on color circles
+        $('.color-circle').on('click', function () {
+            if ($(this).hasClass('sold-out')) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'هذا اللون غير متوفر!' : 'This color is sold out!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+            } else {
+                $('.color-circle').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+    });
+
+    // Resize Canvas on Window Resize
+    function resizeCanvas() {
+        const canvas = document.getElementById('design-canvas');
+        const container = canvas.parentElement;
+
+        // Set canvas dimensions to match the container
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+    }
+
+    // Resize canvas on window resize
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial resize
+    resizeCanvas();
+</script>
