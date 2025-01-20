@@ -9,6 +9,8 @@
 
 <!-- Add Evil Empire Font CDN -->
 <link href="https://fonts.cdnfonts.com/css/evil-empire" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="~/css/arabicLang.css">
+
 <style>
     /* Ensure the parent container takes full height and width */
     .canvas-container {
@@ -17,12 +19,14 @@
         position: relative; /* For positioning child elements if needed */
     }
 
-    .upper-canvas{
+    .upper-canvas {
         font-family: 'Evil Empire', sans-serif;
     }
+
     .design-canvas {
         font-family: 'Evil Empire', sans-serif;
     }
+
     /* Make the canvas take up 100% of its container */
     #design-canvas {
         font-family: 'Evil Empire', sans-serif;
@@ -31,6 +35,7 @@
         display: block; /* Remove extra space below the canvas */
     }
 </style>
+
 <div class="container-fluid mt-4">
     <div class="row w-100 h-100">
         <!-- Left Sidebar -->
@@ -97,7 +102,7 @@
                         <select id="font-select" class="form-select">
                             <option value="">Select Font</option>
                             <option value="Evil Empire">Evil Empire</option>
-                            <option value="Decotype Thulth II">Decotype Thulth II</option>
+                            <option value="DecoType-Thuluth-II">DecoType-Thuluth-II</option>
                         </select>
                     </div>
 
@@ -134,21 +139,26 @@
         // Initialize Fabric.js canvas
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
-           
         });
-    const text = new fabric.Text('', {
+       const text = new fabric.Text('', {
         left: 100,
         top: 100,
         fontFamily: 'Evil Empire', // Set the font family
         fontSize: 30,
         fill: 'black'
     });
-
+           const text1 = new fabric.Text('', {
+        left: 100,
+        top: 100,
+        fontFamily: 'DecoType-Thuluth-II', // Set the font family
+        fontSize: 30,
+        fill: 'black'
+    });
     // Add the text object to the canvas
     canvas.add(text);
+    canvas.add(text1);
         // Add Text with Selected Font
         $('#add-text').click(function () {
-            
             const selectedFont = $('#font-select').val(); // Get the selected font
             const textInput = $('#text-input').val(); // Get the text input value
 
@@ -230,7 +240,6 @@
 
         // Handle Font Selection from <select> Dropdown
         $('#font-select').change(function () {
-            
             const selectedFont = $(this).val(); // Get the selected font
             const activeObject = canvas.getActiveObject();
 
@@ -297,7 +306,9 @@
             }
         });
     });
-        function resizeCanvas() {
+
+    // Resize Canvas on Window Resize
+    function resizeCanvas() {
         const canvas = document.getElementById('design-canvas');
         const container = canvas.parentElement;
 
@@ -312,4 +323,3 @@
     // Initial resize
     resizeCanvas();
 </script>
-
