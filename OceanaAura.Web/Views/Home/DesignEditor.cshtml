@@ -1,4 +1,7 @@
-﻿@{
+﻿@namespace OceanaAura.Web.Models.BuyVM
+@model OceanaAura.Web.Models.BuyVM.OrderDetails
+
+@{
     var sizes = (List<OceanaAura.Web.Models.Size.SizeVM>)ViewBag.Sizes;
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
     var Lids = (List<OceanaAura.Web.Models.BuyVM.LidsVM>)ViewBag.Lids;
@@ -50,6 +53,11 @@
             max-width: 100%;
             max-height: 100%;
         }
+
+    /* Style for the Make Order button */
+    #make-order {
+        margin-top: 20px;
+    }
 </style>
 
 <div class="container-fluid mt-4">
@@ -60,18 +68,18 @@
                 <div class="card-body w-100 h-100">
                     <!-- Size Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">Select Size</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الحجم" : "Select Size")</h4>
                         <select id="size-select" class="form-select">
                             @foreach (var size in sizes)
                             {
-                                <option value="@size.Id">@size.NameEn</option>
+                                <option value="@size.Id">@(SelectedLanguage == "ar" ? size.NameAr : size.NameEn)</option>
                             }
                         </select>
                     </div>
 
                     <!-- Color Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">Select Color</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر اللون" : "Select Color")</h4>
                         <div class="d-flex flex-wrap gap-3">
                             @foreach (var color in colors)
                             {
@@ -91,18 +99,18 @@
 
                     <!-- Lid Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">Select Lid</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الغطاء" : "Select Lid")</h4>
                         <select id="lid-select" class="form-select">
                             @foreach (var lid in Lids)
                             {
-                                <option value="@lid.Id">@lid.Name</option>
+                                <option value="@lid.Id">@(SelectedLanguage == "ar" ? lid.Name : lid.Name)</option>
                             }
                         </select>
                     </div>
 
                     <!-- View Bottle Button -->
                     <div class="mb-4">
-                        <button id="view-bottle" class="btn btn-dark w-100">View Bottle</button>
+                        <button id="view-bottle" class="btn btn-dark w-100">@(SelectedLanguage == "ar" ? "عرض الزجاجة" : "View Bottle")</button>
                     </div>
 
                     <!-- Front Image Box -->
@@ -114,21 +122,21 @@
 
                     <!-- Add Text Section -->
                     <div class="mb-4">
-                        <h4 class="h6">Add Text</h4>
-                        <input type="text" id="text-input" class="form-control mb-4" placeholder="Enter text (2 to 10 characters)">   
-                        <button id="add-text" class="btn btn-dark w-100">Add Text</button>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</h4>
+                        <input type="text" id="text-input" class="form-control mb-4" placeholder="@(SelectedLanguage == "ar" ? "أدخل النص (من 2 إلى 10 أحرف)" : "Enter text (2 to 10 characters)")">
+                        <button id="add-text" class="btn btn-dark w-100">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</button>
                     </div>
 
                     <!-- Remove Text Section -->
                     <div class="mb-4">
-                        <button id="remove-text" class="btn btn-danger w-100">Remove Selected Text</button>
+                        <button id="remove-text" class="btn btn-danger w-100">@(SelectedLanguage == "ar" ? "إزالة النص المحدد" : "Remove Selected Text")</button>
                     </div>
 
                     <!-- Font Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">Select Font</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Font")</h4>
                         <select id="font-select" class="form-select">
-                            <option value="">Select Font</option>
+                            <option value="">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Font")</option>
                             <option value="Evil Empire">Evil Empire</option>
                             <option value="DecoType-Thuluth-II">DecoType-Thuluth-II</option>
                         </select>
@@ -136,7 +144,12 @@
 
                     <!-- Export Design Button -->
                     <div class="mb-4">
-                        <button id="export-design" class="btn btn-success w-100">Export Design</button>
+                        <button id="export-design" class="btn btn-success w-100">@(SelectedLanguage == "ar" ? "تصدير التصميم" : "Export Design")</button>
+                    </div>
+
+                    <!-- Make Order Button -->
+                    <div class="mb-4">
+                        <button id="make-order" class="btn btn-primary w-100">@(SelectedLanguage == "ar" ? "تقديم الطلب" : "Make Order")</button>
                     </div>
                 </div>
             </div>
@@ -168,7 +181,7 @@
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
         });
-                     const text = new fabric.Text('', {
+         const text = new fabric.Text('', {
         left: 100,
         top: 100,
         fontFamily: 'Evil Empire', // Set the font family
@@ -182,7 +195,7 @@
         fontSize: 30,
         fill: 'silver'
     });
-    canvas.add(text);
+        canvas.add(text);
     canvas.add(text1);
         // View Bottle Button Click Handler
         $('#view-bottle').click(function () {
@@ -218,7 +231,7 @@
                     // Clear the canvas
                     canvas.clear();
 
-                    const baseUrl = 'https://localhost:7274/File/ColorsImg/'; // Replace with your actual base URL
+                    const baseUrl = '/File/ColorsImg/'; // Replace with your actual base URL
 
                     // Display the front image in the box
                     if (data.imgUrlFront) {
@@ -230,7 +243,30 @@
                     if (data.imgUrlBack) {
                         const backImageUrl = baseUrl + data.imgUrlBack;
                         fabric.Image.fromURL(backImageUrl, function (img) {
-                            img.scaleToWidth(canvas.getWidth() * 0.3); // Resize to 50% of canvas width
+                            // Calculate the scaling factor to fit the image within the canvas
+                            const scaleFactor = Math.min(
+                                canvas.getWidth() / img.width, // Scale based on width
+                                canvas.getHeight() / img.height // Scale based on height
+                            );
+
+                            // Apply the scaling factor to the image
+                            img.scale(scaleFactor);
+
+                            // Center the image on the canvas
+                            img.set({
+                                left: (canvas.getWidth() - img.width * scaleFactor) / 2,
+                                top: (canvas.getHeight() - img.height * scaleFactor) / 2,
+                                lockMovementX: true, // Prevent horizontal movement
+                                lockMovementY: true, // Prevent vertical movement
+                                lockRotation: true, // Prevent rotation
+                                lockScalingX: true, // Prevent horizontal scaling
+                                lockScalingY: true, // Prevent vertical scaling
+                                hasControls: false, // Hide controls
+                                hasBorders: false, // Hide borders
+                                selectable: false // Make it non-selectable
+                            });
+
+                            // Add the image to the canvas
                             canvas.add(img);
                         });
                     }
@@ -286,10 +322,9 @@
             }
 
             // Validate if text input is exactly 10 characters
-                if (textInput.length < 2 || textInput.length > 10)
-                {
+            if (textInput.length < 2 || textInput.length > 10) {
                 const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'يجب أن يكون النص 10 أحرف بالضبط!' : 'Text must be exactly 10 characters!';
+                const message = selectedLanguage === 'ar' ? 'يجب أن يكون النص من 2 إلى 10 أحرف!' : 'Text must be between 2 to 10 characters!';
                 const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
 
                 Swal.fire({
@@ -371,29 +406,90 @@
             link.click();
         });
 
-        // Update Color
-        $('input[name="ColorId"]').change(function () {
-            const activeObject = canvas.getActiveObject();
-            if (activeObject) {
-                activeObject.set('fill', $(this).val());
-                canvas.renderAll();
+        // Make Order Button Click Handler
+        $('#make-order').click(function () {
+            const sizeId = $('#size-select').val();
+            const colorId = $('input[name="ColorId"]:checked').val();
+            const lidId = $('#lid-select').val();
+            const isCustomize = $('#is-customize').is(':checked');
+            const text = $('#text-input').val();
+            const fontFamily = $('#font-select').val();
+
+            // Validate if size, color, and lid are selected
+            if (!sizeId || !colorId || !lidId) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد الحجم واللون والغطاء!' : 'Please select size, color, and lid!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return;
             }
-        });
 
-        // Enable Editing on Canvas
-        canvas.on('object:selected', function (e) {
-            const activeObject = e.target;
-            activeObject.set({
-                hasControls: true,
-                hasBorders: true,
+            // Validate if text is provided when customization is enabled
+            if (isCustomize && (!text || !fontFamily)) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'الرجاء إدخال النص وتحديد الخط!' : 'Please enter text and select a font!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return;
+            }
+
+            // Prepare the order details object
+            const orderDetails = {
+                SizeId: sizeId,
+                ColorId: colorId,
+                LidId: lidId,
+                IsCustomize: isCustomize,
+                Text: text,
+                FontFamily: fontFamily
+            };
+
+            // Send the order details to the server
+            $.ajax({
+                url: '/Home/OrderRequest',
+                type: 'POST',
+                data: orderDetails,
+                success: function (response) {
+                    if (response.success) {
+                        // Redirect to the Order action in the Home controller
+                        window.location.href = `@Url.Action("order", "Home")?Details=OrderDetails`;
+                    } else {
+                        const selectedLanguage = '@SelectedLanguage';
+                        const message = selectedLanguage === 'ar' ? 'فشل في تقديم الطلب!' : 'Failed to submit the order!';
+                        const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: message,
+                            confirmButtonText: confirmButtonText
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    const selectedLanguage = '@SelectedLanguage';
+                    const message = selectedLanguage === 'ar' ? 'فشل في تقديم الطلب!' : 'Failed to submit the order!';
+                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                        confirmButtonText: confirmButtonText
+                    });
+                }
             });
-            canvas.renderAll();
-        });
-
-        // Disable Editing on Deselection
-        canvas.on('selection:cleared', function () {
-            canvas.discardActiveObject();
-            canvas.renderAll();
         });
 
         // Handle click on color circles

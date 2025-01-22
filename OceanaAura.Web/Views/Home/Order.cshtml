@@ -11,7 +11,9 @@
     var OrderSuccessMessage = ViewBag.OrderSuccessMessage;
     var TotalOrder = OrderSummary.Total;
     var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
+    var CustomizationFees = ViewBag.CustomizationFees as OceanaAura.Web.Models.BuyVM.CustomizationFeesVM ?? new OceanaAura.Web.Models.BuyVM.CustomizationFeesVM();
 
+    //added ViewBag.CustomizationFees
     if (OrderSummary.ColorId != 0)
     {
         color = colors.FirstOrDefault(x => x.Id == OrderSummary.ColorId);
@@ -77,7 +79,11 @@
                     <input type="hidden" name="LidName" value="@OrderSummary.LidName" />
                     <input type="hidden" name="LidPrice" value="@OrderSummary.LidPrice" />
                     <input type="hidden" name="Region" value="@SelectedRegionPage" />
-
+                    @if(OrderSummary.IsCustomize){
+                        <input type="hidden" name="Text" value="@OrderSummary.Text" />
+                        <input type="hidden" name="CustomizationFees" value="@OrderSummary.CustomizationFees" />
+                        <input type="hidden" name="FontFamily" value="@OrderSummary.FontFamily" />
+                    }
 
                     <!-- Delivery Section -->
                     <h4>
@@ -444,6 +450,34 @@
                                 }
                             </small>
                             <br />
+                            @if (!string.IsNullOrEmpty(OrderSummary.FontFamily))
+                            {
+                                <small class="text-muted">
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        @if (SelectedRegionPage == "Jordan")
+                                        {
+                                            <span>رسوم اضافة النص: JOD @CustomizationFees.PriceJOR</span>
+                                        }
+                                        else if (SelectedRegionPage == "United Arab Emirates")
+                                        {
+                                            <span>رسوم اضافة النص: AED @CustomizationFees.PriceUAE</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @if (SelectedRegionPage == "Jordan")
+                                        {
+                                            <span>Customization Fees: JOD @CustomizationFees.PriceJOR</span>
+                                        }
+                                        else if (SelectedRegionPage == "United Arab Emirates")
+                                        {
+                                            <span>Customization Fees: AED @CustomizationFees.PriceUAE</span>
+                                        }
+                                    }
+                                </small>
+                                <br />
+                            }
                             @if (OrderSummary.ColorId != 0)
                             {
                                 <small class="text-muted">

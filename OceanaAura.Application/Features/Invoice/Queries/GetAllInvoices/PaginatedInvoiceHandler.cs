@@ -137,7 +137,11 @@ namespace OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices
                         TotalPrice = cart.TotalPrice,
                         LidName = cart.LidName,
                         LidPrice = cart.LidPrice,
-                        LidId = (int)cart.LidId
+                        LidId = (int)cart.LidId,
+                        Text = cart.Text,
+                        FontFamily = cart.FontFamily,
+                        CustomizationFees = cart.CustomizationFees,
+                        IsCustomize = cart.IsCustomize
                     }).ToList()
                 };
 
@@ -146,9 +150,10 @@ namespace OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices
                 invoiceDetails.InvoiceId = invoice.InvoiceId;
                 var invoiceDetailsDto = _mapper.Map<InvoiceDetailsDto>(invoiceDetails);
                 invoiceDetailsDto.TotalLidPriceString = invoiceDetails.TotalLidPriceString;
+                invoiceDetailsDto.CustomizationFees = invoiceDetails.TotalCustomization;
+                invoiceDetailsDto.CustomizationFeesPriceString = invoiceDetails.TotalCustomizationString;
                 invoiceDetailsDtos.Add(invoiceDetailsDto);
             }
-
             return (invoiceDetailsDtos, totalRecords);
         }
     }

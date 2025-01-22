@@ -35,7 +35,8 @@ namespace OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices
         public decimal Shipping { get; set; }
         public string ShippingString { get; set; }
         public string TotalLidPriceString { get; set; }
-
+        public decimal? CustomizationFees { get; set; }
+        public string? CustomizationFeesPriceString { get; set; }
         public decimal TotalPrice { get; set; }
         public string TotalPriceString { get; set; }
         public string CreateOn { get; set; }

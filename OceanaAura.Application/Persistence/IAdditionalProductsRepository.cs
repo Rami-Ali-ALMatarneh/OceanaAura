@@ -10,5 +10,6 @@ namespace OceanaAura.Application.Persistence
     public interface IAdditionalProductsRepository
     {
         Task<List<AdditionalProduct>> GetAllPaymentMethod();
+        Task<AdditionalProduct> GetCustomizationFeesAsync();
     }
 }

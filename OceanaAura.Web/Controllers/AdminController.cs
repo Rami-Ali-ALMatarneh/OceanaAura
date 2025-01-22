@@ -16,6 +16,7 @@ using OceanaAura.Application.Features.Feedback.Command.DeleteFeedback;
 using OceanaAura.Application.Features.Feedback.Command.UpdateVisabilityFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetAllFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetFeedbacks;
+using OceanaAura.Application.Features.Invoice.Commands.DeleteInvoice;
 using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.Invoice.Queries.GetInvoices;
 using OceanaAura.Application.Features.LidProduct.Command.AddLid;
@@ -1015,7 +1016,6 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
 
             try
             {
-                // Send the command to the MediatR handler
                 await _mediator.Send(command);
 
                 // Return success response
@@ -1032,7 +1032,31 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
                 return Json(new { success = false, message = "An error occurred while deleting the order" });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteInvoice(int invoiceId)
+        {
+            // Create the DeleteOrderCommand
+            var command = new DeleteInvoiceCommand { Id = invoiceId };
 
+            try
+            {
+                // Send the command to the MediatR handler
+                await _mediator.Send(command);
+
+                // Return success response
+                return Json(new { success = true });
+            }
+            catch (NotFoundException ex)
+            {
+                // Log and return failure response if order is not found
+                return Json(new { success = false, message = "Invoice not found" });
+            }
+            catch (Exception ex)
+            {
+                // Log and return failure response for general errors
+                return Json(new { success = false, message = "An error occurred while deleting the Invoice" });
+            }
+        }
         [HttpPut]
         public async Task<IActionResult> UpdateOrderStatus(int id, int statusId)
         {

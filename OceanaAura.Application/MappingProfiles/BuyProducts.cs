@@ -6,6 +6,7 @@ using OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImg;
 using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
 using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.Invoice.Queries.GetInvoices;
+using OceanaAura.Application.Features.LookUp.Queries.CustomizationFees.Queries.GetCustomizationFees;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
@@ -85,6 +86,8 @@ namespace OceanaAura.Application.MappingProfiles
                       .ForMember(dest => dest.LidId, opt => opt.MapFrom(src => src.LidId))
                       .ReverseMap();
             CreateMap<BottleImg, filteredBottleImgCustomizeDto>();
+            CreateMap<CustomizationFeesDto, AdditionalProduct>()
+.ReverseMap();
         }
     }
 }

@@ -4,7 +4,16 @@
 
 <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+    @@media (min-width: 992px) {
+        .modal-lg, .modal-xl
 
+    {
+        max-width: 100%;
+            margin: 20px;
+    }
+    }
+</style>
 <div class="w-100">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -107,6 +116,10 @@
                                                 <th>Product Price</th>
                                                 <th>Shipping</th>
                                                 <th>Total Price</th>
+                                                <!-- Customization Columns -->
+                                                <th>Font</th>
+                                                <th>Text</th>
+                                                <th>Customization Fees</th>
                                             </tr>
                                         </thead>
                                         <tbody id="invoiceCarts">
@@ -133,6 +146,9 @@
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Lids Pricing:</strong> <span id="lidsPricing"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Customization Fees:</strong> <span id="invoiceCustomizationFees"></span></p>
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Total Price:</strong> <span id="invoiceTotalPrice"></span></p>
@@ -189,10 +205,15 @@
                         "data": null,
                         "orderable": false,
                         "render": function (data, type, row) {
+                            debugger
                             return `
                                 <a href="#" class="view-details btn btn-sm btn-info"
                                    data-details='${JSON.stringify(row)}'>
                                     <i class="fas fa-eye"></i>
+                                </a>
+                                 <a href="#" class="delete-invoice btn btn-sm btn-danger ms-2"
+                                   data-id='${row.invoiceId}'>
+                                    <i class="fas fa-trash"></i>
                                 </a>
                             `;
                         }
@@ -201,7 +222,38 @@
                 "order": [[0, 'desc']], // Default sort by InvoiceId descending
                 "pageLength": 10
             });
-
+                            // Delete order functionality
+        $(document).on('click', '.delete-invoice', function (e) {
+            e.preventDefault();
+            var invoiceId = $(this).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Are you sure you want to delete the invoice? This will cause a permanent deletion for the order and the invoice.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteInvoice", "Admin")',
+                        type: 'POST',
+                        data: { invoiceId: invoiceId },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#invoicesTable').DataTable().ajax.reload(); // Reload the invoices table
+                                Swal.fire('Deleted!', 'The invoice and associated order have been deleted.', 'success');
+                            } else {
+                                Swal.fire('Error!', 'Failed to delete the invoice.', 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Error!', 'An error occurred while deleting the invoice.', 'error');
+                        }
+                    });
+                }
+            });
+        });
             // Show invoice details in modal
             $('#invoicesTable').on('click', '.view-details', function () {
                 var invoice = $(this).data('details');
@@ -227,7 +279,14 @@
 
                 // Populate cart information
                 var cartHtml = '';
+                let customizationFeesTotal = 0;
                 invoice.carts.forEach(function (cart) {
+                    // Add customization details if applicable
+                    var fontText = cart.isCustomize ? cart.fontFamily : "N/A";
+                    var customText = cart.isCustomize ? cart.text : "N/A";
+                    var customFees = cart.isCustomize ? (cart.customizationFees || 0) : 0;
+                    customizationFeesTotal += customFees;
+
                     cartHtml += `
                         <tr>
                             <td>${cart.productName}</td>
@@ -238,6 +297,9 @@
                             <td>${cart.productPrice}</td>
                             <td>${cart.shipping}</td>
                             <td>${cart.totalPrice}</td>
+                            <td>${fontText}</td>
+                            <td>${customText}</td>
+                            <td>${customFees.toFixed(2)}</td>
                         </tr>
                     `;
                 });
@@ -248,6 +310,7 @@
                 $('#invoiceShippingCost').text(invoice.shippingString);
                 $('#invoiceTotalPrice').text(invoice.totalPriceString);
                 $('#lidsPricing').text(invoice.totalLidPriceString);
+                $('#invoiceCustomizationFees').text(invoice.customizationFeesPriceString);
 
                 // Show the modal
                 $('#invoiceDetailsModal').modal('show');

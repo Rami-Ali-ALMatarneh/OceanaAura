@@ -27,12 +27,7 @@ namespace OceanaAura.Persistence
             services.AddScoped<ILookUpRepository, LookUpRepository>();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            // Add HangFire for background jobs
-            services.AddHangfire(config =>
-                config.UseSqlServerStorage(configuration.GetConnectionString("OceanaAuraConnectionString")));
-
-            // Add Hangfire server
-            services.AddHangfireServer();
+         
             return services;
         }
     }

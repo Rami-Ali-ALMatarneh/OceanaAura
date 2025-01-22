@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OceanaAura.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDB : Migration
+    public partial class AddFontFamily : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -136,7 +136,11 @@ namespace OceanaAura.Persistence.Migrations
                     LidPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Shipping = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsCustomize = table.Column<bool>(type: "bit", nullable: false),
+                    FontFamily = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CustomizationFees = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -309,16 +313,16 @@ namespace OceanaAura.Persistence.Migrations
                 columns: new[] { "CategoryId", "CreatedBy", "CreatedOn", "Description", "Id", "IsDeleted", "ModifyBy", "ModifyOn", "NameAr", "NameEn" },
                 values: new object[,]
                 {
-                    { 1, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3630), "Region Country", 0, false, null, null, "المنطقة", "Region" },
-                    { 2, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3632), "Payment", 0, false, null, null, "طرق الدفع", "Payment" },
-                    { 3, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3635), "Language", 0, false, null, null, "لغة", "Language" },
-                    { 4, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3634), "PriceCountry", 0, false, null, null, "عملة البلد", "Price Country" },
-                    { 5, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3637), "Product Color", 0, false, null, null, "لون المنتج", "Product Color" },
-                    { 6, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3638), "Product Size", 0, false, null, null, "حجم المنتج", "Product Size" },
-                    { 7, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3640), "Product Additional", 0, false, null, null, "اضافات للمنتج", "Product Additional" },
-                    { 8, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3641), "Order Status", 0, false, null, null, "حالات الطلب", "Order Status" },
-                    { 9, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3643), "Product Category", 0, false, null, null, "نوع المنتج", "Product Category" },
-                    { 10, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3613), "MagneticLid", 0, false, null, null, "غطاء مغناطيسي", "Magnetic Lid" }
+                    { 1, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3985), "Region Country", 0, false, null, null, "المنطقة", "Region" },
+                    { 2, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3987), "Payment", 0, false, null, null, "طرق الدفع", "Payment" },
+                    { 3, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3990), "Language", 0, false, null, null, "لغة", "Language" },
+                    { 4, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3989), "PriceCountry", 0, false, null, null, "عملة البلد", "Price Country" },
+                    { 5, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3992), "Product Color", 0, false, null, null, "لون المنتج", "Product Color" },
+                    { 6, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3993), "Product Size", 0, false, null, null, "حجم المنتج", "Product Size" },
+                    { 7, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3995), "Product Additional", 0, false, null, null, "اضافات للمنتج", "Product Additional" },
+                    { 8, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3996), "Order Status", 0, false, null, null, "حالات الطلب", "Order Status" },
+                    { 9, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3998), "Product Category", 0, false, null, null, "نوع المنتج", "Product Category" },
+                    { 10, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(3968), "MagneticLid", 0, false, null, null, "غطاء مغناطيسي", "Magnetic Lid" }
                 });
 
             migrationBuilder.InsertData(
@@ -326,40 +330,40 @@ namespace OceanaAura.Persistence.Migrations
                 columns: new[] { "LookUpId", "CreatedBy", "CreatedOn", "Details", "Id", "IsDeleted", "IsSoldOut", "LookupCategoryId", "ModifyBy", "ModifyOn", "NameAr", "NameEn" },
                 values: new object[,]
                 {
-                    { 100, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3778), null, 0, false, false, 1, null, null, "الأردن", "Jordan" },
-                    { 101, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3780), null, 0, false, false, 1, null, null, "الإمارات العربية المتحدة", "United Arab Emirates" },
-                    { 200, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3782), null, 0, false, false, 2, null, null, "دفع كاش", "Cash On Delivery" },
-                    { 300, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3788), null, 0, false, false, 3, null, null, "الأنجليزي", "En" },
-                    { 301, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3789), null, 0, false, false, 3, null, null, "العربية", "Ar" },
-                    { 400, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3783), null, 0, false, false, 4, null, null, "الأردن", "JOR" },
-                    { 401, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3785), null, 0, false, false, 4, null, null, "الإمارات العربية المتحدة", "UAE" },
-                    { 402, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3786), null, 0, false, false, 4, null, null, "دولار", "USD" },
-                    { 500, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3791), null, 0, false, false, 5, null, null, "أسود", "Black" },
-                    { 501, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3792), null, 0, false, false, 5, null, null, "وردي فاتح", "Light Pink" },
-                    { 502, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3793), null, 0, false, false, 5, null, null, "أزرق كحلي", "Navy Blue" },
-                    { 503, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3795), null, 0, false, false, 5, null, null, "أخضر عسكري", "Army Green" },
-                    { 504, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3796), null, 0, false, false, 5, null, null, "أزرق فاتح", "Baby Blue" },
-                    { 505, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3798), null, 0, false, false, 5, null, null, "أزرق", "Blue" },
-                    { 506, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3799), null, 0, false, false, 5, null, null, "أخضر", "Green" },
-                    { 507, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3801), null, 0, false, false, 5, null, null, "بنفسجي", "Purple" },
-                    { 508, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3802), null, 0, false, false, 5, null, null, "أزرق سماوي", "Aqua Blue" },
-                    { 509, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3803), null, 0, false, false, 5, null, null, "وردي", "Pink" },
-                    { 510, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3805), null, 0, false, false, 5, null, null, "برتقالي", "Orange" },
-                    { 511, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3806), null, 0, false, false, 5, null, null, "أصفر", "Yellow" },
-                    { 512, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3808), null, 0, false, false, 5, null, null, "أحمر", "Red" },
-                    { 513, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3809), null, 0, false, false, 5, null, null, "لون متدرج", "Gradient Color" },
-                    { 514, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3810), null, 0, false, false, 5, null, null, "بامبي", "Bambi" },
-                    { 515, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3812), null, 0, false, false, 5, null, null, "لون البشرة", "Nude" },
-                    { 516, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3813), null, 0, false, false, 5, null, null, "أزرق كوبالت", "Cobalt Blue" },
-                    { 701, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3815), null, 0, false, false, 7, null, null, "تخصيص", "Customization" },
-                    { 702, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3816), null, 0, false, false, 2, null, null, "رسوم التوصيل", "Delivery Fee" },
-                    { 800, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3818), null, 0, false, false, 8, null, null, "معلق", "Pending" },
-                    { 801, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3819), null, 0, false, false, 8, null, null, "قيد العمل", "InProgress" },
-                    { 802, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3821), null, 0, false, false, 8, null, null, "مكتمل", "Completed" },
-                    { 803, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3822), null, 0, false, false, 8, null, null, "ملغى", "Cancelled" },
-                    { 900, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3823), null, 0, false, false, 9, null, null, "مطرة ماء", "Bottle" },
-                    { 901, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3825), null, 0, false, false, 9, null, null, "غطاء", "lid" },
-                    { 902, "admin", new DateTime(2025, 1, 20, 10, 49, 47, 230, DateTimeKind.Local).AddTicks(3872), null, 0, false, false, 9, null, null, "المحاية", "Rubber" }
+                    { 100, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4104), null, 0, false, false, 1, null, null, "الأردن", "Jordan" },
+                    { 101, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4107), null, 0, false, false, 1, null, null, "الإمارات العربية المتحدة", "United Arab Emirates" },
+                    { 200, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4108), null, 0, false, false, 2, null, null, "دفع كاش", "Cash On Delivery" },
+                    { 300, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4114), null, 0, false, false, 3, null, null, "الأنجليزي", "En" },
+                    { 301, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4116), null, 0, false, false, 3, null, null, "العربية", "Ar" },
+                    { 400, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4110), null, 0, false, false, 4, null, null, "الأردن", "JOR" },
+                    { 401, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4111), null, 0, false, false, 4, null, null, "الإمارات العربية المتحدة", "UAE" },
+                    { 402, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4113), null, 0, false, false, 4, null, null, "دولار", "USD" },
+                    { 500, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4118), null, 0, false, false, 5, null, null, "أسود", "Black" },
+                    { 501, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4119), null, 0, false, false, 5, null, null, "وردي فاتح", "Light Pink" },
+                    { 502, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4121), null, 0, false, false, 5, null, null, "أزرق كحلي", "Navy Blue" },
+                    { 503, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4122), null, 0, false, false, 5, null, null, "أخضر عسكري", "Army Green" },
+                    { 504, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4124), null, 0, false, false, 5, null, null, "أزرق فاتح", "Baby Blue" },
+                    { 505, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4125), null, 0, false, false, 5, null, null, "أزرق", "Blue" },
+                    { 506, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4127), null, 0, false, false, 5, null, null, "أخضر", "Green" },
+                    { 507, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4128), null, 0, false, false, 5, null, null, "بنفسجي", "Purple" },
+                    { 508, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4130), null, 0, false, false, 5, null, null, "أزرق سماوي", "Aqua Blue" },
+                    { 509, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4131), null, 0, false, false, 5, null, null, "وردي", "Pink" },
+                    { 510, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4132), null, 0, false, false, 5, null, null, "برتقالي", "Orange" },
+                    { 511, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4134), null, 0, false, false, 5, null, null, "أصفر", "Yellow" },
+                    { 512, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4135), null, 0, false, false, 5, null, null, "أحمر", "Red" },
+                    { 513, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4137), null, 0, false, false, 5, null, null, "لون متدرج", "Gradient Color" },
+                    { 514, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4139), null, 0, false, false, 5, null, null, "بامبي", "Bambi" },
+                    { 515, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4140), null, 0, false, false, 5, null, null, "لون البشرة", "Nude" },
+                    { 516, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4142), null, 0, false, false, 5, null, null, "أزرق كوبالت", "Cobalt Blue" },
+                    { 701, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4143), null, 0, false, false, 7, null, null, "تخصيص", "Customization" },
+                    { 702, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4145), null, 0, false, false, 2, null, null, "رسوم التوصيل", "Delivery Fee" },
+                    { 800, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4146), null, 0, false, false, 8, null, null, "معلق", "Pending" },
+                    { 801, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4147), null, 0, false, false, 8, null, null, "قيد العمل", "InProgress" },
+                    { 802, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4149), null, 0, false, false, 8, null, null, "مكتمل", "Completed" },
+                    { 803, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4150), null, 0, false, false, 8, null, null, "ملغى", "Cancelled" },
+                    { 900, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4152), null, 0, false, false, 9, null, null, "مطرة ماء", "Bottle" },
+                    { 901, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4153), null, 0, false, false, 9, null, null, "غطاء", "lid" },
+                    { 902, "admin", new DateTime(2025, 1, 22, 15, 24, 53, 618, DateTimeKind.Local).AddTicks(4154), null, 0, false, false, 9, null, null, "المحاية", "Rubber" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -37,7 +37,7 @@ namespace OceanaAura.Application.Features.ProductColor.Commands.Common
         }
         private bool BeAValidImageUrl(string url)
         {
-            var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp)$";
+            var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp|jfif)$";
             return Regex.IsMatch(url, imageExtensionsPattern, RegexOptions.IgnoreCase);
         }
         private async Task<bool> EnUnique(string name, CancellationToken token)

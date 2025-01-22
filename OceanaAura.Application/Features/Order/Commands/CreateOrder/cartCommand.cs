@@ -21,5 +21,10 @@ namespace OceanaAura.Application.Features.Order.Commands.CreateOrder
         public decimal ProductPrice { get; set; }
         public decimal Shipping { get; set; }
         public decimal TotalPrice { get; set; }
+        public bool IsCustomize { get; set; } = false;
+        public string? FontFamily { get; set; }
+        public string? Text { get; set; }
+        public decimal? CustomizationFees { get; set; }
+
     }
 }

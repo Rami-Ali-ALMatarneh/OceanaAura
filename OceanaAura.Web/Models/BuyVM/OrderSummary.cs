@@ -6,7 +6,7 @@ namespace OceanaAura.Web.Models.BuyVM
     {
         public int? OrderNumber { get; set; }
         public decimal deliveryFee { get; set; }
-
+        public decimal CustomizationFees { get; set; } = 0;
         public decimal ProductPrice{ get; set; }
         public decimal LidPrice { get; set; }
         public string LidName { get; set; }
@@ -18,7 +18,9 @@ namespace OceanaAura.Web.Models.BuyVM
         public int ColorId { get; set; }
         public int ProductId { get; set; }
         public int PaymentId { get; set; }
-
         public string? Region { get; set; }
+        public bool IsCustomize { get; set; } = false;
+        public string? Text { get; set; }
+        public string? FontFamily { get; set; }
     }
 }
