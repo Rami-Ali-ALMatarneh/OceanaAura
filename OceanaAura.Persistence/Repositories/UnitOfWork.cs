@@ -42,5 +42,7 @@ namespace OceanaAura.Persistence.Repositories
         public IAdditionalProductsRepository additionalProductsRepository => new AdditionalProductsRepository(_oeanaAuraDbContext);
 
         public IFeedbackRepository feedbackRepository => new FeedbackRepository(_oeanaAuraDbContext);
+
+        public IBottleImgRepository bottleImgRepository =>  new BottleImgRepository(_oeanaAuraDbContext);
     }
 }

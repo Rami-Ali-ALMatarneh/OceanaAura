@@ -29,6 +29,8 @@ namespace OceanaAura.Application.Contracts
 
             decimal subTotal = orderDto.Carts.Sum(cart => (cart.ProductPrice * cart.Quantity));
             decimal TotalLidsPrice = orderDto.Carts.Sum(x => x.LidPrice);
+            decimal TotalCustomizationPrice = orderDto.Carts.Sum(x => x.CustomizationFees??0);
+
             decimal shipping = 0;
 
             if (orderDto.Region == "Jordan")
@@ -40,7 +42,7 @@ namespace OceanaAura.Application.Contracts
                 shipping = PaymentMethod.FirstOrDefault()?.PriceUAE ?? 0; // Null safety
             }
 
-            decimal totalPrice = subTotal + shipping + TotalLidsPrice;
+            decimal totalPrice = subTotal + shipping + TotalLidsPrice + TotalCustomizationPrice;
             var deliveryRegion = Regions.Find(x => x.LookUpId == orderDto.RegionId)?.NameEn ?? "Unknown Region"; // Null safety
 
             // Determine the currency symbol based on the region
@@ -80,6 +82,11 @@ namespace OceanaAura.Application.Contracts
                     LidId = result.Cart.LidId,
                     LidPrice =result.Cart.LidPrice,
                     LidName = result.Cart.LidName,
+                    IsCustomize = result.Cart.IsCustomize,
+                    FontFamily = result.Cart.FontFamily,
+                    Text = result.Cart.Text,
+                    CustomizationFees = result.Cart.CustomizationFees,
+                    CustomizationFeesPriceString = $"{currencySymbol} {result.Cart.CustomizationFees?.ToString("N2")}", // Format with currency symbol
                     LidPriceString = $"{currencySymbol} {result.Cart.LidPrice.ToString("N2")}",
                     ProductName = result.Product?.Name ?? "Unknown Product", // Null safety
                     SizeName = sizes.FirstOrDefault(size => size.Id == result.Cart.SizeId)?.Size?.NameEn ?? "Unknown Size", // Null safety
@@ -96,6 +103,8 @@ namespace OceanaAura.Application.Contracts
                 Shipping = shipping,
                 ShippingString = $"{currencySymbol} {shipping.ToString("N2")}", // Format with currency symbol
                 TotalLidPriceString = $"{currencySymbol} {TotalLidsPrice.ToString("N2")}", // Format with currency symbol
+                TotalCustomization = TotalCustomizationPrice,
+                TotalCustomizationString = $"{currencySymbol} {TotalCustomizationPrice.ToString("N2")}", // Format with currency symbol
                 TotalPrice = totalPrice,
                 TotalPriceString = $"{currencySymbol} {totalPrice.ToString("N2")}" // Format with currency symbol
             };

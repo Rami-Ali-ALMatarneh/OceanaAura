@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using OceanaAura.Application.Features.LookUp.Queries.CustomizationFees.Queries.GetCustomizationFees;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.Product.Queries.GetProductDetails;
 using OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize;
@@ -36,12 +37,15 @@ namespace OceanaAura.Web.Extensions
             var paymentList = await _mediator.Send(new PaymentQuery());
             var size = await _mediator.Send(new SizeDetailsQuery(orderDetails.SizeId));
             var deliveryFee = paymentList?.FirstOrDefault();
+            var CustomizationFees = await _mediator.Send(new CustomizationFeesQuery());
+
             orderSummary.Region = Region;
            
             if (orderDetails.SizeId > 0)
             {
                 if (Region == "Jordan")
                 {
+                    orderSummary.CustomizationFees = CustomizationFees.PriceJor;
                     if (lid.PriceJOR != null)
                     {
                         orderSummary.LidPrice = lid.PriceJOR.Value;
@@ -52,6 +56,8 @@ namespace OceanaAura.Web.Extensions
                 }
                 if (Region == "United Arab Emirates")
                 {
+                    orderSummary.CustomizationFees = CustomizationFees.PriceUae;
+
                     if (lid.PriceUAE != null)
                     {
                         orderSummary.LidPrice = lid.PriceUAE.Value;
@@ -61,7 +67,8 @@ namespace OceanaAura.Web.Extensions
 
                 }
                 orderSummary.LidName = lid.Name;
-                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity)  + orderSummary.deliveryFee + orderSummary.LidPrice;
+                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity)  + orderSummary.deliveryFee + orderSummary.LidPrice + orderSummary.CustomizationFees;
+
             }
             else
             {
@@ -84,6 +91,13 @@ namespace OceanaAura.Web.Extensions
             orderSummary.Quantity = orderDetails.Quantity;
             orderSummary.ColorId = orderDetails.ColorId;
             orderSummary.LidId = orderDetails.LidId;
+            if (orderDetails.IsCustomize)
+            {
+
+                orderSummary.IsCustomize = orderDetails.IsCustomize;
+                orderSummary.Text = orderDetails.Text;
+                orderSummary.FontFamily = orderDetails.FontFamily;
+            }
             return orderSummary;
         }
         public async Task<OrderSummary> SubOrderSummaryDetails(SubOrderDetails  subOrderDetails, string Region = "Jordan")

@@ -18,6 +18,10 @@ namespace OceanaAura.Web.Models.BuyVM
         public int ColorId { get; set; }
         public int PaymentId { get; set; }
         public int ProductId { get; set; }
+        public bool IsCustomize { get; set; } = false;
+        public string? FontFamily { get; set; }
+        public string? Text { get; set; }
+        public decimal? CustomizationFees { get; set; }
 
         [Required(ErrorMessage = "Region is required.")]
         public int RegionId { get; set; }

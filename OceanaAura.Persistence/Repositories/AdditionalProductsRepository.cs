@@ -20,7 +20,13 @@ namespace OceanaAura.Persistence.Repositories
         {
             _appDbContext = appDbContext;
         }
-
+        public async Task<AdditionalProduct> GetCustomizationFeesAsync()
+        {
+            return await _appDbContext.additionalProducts
+                .Include(x => x.AdditionalProducts)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.LookUpId == (int)LookUpEnums.ProductAdditionalCategory.Customization && !x.IsDeleted);
+        }
         public async Task<List<AdditionalProduct>> GetAllPaymentMethod()
         {
             return await _appDbContext.additionalProducts.Where(x => x.LookUpId == (int)LookUpEnums.ProductAdditionalCategory.DeliveryFee && !x.IsDeleted).Include(x=>x.AdditionalProducts).AsNoTracking().ToListAsync();

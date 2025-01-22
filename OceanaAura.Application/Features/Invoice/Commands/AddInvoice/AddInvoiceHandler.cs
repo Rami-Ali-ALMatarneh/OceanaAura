@@ -76,6 +76,10 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
                     LidId = (int)cart.LidId,
                     LidName = cart.LidName,
                     LidPrice = cart.LidPrice,
+                    Text = cart.Text,
+                    CustomizationFees = cart.CustomizationFees,
+                    IsCustomize = cart.IsCustomize,
+                    FontFamily = cart.FontFamily,
                 }).ToList()
             };
             var Invoice = new OceanaAura.Domain.Entities.Invoice
@@ -154,13 +158,13 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             // Generate PDF from the page
             var pdfBytes = await page.PdfDataAsync(new PdfOptions
             {
-                Format = PaperFormat.A4,
+                Format = PaperFormat.A5,
                 MarginOptions = new MarginOptions
                 {
-                    Top = "20px",
-                    Right = "20px",
-                    Bottom = "20px",
-                    Left = "20px"
+                    Top = "10px",
+                    Right = "10px",
+                    Bottom = "10px",
+                    Left = "10px"
                 }
             });
 

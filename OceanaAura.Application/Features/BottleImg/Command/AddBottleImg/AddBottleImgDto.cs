@@ -9,7 +9,8 @@ namespace OceanaAura.Application.Features.BottleImg.Command.AddBottleImg
 {
     public class AddBottleImgDto : IRequest<int>
     {
-        public string ImgUrl { get; set; }
+        public string ImgUrlFront { get; set; }
+        public string ImgUrlBack { get; set; }
         public int SizeId { get; set; }
         public int ColorId { get; set; }
 

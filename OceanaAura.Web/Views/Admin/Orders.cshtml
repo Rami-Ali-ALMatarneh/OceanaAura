@@ -128,6 +128,10 @@
                                                 <th>Product Price</th>
                                                 <th>Shipping</th>
                                                 <th>Total Price</th>
+                                                <!-- Customization Columns -->
+                                                <th>Font</th>
+                                                <th>Text</th>
+                                                <th>Customization Fees</th>
                                             </tr>
                                         </thead>
                                         <tbody id="orderCarts">
@@ -154,6 +158,11 @@
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Lids Pricing:</strong> <span id="lidsPricing"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p><strong>Customization Fees:</strong> <span id="orderCustomizationFees"></span></p>
                                         </div>
                                     </div>
                                     <p class="text-info"><strong>Total Price:</strong> <span id="orderTotalPrice"></span></p>
@@ -221,15 +230,19 @@
                         "render": function (data, type, row) {
                             let totalPrice = 0;
                             let subtotal = 0;
+                            let customizationFees = 0;
 
-                            // Calculate subtotal for all items
+                            // Calculate subtotal and customization fees for all items
                             row.carts.forEach(cart => {
-                                subtotal += cart.productPrice * cart.quantity;
+                                subtotal += cart.productPrice * cart.quantity + cart.lidPrice;
+                                if (cart.isCustomize) {
+                                    customizationFees += cart.customizationFees || 0;
+                                }
                             });
 
                             // Apply discount once for the entire order
-                                totalPrice = subtotal ;
-                          
+                            totalPrice = subtotal + customizationFees;
+
                             // Add shipping cost based on region (applied once per order)
                             if (row.region === "Jordan" || row.region === "United Arab Emirates") {
                                 totalPrice += row.carts[0].shipping; // Assuming shipping cost is the same for all items in the order
@@ -282,8 +295,7 @@
                 "order": [[0, 'asc']],
                 "pageLength": 10
             });
-
-            // Delete order functionality
+                // Delete order functionality
             $(document).on('click', '.delete-order', function (e) {
                 e.preventDefault();
                 var orderId = $(this).data('id');
@@ -315,10 +327,8 @@
                     }
                 });
             });
-
             // Show order details in modal
             $('#ordersTable').on('click', '.view-details', function () {
-                debugger
                 var order = $(this).data('details');
                 var statuses = @Html.Raw(Json.Serialize(Status));
                 var Regions = @Html.Raw(Json.Serialize(Regions));
@@ -346,9 +356,10 @@
                 // Populate order information
                 $('#orderRegion').text(order.region);
                 $('#orderRegionId').text(regionName);
-               // Calculate total discount from all cart items
+
                 // Populate cart information
                 var cartHtml = '';
+                let customizationFeesTotal = 0;
                 order.carts.forEach(function (cart) {
                     var product = Products.find(p => p.id === cart.productId);
                     var productName = product ? product.name : "Unknown Product";
@@ -356,6 +367,12 @@
                     var colorName = color ? color.nameEn : "Unknown Color";
                     var size = Sizes.find(s => s.id === cart.sizeId);
                     var sizeName = size ? size.nameEn : "Unknown Size";
+
+                    // Add customization details if applicable
+                    var fontText = cart.isCustomize ? cart.fontFamily : "N/A";
+                    var customText = cart.isCustomize ? cart.text : "N/A";
+                    var customFees = cart.isCustomize ? (cart.customizationFees || 0) : 0;
+                    customizationFeesTotal += customFees;
 
                     cartHtml += `
                         <tr>
@@ -367,6 +384,9 @@
                             <td>${cart.productPrice}</td>
                             <td>${cart.shipping}</td>
                             <td>${cart.totalPrice}</td>
+                            <td>${fontText}</td>
+                            <td>${customText}</td>
+                            <td>${customFees.toFixed(2)}</td>
                         </tr>
                     `;
                 });
@@ -378,18 +398,17 @@
                 let totalPrice = 0;
                 let lidsPricing = 0;
                 order.carts.forEach(cart => {
-                       subtotal += cart.productPrice * cart.quantity;
-                       lidsPricing += cart.lidPrice;
-                       if (cart.discount > 0) {
-                           discountAmount += (cart.productPrice * cart.quantity);
-                       }
-                   });                // Add shipping cost based on region (applied once per order)
+                    subtotal += cart.productPrice * cart.quantity;
+                    lidsPricing += cart.lidPrice;
+                });
+
+                // Add shipping cost based on region (applied once per order)
                 if (order.region === "Jordan" || order.region === "United Arab Emirates") {
                     shippingCost = order.carts[0].shipping; // Assuming shipping cost is the same for all items in the order
                 }
 
                 // Calculate total price
-                totalPrice = subtotal + shippingCost;
+                totalPrice = subtotal + shippingCost + customizationFeesTotal + lidsPricing;
 
                 // Format the values based on the region
                 let currency = order.region === "Jordan" ? "JOD" : order.region === "United Arab Emirates" ? "AED" : "USD";
@@ -397,6 +416,7 @@
                 // Populate Pricing Details
                 $('#orderSubtotal').text(`${subtotal.toFixed(2)} ${currency}`);
                 $('#orderShippingCost').text(`${shippingCost.toFixed(2)} ${currency}`);
+                $('#orderCustomizationFees').text(`${customizationFeesTotal.toFixed(2)} ${currency}`);
                 $('#orderTotalPrice').text(`${totalPrice.toFixed(2)} ${currency}`);
                 $('#lidsPricing').text(`${lidsPricing.toFixed(2)} ${currency}`);
 
@@ -446,62 +466,5 @@
                 }
             });
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.getElementById('checkoutForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent the default form submission
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'Do you want to proceed with the purchase?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, buy now!',
-                cancelButtonText: 'No, cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit the form via AJAX
-                    fetch(this.action, {
-                        method: 'POST',
-                        body: new FormData(this)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Your order has been placed successfully!',
-                                icon: 'success',
-                                timer: 1500, // Auto-close after 1.5 seconds
-                                showConfirmButton: false
-                            }).then(() => {
-                                // Redirect to the Store action in the Home controller
-                                window.location.href = '@Url.Action("Store", "Home")';
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'Failed to place the order. Please try again.',
-                                icon: 'error',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An error occurred while processing your request. Please try again.',
-                            icon: 'error',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    });
-                }
-            });
-        });
     </script>
 }

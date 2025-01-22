@@ -33,6 +33,10 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
 
         public decimal TotalPrice { get; set; }
         public string TotalPriceString { get; set; }
-
+        public bool IsCustomize { get; set; } = false;
+        public string? FontFamily { get; set; }
+        public string? Text { get; set; }
+        public decimal? CustomizationFees { get; set; }
+        public string? CustomizationFeesPriceString { get; set; }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using OceanaAura.Application.Features.BottleImg.Command.AddBottleImg;
 using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImg;
+using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImgCustomize;
 using OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImg;
 using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
 using OceanaAura.Application.Features.Invoice.Queries.GetAllInvoices;
 using OceanaAura.Application.Features.Invoice.Queries.GetInvoices;
+using OceanaAura.Application.Features.LookUp.Queries.CustomizationFees.Queries.GetCustomizationFees;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllStatus;
@@ -52,11 +54,11 @@ namespace OceanaAura.Application.MappingProfiles
                  .ReverseMap();
             CreateMap<OrderDto, Order>()
                                  .ReverseMap();
-            CreateMap<GetOrdersDto,Order>()
+            CreateMap<GetOrdersDto, Order>()
                 .ReverseMap();
             CreateMap<CartDto, Cart>()
              .ReverseMap();
-            CreateMap<LookUpEntity,StatusDto>()
+            CreateMap<LookUpEntity, StatusDto>()
                             .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.LookUpId))
 
 .ReverseMap();
@@ -65,7 +67,7 @@ namespace OceanaAura.Application.MappingProfiles
             CreateMap<InvoiceDetails, OrderDto>()
           .ReverseMap();
 
-            CreateMap<InvoiceDetailsDto,InvoiceDetails>()
+            CreateMap<InvoiceDetailsDto, InvoiceDetails>()
         .ReverseMap();
             CreateMap<Invoice, InvoiceDtos>()
 .ReverseMap();
@@ -78,11 +80,14 @@ namespace OceanaAura.Application.MappingProfiles
 .ReverseMap();
             CreateMap<BottleImg, BottleImgDto>()
                       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                      .ForMember(dest => dest.ImgUrl, opt => opt.MapFrom(src => src.ImgUrl))
+                      .ForMember(dest => dest.ImgUrlFront, opt => opt.MapFrom(src => src.ImgUrlFront))
                       .ForMember(dest => dest.SizeId, opt => opt.MapFrom(src => src.SizeId))
                       .ForMember(dest => dest.ColorId, opt => opt.MapFrom(src => src.ColorId))
                       .ForMember(dest => dest.LidId, opt => opt.MapFrom(src => src.LidId))
                       .ReverseMap();
+            CreateMap<BottleImg, filteredBottleImgCustomizeDto>();
+            CreateMap<CustomizationFeesDto, AdditionalProduct>()
+.ReverseMap();
         }
     }
 }

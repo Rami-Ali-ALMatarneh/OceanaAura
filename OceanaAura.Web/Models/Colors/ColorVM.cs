@@ -27,14 +27,14 @@ namespace OceanaAura.Web.Models.Colors
                 .MaximumLength(50).WithMessage("{PropertyName} can have a maximum of 50 characters");
 
             RuleFor(p => p.FormFile)
-                .Must(HaveValidImageExtension).WithMessage("{PropertyName} must have a valid image file extension (.jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp)");
+                .Must(HaveValidImageExtension).WithMessage("{PropertyName} must have a valid image file extension (.jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp, .jfif)");
         }
 
         private bool HaveValidImageExtension(IFormFile file)
         {
             try
             {
-                var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp)$";
+                var imageExtensionsPattern = @"\.(jpg|jpeg|png|gif|bmp|tiff|webp|jfif)$";
                 return Regex.IsMatch(file.FileName, imageExtensionsPattern, RegexOptions.IgnoreCase);
             }
             catch

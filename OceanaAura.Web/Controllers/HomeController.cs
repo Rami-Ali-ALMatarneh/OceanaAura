@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImg;
+using OceanaAura.Application.Features.BottleImg.Queries.filteredBottleImgCustomize;
 using OceanaAura.Application.Features.ContactUs.Commands.AddContactUs;
 using OceanaAura.Application.Features.Feedback.Command.AddFeedback;
 using OceanaAura.Application.Features.Feedback.Queries.GetIsShowFeedback;
 using OceanaAura.Application.Features.Invoice.Commands.AddInvoice;
+using OceanaAura.Application.Features.LookUp.Queries.CustomizationFees.Queries.GetCustomizationFees;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllPayment;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllProductCategories;
 using OceanaAura.Application.Features.LookUp.Queries.GetAllRegions;
@@ -223,7 +225,7 @@ namespace OceanaAura.Web.Controllers
                     var product = await _mediator.Send(new ProductDetailsQuery(productId));
                     var defaultImages = product.ImageUrls.Select(imgUrl => new BottleImgDto
                     {
-                        ImgUrl = imgUrl
+                        ImgUrlFront = imgUrl
                     }).ToList();
 
                     return Ok(defaultImages);
@@ -272,8 +274,15 @@ namespace OceanaAura.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult OrderRequest([FromForm] OrderDetails orderDetails)
+        public async Task<IActionResult> OrderRequest([FromForm] OrderDetails orderDetails)
         {
+            if (!string.IsNullOrEmpty(orderDetails.FontFamily))
+            {
+                orderDetails.IsCustomize = true;
+                orderDetails.Quantity = 1;
+                var products = await _mediator.Send(new ProductQuery());
+                orderDetails.ProductId = products.FirstOrDefault(x => !x.IsHide).Id;
+            }
             HttpContext.Session.SetString("OrderDetails", JsonConvert.SerializeObject(orderDetails));
 
             return Json(new { success = true }); // Respond with success for the AJAX request
@@ -326,7 +335,12 @@ namespace OceanaAura.Web.Controllers
                 ViewBag.Payments = paymentsVM.FirstOrDefault(x => x.NameEn == "Delivery Fee" || x.NameAr == "رسوم التوصيل");
 
                 ViewBag.SelectedColorId = orderDetails?.ColorId;
-
+                if (orderDetails.IsCustomize)
+                {
+                    var CustomizationFees = await _mediator.Send(new CustomizationFeesQuery());
+                    var CustomizationFeesVM = _mapper.Map<CustomizationFeesVM>(CustomizationFees);
+                    ViewBag.CustomizationFees = CustomizationFeesVM;
+                }
                 var orderSummary = await calculateOrder.NormalOrderSummaryDetails(orderDetails, ViewBag.SelectedRegionPage);
                 ViewBag.OrderSummary = orderSummary; // Pass OrderSummary to the view
             }
@@ -383,11 +397,18 @@ namespace OceanaAura.Web.Controllers
             {
                 var orderDetailsJson = HttpContext.Session.GetString("OrderDetails");
                 var orderDetails = orderDetailsJson != null ? JsonConvert.DeserializeObject<OrderDetails>(orderDetailsJson) : null;
-
+                orderRequest.IsCustomize = orderDetails.IsCustomize;
                 // Fetch payment options
                 var payments = await _mediator.Send(new PaymentQuery());
                 var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
                 ViewBag.Payments = paymentsVM.FirstOrDefault(x => x.NameEn == "Delivery Fee" || x.NameAr == "رسوم التوصيل");
+
+                if (orderDetails.IsCustomize)
+                {
+                    var CustomizationFees = await _mediator.Send(new CustomizationFeesQuery());
+                    var CustomizationFeesVM = _mapper.Map<CustomizationFeesVM>(CustomizationFees);
+                    ViewBag.CustomizationFees = CustomizationFeesVM;
+                }
 
                 ViewBag.SelectedColorId = orderDetails?.ColorId;
 
@@ -420,7 +441,10 @@ namespace OceanaAura.Web.Controllers
                 LidName = orderRequest.LidName,
                 LidId = orderRequest.LidId,
                 LidPrice = orderRequest.LidPrice,
-                
+                Text = orderRequest.Text,
+                IsCustomize = orderRequest.IsCustomize,
+                FontFamily = orderRequest.FontFamily,
+                CustomizationFees = orderRequest.CustomizationFees
             };
 
             var OrderDto = _mapper.Map<OrderDto>(orderRequest);
@@ -625,7 +649,7 @@ namespace OceanaAura.Web.Controllers
             return Ok(new { FeedbackId = feedbackId }); // Return the created feedback ID
         }
 
-        public async Task<IActionResult> DesginEditor()
+        public async Task<IActionResult> DesignEditor()
         {
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
@@ -646,6 +670,24 @@ namespace OceanaAura.Web.Controllers
             ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
             return View();
+        }
+        public async Task<IActionResult> GetFilteredBottleImg(int sizeId, int colorId, int lidId)
+        {
+            var query = new filteredBottleImgCustomizeQuery
+            {
+                SizeId = sizeId,
+                ColorId = colorId,
+                LidId = lidId
+            };
+
+            var result = await _mediator.Send(query);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
     }
 }

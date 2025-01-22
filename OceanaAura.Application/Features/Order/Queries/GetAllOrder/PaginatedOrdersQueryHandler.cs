@@ -77,7 +77,11 @@ namespace OceanaAura.Application.Features.Order.Queries.GetAllOrder
                     LidPrice = cart.LidPrice,
                     ProductPrice = cart.ProductPrice,
                     Shipping = cart.Shipping,
-                    TotalPrice = cart.TotalPrice
+                    TotalPrice = cart.TotalPrice,
+                    Text = cart.Text,
+                    FontFamily = cart.FontFamily,
+                    CustomizationFees = cart.CustomizationFees,
+                    IsCustomize = cart.IsCustomize
                 }).ToList()
             }).ToList();
 

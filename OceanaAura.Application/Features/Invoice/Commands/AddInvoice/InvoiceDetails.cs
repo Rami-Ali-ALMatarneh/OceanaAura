@@ -38,6 +38,8 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
         public decimal TotalPrice { get; set; }
         public string TotalPriceString { get; set; }
         public string TotalLidPriceString { get; set; }
+        public decimal TotalCustomization { get; set; }
+        public string TotalCustomizationString { get; set; }
 
         //Cart Details
         public string CreateOn { get; set; }

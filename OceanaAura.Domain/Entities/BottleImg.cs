@@ -11,7 +11,8 @@ namespace OceanaAura.Domain.Entities
     public class BottleImg
     {
         public int Id { get; set; }
-        public string ImgUrl { get; set; }
+        public string ImgUrlFront { get; set; }
+        public string ImgUrlBack { get; set; }
         public int SizeId { get; set; }
         public int ColorId { get; set; }
         public int LidId { get; set; }
