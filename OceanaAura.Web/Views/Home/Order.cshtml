@@ -266,37 +266,41 @@
                                 @if (SelectedLanguage == "ar")
                                 {
                                     <span>
-                                        نريدك أن تكون راضيًا عن شرائك. توضح سياسة الاسترجاع والاستبدال هذه الظروف التي يمكنك بموجبها طلب استرداد أو استبدال.
+                                        نهدف إلى إرضائك بشرائك. توضح سياسة الاسترجاع والاستبدال هذه الظروف التي يمكنك بموجبها طلب استرداد أو استبدال.
                                         <br><br>
                                         <strong>الأهلية للاسترداد:</strong>
                                         <br>
-                                        - يجب إرجاع المنتجات أو الخدمات خلال يومين من الشراء.
+                                        - يجب إرجاع المنتجات خلال يومين من الشراء.
                                         <br>
                                         - يجب أن تكون المنتجات غير مستخدمة وبحالتها الأصلية.
+                                        <br><br>
+                                        <strong>*كيفية طلب الاسترداد*</strong>
                                         <br>
-                                        - قد لا تكون المنتجات الرقمية قابلة للاسترداد إلا إذا كانت معيبة.
+                                        اتصل بفريق خدمة العملاء على <strong class="text-decoration-underline text-info">oaforce@outlook.com</strong> مع تفاصيل طلبك وسبب الاسترداد. سيقوم فريقنا بتقييم طلبك.
                                         <br><br>
-                                        <strong>كيفية طلب الاسترداد:</strong> اتصل بفريق خدمة العملاء على [معلومات الاتصال الخاصة بك] مع تفاصيل طلبك وسبب الاسترداد. سيقوم فريقنا بتقييم طلبك.
-                                        <br><br>
-                                        <strong>عملية الاسترداد:</strong> بمجرد الموافقة، سيتم إصدار المبالغ المستردة إلى طريقة الدفع الأصلية. عادةً ما تستغرق المبالغ المستردة [عدد] أيام عمل للمعالجة.
+                                        <strong>*عملية الاسترداد*</strong>
+                                        <br>
+                                        بمجرد الموافقة، سيتم إصدار المبلغ المسترد إلى طريقة الدفع الأصلية. عادةً ما يستغرق الاسترداد من 10 إلى 15 يوم عمل.
                                     </span> <!-- Arabic text -->
                                 }
                                 else
                                 {
                                     <span>
-                                        We want you to be satisfied with your purchase. This Refund and Exchange Policy outlines the circumstances under which you can request a refund or exchange.
+                                        We aim to make you satisfied with your purchase. This Refund and Exchange Policy outlines the circumstances under which you can request a refund or exchange.
                                         <br><br>
                                         <strong>Eligibility for Refund:</strong>
                                         <br>
-                                        - Products or services must be returned within 2 days of purchase.
+                                        - Products must be returned within 2 days of purchase.
                                         <br>
                                         - Products must be unused and in original condition.
+                                        <br><br>
+                                        <strong>*How to Request a Refund*</strong>
                                         <br>
-                                        - Digital products may be non-refundable unless defective.
+                                        Contact our customer service team at <strong class="text-decoration-underline text-info">oaforce@outlook.com</strong> with your order details and reason for refund. Our team will assess your request.
                                         <br><br>
-                                        <strong>How to Request a Refund:</strong> Contact our customer service team at [Your Contact Info] with your order details and reason for refund. Our team will assess your request.
-                                        <br><br>
-                                        <strong>Refund Process:</strong> Once approved, refunds will be issued to the original payment method. Refunds typically take [number] business days to process.
+                                        <strong>*Refund Process*</strong>
+                                        <br>
+                                        Once approved, refund will be issued to the original payment method. Refund typically takes 10-15 business days to process.
                                     </span> <!-- English text -->
                                 }
                             </p>
@@ -320,31 +324,26 @@
                                 @if (SelectedLanguage == "ar")
                                 {
                                     <span>
-                                        <strong>وقت الشحن:</strong> يتم معالجة الطلبات خلال 1-3 أيام عمل. تختلف أوقات الشحن حسب موقعك، عادةً بين [X] و [Y] يومًا.
-                                        <br><br>
-                                        <strong>رسوم الشحن:</strong>
+                                        <strong>*وقت التوصيل*</strong>
                                         <br>
-                                        - شحن مجاني للطلبات التي تزيد عن [$X].
+                                        - يتم معالجة الطلبات خلال 1-3 أيام عمل.
                                         <br>
-                                        - رسوم شحن قياسية بقيمة [$X] تنطبق على الطلبات الأقل من [$X].
+                                        - تختلف أوقات التوصيل حسب موقعك، عادةً بين 2 و 7 أيام.
                                     </span> <!-- Arabic text -->
                                 }
                                 else
                                 {
                                     <span>
-                                        <strong>Shipping Time:</strong> Orders are processed within 1-3 business days. Shipping times vary depending on your location, typically between [X] and [Y] days.
-                                        <br><br>
-                                        <strong>Shipping Fees:</strong>
+                                        <strong>*Delivery Time*</strong>
                                         <br>
-                                        - Free shipping on orders over [$X].
+                                        - Orders are processed within 1-3 business days.
                                         <br>
-                                        - Standard shipping fee of [$X] applies to orders under [$X].
+                                        - Delivery times vary depending on your location, typically between 2 and 7 days.
                                     </span> <!-- English text -->
                                 }
                             </p>
                         </div>
                     </div>
-
                     <!-- Checkbox for Agreement -->
                     <div class="form-check mb-4">
                         <input class="form-check-input m-0" type="checkbox" id="agreeToPolicy" required>
@@ -519,20 +518,34 @@
                             <span>Subtotal</span> <!-- English text -->
                         }
                     </span>
-                    <span>@OrderSummary.ProductPrice</span>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        <span>JOD @OrderSummary.ProductPrice</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+                        <span>AED @OrderSummary.ProductPrice</span>
+                    }
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <span>
                         @if (SelectedLanguage == "ar")
                         {
-                            <span>الدفع</span> <!-- Arabic text -->
+                            <span>رسوم التوصيل</span> <!-- Arabic text -->
                         }
                         else
                         {
-                            <span>Payment</span> <!-- English text -->
+                            <span>Delivery Fees</span> <!-- English text -->
                         }
                     </span>
-                    <span id="ShippingFee">@OrderSummary.deliveryFee</span>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        <span id="ShippingFee">JOD @OrderSummary.deliveryFee</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+                        <span id="ShippingFee">AED @OrderSummary.deliveryFee</span>
+                    }
                 </div>
 
                 <hr class="my-3">

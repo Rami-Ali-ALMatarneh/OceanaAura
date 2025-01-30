@@ -459,7 +459,45 @@ namespace OceanaAura.Web.Controllers
 
             return View();
         }
+        public async Task<IActionResult> Feedback()
+        {
+            var categories = await _mediator.Send(new CategoriesQuery());
+            var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
+            var regions = await _mediator.Send(new RegionQuery());
+            var regionsVM = _mapper.Map<List<RegionVM>>(regions);
+            ViewBag.Regions = regionsVM;
+
+            var products = await _mediator.Send(new ProductQuery());
+
+            // Filter products that are not hidden and get the first one (or null)
+            var product = products.Where(x => !x.IsHide).FirstOrDefault();
+
+            // Map the single product to ProductVMHome
+            var productVM = _mapper.Map<ProductVMHome>(product);
+
+            // Assign the mapped product to ViewBag.Product
+            ViewBag.Product = productVM;
+
+            var Lids = await _mediator.Send(new LidsQuery());
+            var LidsVM = _mapper.Map<List<LidsVM>>(Lids);
+            ViewBag.Lids = LidsVM;
+
+
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
+
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+
+            ViewBag.Colors = colorsVM;
+            ViewBag.ProductCategory = categoriesVM;
+            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
+            ViewBag.CartSummaryList = GetCartSummaryFromSession(ViewBag.SelectedRegionPage);
+            return View();
+        }
         private List<OrderSummary> GetCartSummaryFromSession(string region)
         {
             // Retrieve the cart summary list from session
@@ -688,6 +726,33 @@ namespace OceanaAura.Web.Controllers
             }
 
             return Ok(result);
+        }
+        public async Task<IActionResult> Help()
+        {
+            var colors = await _mediator.Send(new GetColorQuery());
+            var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+            ViewBag.Colors = colorsVM;
+            var lids = await _mediator.Send(new LidsQuery());
+            var lidsVM = _mapper.Map<List<LidsVM>>(lids);
+            ViewBag.Lids = lidsVM;
+            var sizes = await _mediator.Send(new SizeQuery());
+            var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+            ViewBag.Sizes = sizesVM;
+            var Lids = await _mediator.Send(new LidsQuery());
+            var LidsVM = _mapper.Map<List<LidsVM>>(Lids);
+            ViewBag.Lids = LidsVM;
+            var regions = await _mediator.Send(new RegionQuery());
+            var regionsVM = _mapper.Map<List<RegionVM>>(regions);
+            ViewBag.Regions = regionsVM;
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
+
+            ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
+            ViewBag.SelectedLanguage = GetSelectedLanguageFromSession(); // Set the selected language in ViewBag
+            ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
+            return View();
         }
     }
 }

@@ -99,7 +99,7 @@
                         "orderable": false,
                         "render": function (data, type, row) {
                             return `
-                                <a href="#" class="delete-bottle-img btn btn-sm btn-danger ms-2" data-id='${row.id}' data-img-url='${row.imgUrl}'>
+                                <a href="#" class="delete-bottle-img btn btn-sm btn-danger ms-2" data-id='${row.id}' data-img-urlfront='${row.imgUrlFront}' data-img-urlback='${row.imgUrlBack}'>
                                     <i class="fas fa-trash"></i>
                                 </a>
                             `;
@@ -114,7 +114,9 @@
             $(document).on('click', '.delete-bottle-img', function (e) {
                 e.preventDefault();
                 var bottleImgId = $(this).data('id');
-                var imgUrl = $(this).data('img-url'); // Get the image URL
+                var imgUrlfront = $(this).data('img-urlfront'); // Get the image URL
+                var imgUrlback = $(this).data('img-urlback'); // Get the image URL
+
 
                 // SweetAlert confirmation dialog
                 Swal.fire({
@@ -130,7 +132,11 @@
                         $.ajax({
                             url: '@Url.Action("DeleteBottleImg", "Admin")', // Replace with your controller name
                             type: 'POST',
-                            data: { id: bottleImgId, imgUrl: imgUrl }, // Send both ID and image URL
+                            data: {
+                                id: bottleImgId,
+                                imgUrlFront: imgUrlfront,
+                                imgUrlBack: imgUrlback
+                            }, // Send both ID and image URLs        
                             success: function (response) {
                                 if (response.success) {
                                     // Reload the DataTable

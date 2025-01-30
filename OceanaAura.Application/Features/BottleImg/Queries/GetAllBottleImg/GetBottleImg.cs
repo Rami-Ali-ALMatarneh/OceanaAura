@@ -10,6 +10,8 @@ namespace OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImg
     {
         public int Id { get; set; }
         public string ImgUrlFront { get; set; }
+        public string ImgUrlBack { get; set; }
+
         public int SizeId { get; set; }
         public int ColorId { get; set; }
 

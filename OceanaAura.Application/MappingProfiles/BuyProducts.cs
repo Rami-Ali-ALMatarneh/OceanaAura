@@ -81,6 +81,7 @@ namespace OceanaAura.Application.MappingProfiles
             CreateMap<BottleImg, BottleImgDto>()
                       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                       .ForMember(dest => dest.ImgUrlFront, opt => opt.MapFrom(src => src.ImgUrlFront))
+                      .ForMember(dest => dest.ImgUrlBack, opt => opt.MapFrom(src => src.ImgUrlBack))
                       .ForMember(dest => dest.SizeId, opt => opt.MapFrom(src => src.SizeId))
                       .ForMember(dest => dest.ColorId, opt => opt.MapFrom(src => src.ColorId))
                       .ForMember(dest => dest.LidId, opt => opt.MapFrom(src => src.LidId))

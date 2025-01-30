@@ -4,6 +4,7 @@
     var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
 }
 @model OceanaAura.Web.Models.Home.ContactUsVM
+
 <style>
     html[dir="rtl"] body {
         text-align: right;
@@ -33,6 +34,7 @@
         text-align: left !important;
     }
 </style>
+
 <!-- Navigation Header -->
 <div class="container my-4">
     <div class="row">
@@ -149,24 +151,33 @@
                 </div>
             </div>
 
-            <!-- Website Section -->
+            <!-- Instagram Section -->
             <div class="d-flex">
                 <div class="me-4">
-                    <i class="fas fa-globe" style="font-size: 32px;"></i>
+                    <i class="fab fa-instagram" style="font-size: 32px;"></i> <!-- Instagram icon -->
                 </div>
                 <div>
                     <h5 class="mb-2">
                         @if (SelectedLanguage == "ar")
                         {
-                            <span>الموقع الإلكتروني</span> <!-- Arabic text -->
+                            <span>إنستغرام</span> <!-- Arabic text -->
                         }
                         else
                         {
-                            <span>Website</span> <!-- English text -->
+                            <span>Instagram</span> <!-- English text -->
                         }
                     </h5>
                     <p class="mb-0">
-                        <a class="link-secondary text-decoration-none" href="https://www.yoursite.com" target="_blank">yoursite.com</a>
+                        <a class="link-secondary text-decoration-underline" href="https://www.instagram.com/oaforce/?hl=en" target="_blank">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>تابعنا على إنستغرام</span> <!-- Arabic text -->
+                            }
+                            else
+                            {
+                                <span>Follow us on Instagram</span> <!-- English text -->
+                            }
+                        </a>
                     </p>
                 </div>
             </div>

@@ -13,15 +13,17 @@
     <div class="container">
         <div class="row justify-content-center">
             <h3 class="section-title text-center mt-4" data-aos="fade-up">
+                <span class="mb-2">OCEANA AURA</span>
                 @if (SelectedLanguage == "ar")
                 {
-                    <span>تحرك بأناقة</span>
+                    <small class="d-block fs-6">تحرك بأناقة</small>
                 }
                 else
                 {
-                    <span>MOVE WITH STYLE</span>
+                    <small class="d-block fs-6">MOVE WITH STYLE</small>
                 }
             </h3>
+
             <div class="col-md-6 text-center" data-aos="fade-up" data-aos-delay="300">
                 <p>
                     @if (SelectedLanguage == "ar")
@@ -33,7 +35,7 @@
                     else
                     {
                         <span>
-                            Discover the perfect blend of style, elegance, and performance with OA bottles. Designed to keep you moving in style, our bottles are available in a variety of sizes and colors to meet your taste. From sleek elegance to bold vibrance, OA has the ideal bottle for every moment that will keep your drinks cold and hot for hours.
+                            Stay refreshed and inspired with Oceana Aura. Our sleek, elegantly designed water bottles keep your drinks just the right temperature, whether you need a cold sip after a workout or a hot beverage during your commute. Available in a range of colors and sizes.
                         </span>
                     }
                 </p>
@@ -208,11 +210,11 @@
             <h4 class="text-uppercase m-0 d-flex align-item">
                 @if (SelectedLanguage == "ar")
                 {
-                    <span>منتجاتنا</span>
+                        <span>زجاجاتنا</span>
                 }
                 else
                 {
-                    <span>Our Products</span>
+                    <span>Our Bottles</span>
                 }
             </h4>
             <a asp-action="Store" asp-controller="Home" class="btn-link">
@@ -222,7 +224,7 @@
                 }
                 else
                 {
-                    <span>View All Products</span>
+                        <span>View All Bottles</span>
                 }
             </a>
         </div>
@@ -355,7 +357,7 @@
                             else
                             {
                                 <span>
-                                    Dignissim lacus, turpis ut suspendisse vel tellus. Turpis purus, gravida orci, fringilla a. Ac sed eu fringilla odio mi. Consequat pharetra at magna imperdiet cursus ac faucibus sit libero. Ultricies quam nunc, lorem sit lorem urna, pretium aliquam ut. In vel, quis donec dolor id in. Pulvinar commodo mollis diam sed facilisis at cursus imperdiet cursus ac faucibus sit faucibus sit libero.
+                                    Discover hydration like never before with Oceana Aura, which is more than just a water bottle brand; it’s a lifestyle choice for those who value both form and function whether you’re tackling a workout or heading to a meeting. Our collection of premium bottles keeps your drinks cold or hot for hours, all while offering a variety of colors and sizes that fit seamlessly into your routine. Plus, you can make it truly yours by customizing your bottle with your name.
                                 </span>
                             }
                         </p>
@@ -411,10 +413,11 @@
         </div>
     </div>
 </div>
-<!-- start Feedback section  -->
-@if(VisibilityFeedback!=null){
-    <section id="Feedback" class="feedback-section py-5 bg-light">
-        <div class="container text-center">
+<!-- Start Feedback Section -->
+@if (VisibilityFeedback != null)
+{
+    <section id="Feedback" class="feedback-section py-5 bg-light ">
+        <div class="container text-center pt-5 pb-5">
             <h3 class="section-title text-center mb-5">
                 @if (SelectedLanguage == "ar")
                 {
@@ -422,7 +425,7 @@
                 }
                 else
                 {
-                    <span>WE LOVE GOOD COMPLIMENT</span>
+                    <span>WE LOVE GOOD COMPLIMENTS</span>
                 }
             </h3>
             <div id="feedbackCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -458,19 +461,41 @@
                         </div>
                     }
                 </div>
+                <!-- Custom Carousel Controls -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon p-3" aria-hidden="true"></span>
+                    <span class="carousel-control-prev-icon custom-carousel-control" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#feedbackCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon p-3" aria-hidden="true"></span>
-                    <span class="visually-hidden p-3">Next</span>
+                    <span class="carousel-control-next-icon custom-carousel-control" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
                 </button>
             </div>
         </div>
     </section>
-
 }
+
+<!-- Add Custom CSS for Carousel Controls -->
+<style>
+    .custom-carousel-control {
+        width: 50px; /* Adjust width */
+        height: 50px; /* Adjust height */
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: invert(1); /* Make the arrow icons white */
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 25px; /* Allow the controls to take up necessary space */
+    }
+</style>
 <!-- end Feedback section  -->
 <section class="instagram position-relative">
     <div class="d-flex justify-content-center w-100 position-absolute bottom-0 z-1">
@@ -606,7 +631,6 @@
 
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
-        background-color: black;
         border-radius: 50%;
         padding: 15px;
     }

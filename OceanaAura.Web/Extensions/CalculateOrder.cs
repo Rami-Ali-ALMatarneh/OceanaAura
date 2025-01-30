@@ -67,19 +67,30 @@ namespace OceanaAura.Web.Extensions
 
                 }
                 orderSummary.LidName = lid.Name;
-                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity)  + orderSummary.deliveryFee + orderSummary.LidPrice + orderSummary.CustomizationFees;
+                orderSummary.Total = (orderSummary.ProductPrice * orderDetails.Quantity)  + orderSummary.deliveryFee + orderSummary.LidPrice ;
+                if (orderDetails.IsCustomize)
+                {
 
+                    orderSummary.IsCustomize = orderDetails.IsCustomize;
+                    orderSummary.Text = orderDetails.Text;
+                    orderSummary.FontFamily = orderDetails.FontFamily;
+                    orderSummary.Total += orderSummary.CustomizationFees;
+                }
             }
             else
             {
                 if (Region == "Jordan")
                 {
+                    orderSummary.CustomizationFees = CustomizationFees.PriceJor;
+
                     orderSummary.ProductPrice = (decimal)product.PriceJOR;
                     orderSummary.deliveryFee = deliveryFee.PriceJOR;
 
                 }
                 if (Region == "United Arab Emirates")
                 {
+                    orderSummary.CustomizationFees = CustomizationFees.PriceJor;
+
                     orderSummary.ProductPrice = (decimal)product.PriceUAE;
                     orderSummary.deliveryFee = deliveryFee.PriceUAE;
 

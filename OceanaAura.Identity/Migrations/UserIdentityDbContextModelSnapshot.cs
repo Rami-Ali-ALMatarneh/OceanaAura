@@ -255,7 +255,7 @@ namespace OceanaAura.Identity.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a7ca81d6-c175-45e3-8177-edd53ab61fb7",
+                            ConcurrencyStamp = "a14381a2-0236-46a9-9c65-5e9358c94775",
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "opscode59@gmail.com",
@@ -263,9 +263,9 @@ namespace OceanaAura.Identity.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "OPSCODE59@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGPtos0aQjfw+BMXJi6+1GniDYjMGZ6yviiQRPiXvwBptpYY1279qz17UObDOsetBA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEgooiIHuP6AR7jqSpJafGV9T8w7dEE6FpmQbmrSRApxINkxwSM+RGiF+6Fjg58fow==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d079086b-fe59-413b-9ca0-cde3500376df",
+                            SecurityStamp = "863388f6-3451-4478-ac1c-a9d263e2c52f",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

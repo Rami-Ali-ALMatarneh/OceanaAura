@@ -461,11 +461,16 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
 
     var addBottleImgDto = _mapper.Map<AddBottleImgDto>(model);
     var bottleImgId = await _mediator.Send(addBottleImgDto);
+            if (bottleImgId <= 0)
+            {
+                 FileExtensions.DeleteFileFromFileFolder(model.ImgUrlFront, webHostEnvironment);
+                FileExtensions.DeleteFileFromFileFolder(model.ImgUrlBack, webHostEnvironment);
 
-    return RedirectToAction("BottleImg", "Admin");
+            }
+            return RedirectToAction("BottleImg", "Admin");
 }
         [HttpPost]
-        public async Task<IActionResult> DeleteBottleImg(int id, string imgUrl)
+        public async Task<IActionResult> DeleteBottleImg(int id, string imgUrlFront, string imgUrlBack)
         {
             try
             {
@@ -473,9 +478,11 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
                 var result = await _mediator.Send(new DeleteBottleImg { BottleImgId = id });
 
                 // Delete the image file from the server
-                if (!string.IsNullOrEmpty(imgUrl))
+                if (!string.IsNullOrEmpty(imgUrlFront) && !string.IsNullOrEmpty(imgUrlBack))
                 {
-                    FileExtensions.DeleteFileFromFileFolder(imgUrl, webHostEnvironment);
+                    FileExtensions.DeleteFileFromFileFolder(imgUrlFront, webHostEnvironment);
+                    FileExtensions.DeleteFileFromFileFolder(imgUrlBack, webHostEnvironment);
+
                 }
 
                 return Json(new { success = true, message = "Bottle image deleted successfully." });

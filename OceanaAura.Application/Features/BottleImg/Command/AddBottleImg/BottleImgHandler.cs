@@ -27,8 +27,8 @@ namespace OceanaAura.Application.Features.BottleImg.Command.AddBottleImg
         public async Task<int> Handle(AddBottleImgDto request, CancellationToken cancellationToken)
         {
             var BottleImg = _mapper.Map<OceanaAura.Domain.Entities.BottleImg>(request);
-            _unitOfWork.GenericRepository<OceanaAura.Domain.Entities.BottleImg>().AddAsync(BottleImg);
-            _unitOfWork.CompleteSaveAppDbAsync();
+         await _unitOfWork.GenericRepository<OceanaAura.Domain.Entities.BottleImg>().AddAsync(BottleImg);
+           await _unitOfWork.CompleteSaveAppDbAsync();
             return BottleImg.Id;
         }
     }

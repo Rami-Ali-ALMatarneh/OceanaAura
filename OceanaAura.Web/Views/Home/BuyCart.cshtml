@@ -446,7 +446,14 @@
                                 <span>Subtotal</span> <!-- English text -->
                             }
                         </span>
-                        <span>@orderSummary.ProductPrice</span>
+                        @if (SelectedRegionPage == "Jordan")
+                        {
+                            <span>JOD @orderSummary.ProductPrice</span>
+                        }
+                        @if (SelectedRegionPage == "United Arab Emirates")
+                        {
+                            <span>AED @orderSummary.ProductPrice</span>
+                        }
                     </div>
                 }
                 <hr class="my-3">
@@ -455,21 +462,21 @@
                     <span>
                         @if (SelectedLanguage == "ar")
                         {
-                            <span>الدفع</span> <!-- Arabic text -->
+                            <span>رسوم التوصيل</span> <!-- Arabic text -->
                         }
                         else
                         {
-                            <span>Payment</span> <!-- English text -->
+                            <span>Delivery Fee</span> <!-- English text -->
                         }
                     </span>
                     @if (SelectedRegionPage == "Jordan")
                     {
-                        <span>@Payments.PriceJOR</span>
+                        <span>JOD @Payments.PriceJOR</span>
                     }
                     @if (SelectedRegionPage == "United Arab Emirates")
                     {
 
-                        <span>@Payments.PriceUAE</span>
+                        <span>AED @Payments.PriceUAE</span>
                     }
                 </div>
                 <!-- Total Calculation -->

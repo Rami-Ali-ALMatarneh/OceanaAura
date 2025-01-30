@@ -1,0 +1,137 @@
+﻿@{
+    var product = (OceanaAura.Web.Models.Products.ProductVMHome)ViewBag.Product;
+    var sizes = (List<OceanaAura.Web.Models.Size.SizeVM>)ViewBag.Sizes;
+    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
+    var categories = (List<OceanaAura.Web.Models.Lookup.CategoryVM>)ViewBag.ProductCategory;
+    var SelectedRegionPage = ViewBag.SelectedRegionPage;
+    var Lids = (List<OceanaAura.Web.Models.BuyVM.LidsVM>)ViewBag.Lids;
+    var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
+    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
+}
+<div class="container">
+
+    <!-- Feedback Form Section -->
+    <div class="feedback-form p-4 mt-5 border rounded shadow-sm bg-light">
+        <h3 class="text-black mb-3">
+            @if (SelectedLanguage == "ar")
+            {
+                <span>اترك تعليقك</span> <!-- Arabic text -->
+            }
+            else
+            {
+                <span>Leave Your Feedback</span> <!-- English text -->
+            }
+        </h3>
+        <form id="feedbackForm">
+            <input type="hidden" name="ProductId" value="@product.Id" />
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>البريد الإلكتروني</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Email</span> <!-- English text -->
+                    }
+                </label>
+                <input type="email" class="form-control" id="email" name="Email" required />
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>التقييم</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Rating</span> <!-- English text -->
+                    }
+                </label>
+                <select class="form-select" id="rating" name="Rating" required>
+                    <option value="" disabled selected>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>اختر التقييم</span> <!-- Arabic text -->
+                        }
+                        else
+                        {
+                            <span>Select Rating</span> <!-- English text -->
+                        }
+                    </option>
+                    <option value="1">1 @(SelectedLanguage == "ar" ? "نجمة" : "Star")</option>
+                    <option value="2">2 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                    <option value="3">3 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                    <option value="4">4 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                    <option value="5">5 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>التعليق</span> <!-- Arabic text -->
+                    }
+                    else
+                    {
+                        <span>Feedback</span> <!-- English text -->
+                    }
+                </label>
+                <textarea class="form-control" id="content" name="Content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-dark">
+                @if (SelectedLanguage == "ar")
+                {
+                    <span>إرسال التعليق</span> <!-- Arabic text -->
+                }
+                else
+                {
+                    <span>Submit Feedback</span> <!-- English text -->
+                }
+            </button>
+        </form>
+        <div class="alert-container mt-3"></div>
+    </div>
+
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script src="~/js/FeedbackValidation.js"></script>
+ <script>
+                $('#feedbackForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent traditional form submission
+
+                const form = $(this);
+                const formData = form.serializeArray(); // Get form data as an array of key-value pairs
+                const jsonData = {}; // Convert to JSON object
+
+                // Convert form data to JSON
+                $.each(formData, function (index, field) {
+                    jsonData[field.name] = field.value;
+                });
+
+                const url = '@Url.Action("AddFeedback", "Home")'; // URL for the AddFeedback action
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    contentType: 'application/json', // Set content type to JSON
+                    data: JSON.stringify(jsonData), // Convert JSON object to string
+                    success: function (response) {
+                        if (response.feedbackId) {
+                            alert('@(SelectedLanguage == "ar" ? "تم إرسال التعليق بنجاح!" : "Feedback submitted successfully!")');
+                            form.trigger("reset"); // Reset the form
+                        } else {
+                            showError(form, '@(SelectedLanguage == "ar" ? "فشل إرسال التعليق. يرجى المحاولة مرة أخرى." : "Failed to submit feedback. Please try again.")');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error submitting feedback:', error);
+                        showError(form, '@(SelectedLanguage == "ar" ? "حدث خطأ أثناء إرسال التعليق. يرجى المحاولة مرة أخرى." : "An error occurred while submitting feedback. Please try again.")');
+                    }
+                });
+            });
+        });
+    </script>
+    }

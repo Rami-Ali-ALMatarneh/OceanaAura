@@ -36,6 +36,10 @@
         color: gray;
         font-weight: bold;
     }
+
+    .buyImg{
+        max-height: 700px;
+    }
 </style>
 
 <div class="container mt-5">
@@ -48,8 +52,8 @@
                     <div class="carousel-inner">
                         @for (int i = 0; i < product.ImageUrls.Count; i++)
                         {
-                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="~/File/ColorsImg/@product.ImageUrls[i]" class="d-block w-100" alt="Product Image">
+                            <div class="carousel-item @(i == 0 ? "active" : "") buyImg">
+                                <img src="~/File/ColorsImg/@product.ImageUrls[i]" class="d-block w-100 h-50" alt="Product Image">
                             </div>
                         }
                     </div>
@@ -347,89 +351,6 @@
             }
         </h2>
     }
-
-    <!-- Feedback Form Section -->
-    <div class="feedback-form p-4 mt-5 border rounded shadow-sm bg-light">
-        <h3 class="text-black mb-3">
-            @if (SelectedLanguage == "ar")
-            {
-                <span>اترك تعليقك</span> <!-- Arabic text -->
-            }
-            else
-            {
-                <span>Leave Your Feedback</span> <!-- English text -->
-            }
-        </h3>
-        <form id="feedbackForm">
-            <input type="hidden" name="ProductId" value="@product.Id" />
-            <div class="mb-3">
-                <label for="email" class="form-label">
-                    @if (SelectedLanguage == "ar")
-                    {
-                        <span>البريد الإلكتروني</span> <!-- Arabic text -->
-                    }
-                    else
-                    {
-                        <span>Email</span> <!-- English text -->
-                    }
-                </label>
-                <input type="email" class="form-control" id="email" name="Email" required />
-            </div>
-            <div class="mb-3">
-                <label for="rating" class="form-label">
-                    @if (SelectedLanguage == "ar")
-                    {
-                        <span>التقييم</span> <!-- Arabic text -->
-                    }
-                    else
-                    {
-                        <span>Rating</span> <!-- English text -->
-                    }
-                </label>
-                <select class="form-select" id="rating" name="Rating" required>
-                    <option value="" disabled selected>
-                        @if (SelectedLanguage == "ar")
-                        {
-                            <span>اختر التقييم</span> <!-- Arabic text -->
-                        }
-                        else
-                        {
-                            <span>Select Rating</span> <!-- English text -->
-                        }
-                    </option>
-                    <option value="1">1 @(SelectedLanguage == "ar" ? "نجمة" : "Star")</option>
-                    <option value="2">2 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
-                    <option value="3">3 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
-                    <option value="4">4 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
-                    <option value="5">5 @(SelectedLanguage == "ar" ? "نجوم" : "Stars")</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="content" class="form-label">
-                    @if (SelectedLanguage == "ar")
-                    {
-                        <span>التعليق</span> <!-- Arabic text -->
-                    }
-                    else
-                    {
-                        <span>Feedback</span> <!-- English text -->
-                    }
-                </label>
-                <textarea class="form-control" id="content" name="Content" rows="3" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-dark">
-                @if (SelectedLanguage == "ar")
-                {
-                    <span>إرسال التعليق</span> <!-- Arabic text -->
-                }
-                else
-                {
-                    <span>Submit Feedback</span> <!-- English text -->
-                }
-            </button>
-        </form>
-        <div class="alert-container mt-3"></div>
-    </div>
 </div>
 
 <!-- Custom CSS to remove number spinner -->

@@ -193,16 +193,15 @@
     </svg>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-uppercase fs-6 p-3 border-bottom align-items-center">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-uppercase fs-6 p-3 pt-1 pb-1 border-bottom align-items-center">
         <div class="container-fluid">
             <div class="row justify-content-between align-items-center w-100">
                 <!-- Logo Section -->
                 <div class="col-auto d-flex justify-content-center align-items-center">
                     <a class="navbar-brand text-white d-flex align-items-center" asp-action="Index" asp-controller="Home">
                         <!-- Logo Image -->
-                        <img src="~/File/HomeImg/logo.png" style="height: 70px;">
+                        <img src="~/File/HomeImg/logo.png" style="height: 110px;">
                         <!-- Logo Text -->
-                        <p class="m-0 text-white" style="font-size:20px">Oceana Aura</p>
                     </a>
                 </div>
 
@@ -290,6 +289,20 @@
                                         }
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-action="Help" asp-controller="Home">
+                                        @if (SelectedLanguage == "ar")
+                                        {
+                                            <span>
+                                                الشروط والأحكام
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>Terms & Conditions</span>
+                                        }
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -319,6 +332,46 @@
                                 <li style="cursor: pointer">
                                     <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('ar')">
                                         <span>العربية</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Shop Dropdown for Mobile -->
+                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0 d-lg-none">
+                            <a class="nav-link dropdown-toggle text-white" id="dropdownShopMobile" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>المتجر</span>
+                                }
+                                else
+                                {
+                                    <span>Shop</span>
+                                }
+                            </a>
+                            <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownShopMobile">
+                                <li>
+                                    <a asp-action="Store" asp-controller="Home" class="dropdown-item text-white">
+                                        @if (SelectedLanguage == "ar")
+                                        {
+                                            <span>منتجات المتجر</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Shop Products</span>
+                                        }
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-action="DesignEditor" asp-controller="Home" class="dropdown-item text-white">
+                                        @if (SelectedLanguage == "ar")
+                                        {
+                                            <span>اصنع زجاجتك الخاصة</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Create Your Own Bottle</span>
+                                        }
                                     </a>
                                 </li>
                             </ul>
@@ -502,37 +555,7 @@
     <footer id="footer" class="mt-5">
         <div class="container">
             <div class="row d-flex flex-wrap justify-content-between py-5">
-                <div class="col-md-3 col-sm-6">
-                    <div class="footer-menu footer-menu-001">
-                        <div class="footer-intro mb-4">
-                            <a class="navbar-brand" asp-action="Index" asp-controller="Home">
-                                <h5 class="widget-title text-uppercase mb-4 text-black">Oceana Aura</h5>
-                            </a>
-                        </div>
-                        <p>
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>جرافيدا ماسا فولوتبات أينيو أوديو. أميت، توربيس إيرات نولام فرينجيلا إليمنتوم ديام في. نيسي، بوروس فيتا، أولتريس نونك. سيت أك سيت سوسيبيت هيندريت.</span>
-                            }
-                            else
-                            {
-                                <span>Gravida massa volutpat aenean odio. Amet, turpis erat nullam fringilla elementum diam in. Nisi, purus vitae, ultrices nunc. Sit ac sit suscipit hendrerit.</span>
-                            }
-                        </p>
-                        <div class="social-links">
-                            <ul class="list-unstyled d-flex flex-wrap gap-3">
-                                <li>
-                                    <a href="https://www.instagram.com/oaforce" class="text-secondary">
-                                        <svg width="24" height="24" viewBox="0 0 24 24">
-                                            <use xlink:href="#instagram"></use>
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="footer-menu footer-menu-002">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -617,10 +640,22 @@
                                     }
                                 </a>
                             </li>
+                            <li class="menu-item">
+                                <a asp-action="Help" asp-controller="Home" class="item-anchor">
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        <span>المساعدة والمعلومات</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Help</span>
+                                    }
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="footer-menu footer-menu-003">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -634,16 +669,6 @@
                         </h5>
                         <ul class="menu-list list-unstyled text-uppercase border-animation-left fs-6">
                             <li class="menu-item">
-                                <a href="#" class="item-anchor">
-                                    @if (SelectedLanguage == "ar")
-                                    {
-                                        <span>تتبع طلبك</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Track Your Order</span>
-                                    }
-                                </a>
                             </li>
                             <li class="menu-item">
                                 <a href="#" class="item-anchor">
@@ -669,22 +694,10 @@
                                     }
                                 </a>
                             </li>
-                            <li class="menu-item">
-                                <a asp-controller="Home" class="item-anchor">
-                                    @if (SelectedLanguage == "ar")
-                                    {
-                                        <span>اتصل بنا</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Contact Us</span>
-                                    }
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="footer-menu footer-menu-004 border-animation-left">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -716,6 +729,19 @@
                                 <span>Do you need support? Give us a call. <a href="tel:+43 720 11 52 78" class="item-anchor">+43 720 11 52 78</a></span>
                             }
                         </p>
+
+                        <!-- Social Media Links -->
+                        <div class="social-links">
+                            <ul class="list-unstyled d-flex flex-wrap gap-3">
+                                <li>
+                                    <a href="https://www.instagram.com/oaforce" target="_blank" class="text-secondary">
+                                        <svg width="24" height="24" viewBox="0 0 24 24">
+                                            <use xlink:href="#instagram"></use>
+                                        </svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -747,7 +773,57 @@
             </div>
         </div>
     </footer>
-
+    <!-- Region Selection Popup Modal -->
+    <div class="modal fade" id="regionSelectionModal" tabindex="-1" aria-labelledby="regionSelectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="regionSelectionModalLabel">
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>اختر منطقتك</span>
+                        }
+                        else
+                        {
+                            <span>Select Your Region</span>
+                        }
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>من فضلك اختر منطقتك لتجربة أفضل.</span>
+                        }
+                        else
+                        {
+                            <span>Please select your region for a better experience.</span>
+                        }
+                    </p>
+                    <ul class="list-unstyled">
+                        @if (ViewBag.Regions != null)
+                        {
+                            foreach (var region in ViewBag.Regions as List<RegionVM>)
+                            {
+                                <li style="cursor: pointer" class="mb-2">
+                                    <a class="d-flex align-items-center text-dark" onclick="setSelectedRegion('@region.NameEn')">
+                                        @if (region.NameEn == "Jordan")
+                                        {
+                                            <img src="~/File/Images/Flag_of_Jordan.svg" alt="Jordan" style="width: 20px; height: 15px;" class="me-2"> <span>Jordan (JOD)</span>
+                                        }
+                                        @if (region.NameEn == "United Arab Emirates")
+                                        {
+                                            <img src="~/File/Images/Flag_of_the_United_Arab_Emirates.svg" alt="UAE" style="width: 20px; height: 15px;" class="me-2"> <span>United Arab Emirates (AED)</span>
+                                        }
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Scripts -->
     <script src="~/js/HomeJs/js/jquery.min.js"></script>
     <script src="~/js/HomeJs/js/plugins.js"></script>
@@ -837,6 +913,42 @@
                             });
                         }
                     });
+                }
+            });
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check if the region has already been selected
+            const isRegionSelected = sessionStorage.getItem("regionSelected");
+
+            if (!isRegionSelected) {
+                // Show the region selection modal
+                const regionModal = new bootstrap.Modal(document.getElementById('regionSelectionModal'));
+                regionModal.show();
+
+                // Set a flag in session storage to indicate the region has been selected
+                sessionStorage.setItem("regionSelected", "true");
+            }
+        });
+
+        function setSelectedRegion(selectedRegion) {
+            $.ajax({
+                url: '@Url.Action("SetSelectedRegion", "Home")',
+                type: 'POST',
+                data: { selectedRegion: selectedRegion },
+                success: function (response) {
+                    if (response.success) {
+                        // Close the modal
+                        const regionModal = bootstrap.Modal.getInstance(document.getElementById('regionSelectionModal'));
+                        regionModal.hide();
+
+                        // Reload the page to apply the selected region
+                        location.reload();
+                    }
+                },
+                error: function () {
+                    alert('There was an error setting the region.');
                 }
             });
         }

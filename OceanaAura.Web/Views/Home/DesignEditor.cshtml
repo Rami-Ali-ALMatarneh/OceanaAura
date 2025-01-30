@@ -68,7 +68,7 @@
                 <div class="card-body w-100 h-100">
                     <!-- Size Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الحجم" : "Select Size")</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر حجم " : "Select Bottle Size")</h4>
                         <select id="size-select" class="form-select">
                             @foreach (var size in sizes)
                             {
@@ -79,7 +79,7 @@
 
                     <!-- Color Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر اللون" : "Select Color")</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر لون " : "Select Bottle Color")</h4>
                         <div class="d-flex flex-wrap gap-3">
                             @foreach (var color in colors)
                             {
@@ -99,7 +99,7 @@
 
                     <!-- Lid Selection -->
                     <div class="mb-4">
-                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الغطاء" : "Select Lid")</h4>
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الغطاء" : "Select Your Lid")</h4>
                         <select id="lid-select" class="form-select">
                             @foreach (var lid in Lids)
                             {
@@ -119,27 +119,25 @@
                             <img id="front-image" src="" alt="Front Image" style="display: none;">
                         </div>
                     </div>
-
+                    <!-- Font Selection -->
+                    <div class="mb-4">
+                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Your Font")</h4>
+                        <select id="font-select" class="form-select">
+                            <option value="">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Your Font")</option>
+                            <option value="Evil Empire">Evil Empire (English)</option>
+                            <option value="DecoType-Thuluth-II">DecoType-Thuluth-II (عربي)</option>
+                        </select>
+                    </div>
                     <!-- Add Text Section -->
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</h4>
-                        <input type="text" id="text-input" class="form-control mb-4" placeholder="@(SelectedLanguage == "ar" ? "أدخل النص (من 2 إلى 10 أحرف)" : "Enter text (2 to 10 characters)")">
+                        <input type="text" id="text-input" class="form-control mb-4" placeholder="@(SelectedLanguage == "ar" ? "أدخل النص (من 2 إلى 20 أحرف)" : "Enter text (2 to 20 characters)")">
                         <button id="add-text" class="btn btn-dark w-100">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</button>
                     </div>
 
                     <!-- Remove Text Section -->
                     <div class="mb-4">
                         <button id="remove-text" class="btn btn-danger w-100">@(SelectedLanguage == "ar" ? "إزالة النص المحدد" : "Remove Selected Text")</button>
-                    </div>
-
-                    <!-- Font Selection -->
-                    <div class="mb-4">
-                        <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Font")</h4>
-                        <select id="font-select" class="form-select">
-                            <option value="">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Font")</option>
-                            <option value="Evil Empire">Evil Empire</option>
-                            <option value="DecoType-Thuluth-II">DecoType-Thuluth-II</option>
-                        </select>
                     </div>
 
                     <!-- Export Design Button -->
@@ -181,7 +179,7 @@
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
         });
-         const text = new fabric.Text('', {
+       const text = new fabric.Text('', {
         left: 100,
         top: 100,
         fontFamily: 'Evil Empire', // Set the font family
@@ -245,7 +243,7 @@
                         fabric.Image.fromURL(backImageUrl, function (img) {
                             // Calculate the scaling factor to fit the image within the canvas
                             const scaleFactor = Math.min(
-                                canvas.getWidth() / img.width, // Scale based on width
+                                canvas.getWidth(), // Scale based on width
                                 canvas.getHeight() / img.height // Scale based on height
                             );
 
@@ -273,7 +271,7 @@
                 },
                 error: function (xhr, status, error) {
                     const selectedLanguage = '@SelectedLanguage';
-                    const message = selectedLanguage === 'ar' ? 'فشل في تحميل صورة الزجاجة!' : 'Failed to load bottle image!';
+                    const message = selectedLanguage === 'ar' ? 'المنتوج غير متوفر في المخزون!' : 'Product is out of stock!';
                     const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
 
                     Swal.fire({
@@ -321,10 +319,10 @@
                 return; // Stop execution if text input is empty
             }
 
-            // Validate if text input is exactly 10 characters
-            if (textInput.length < 2 || textInput.length > 10) {
+            // Validate if text input is between 2 and 20 characters
+            if (textInput.length < 2 || textInput.length > 20) {
                 const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'يجب أن يكون النص من 2 إلى 10 أحرف!' : 'Text must be between 2 to 10 characters!';
+                const message = selectedLanguage === 'ar' ? 'يجب أن يكون النص من 2 إلى 20 أحرف!' : 'Text must be between 2 to 20 characters!';
                 const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
 
                 Swal.fire({
@@ -333,14 +331,31 @@
                     text: message,
                     confirmButtonText: confirmButtonText
                 });
-                return; // Stop execution if text input is not 10 characters
+                return; // Stop execution if text input is not between 2 and 20 characters
+            }
+
+            // Validate if text length is between 16 and 20 and contains spaces
+            if (textInput.length >= 16 && textInput.length <= 20 && textInput.includes(' ')) {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'النص الذي يتراوح بين 16 و 20 حرفًا لا يمكن أن يحتوي على مسافات!' : 'Text between 16 to 20 characters cannot contain spaces!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+                return; // Stop execution if text length is between 16 and 20 and contains spaces
             }
 
             // Check if a text object already exists on the canvas
             const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
             if (existingText) {
                 const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'يمكن إضافة نص واحد فقط!' : 'Only one text can be added!';
+                const message = selectedLanguage === 'ar'
+                    ? 'يمكن إضافة نص واحد فقط! الرجاء الضغط على "إزالة النص المحدد" للبدء من جديد.'
+                    : 'Only one text can be added! Please press on “remove selected text” to start over';
                 const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
 
                 Swal.fire({
@@ -352,33 +367,53 @@
                 return; // Stop execution if a text object already exists
             }
 
-            // Add text to the canvas
+            // Add text to the canvas at the bottom center of the image
             const text = new fabric.Textbox(textInput, {
-                left: 100,
-                top: 100,
-                fontSize: 30,
+                left: canvas.getWidth() / 2, // Center horizontally
+                top: canvas.getHeight() - 70, // Position at the bottom with some padding
+                fontSize: 34,
                 fill: 'silver', // Use selected color
                 fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont, // Use the selected font
+                originX: 'center', // Center the text horizontally
+                originY: 'bottom', // Align the text to the bottom
+                textAlign: 'center', // Center the text
+                lockMovementX: true, // Prevent horizontal movement
+                lockMovementY: true, // Prevent vertical movement
+                lockRotation: true, // Prevent rotation
+                lockScalingX: true, // Prevent horizontal scaling
+                lockScalingY: true, // Prevent vertical scaling
+                hasControls: false, // Hide controls
+                hasBorders: false, // Hide borders
+                selectable: false // Make it non-selectable
             });
+
             canvas.add(text);
         });
 
         // Remove Selected Text
         $('#remove-text').click(function () {
             const activeObject = canvas.getActiveObject(); // Get the selected object
-            if (activeObject && activeObject.type === 'textbox') {
-                canvas.remove(activeObject); // Remove the selected text object
-            } else {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد نص لإزالته!' : 'Please select a text to remove!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
+            // If a text object is selected, remove it
+            if (activeObject && activeObject.type === 'textbox') {
+                canvas.remove(activeObject);
+            } else {
+                // If no object is selected, remove all text objects
+                const textObjects = canvas.getObjects().filter(obj => obj.type === 'textbox');
+                if (textObjects.length > 0) {
+                    textObjects.forEach(text => canvas.remove(text));
+                } else {
+                    const selectedLanguage = '@SelectedLanguage';
+                    const message = selectedLanguage === 'ar' ? 'لا يوجد نص لإزالته!' : 'No text to remove!';
+                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                        confirmButtonText: confirmButtonText
+                    });
+                }
             }
         });
 
@@ -537,8 +572,7 @@
                 });
             }
         });
-    });
-
+    })
     // Resize Canvas on Window Resize
     function resizeCanvas() {
         const canvas = document.getElementById('design-canvas');
