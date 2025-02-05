@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 using OceanaAura.Web.Models.Colors;
 using System.Text.RegularExpressions;
 
@@ -9,6 +10,8 @@ namespace OceanaAura.Web.Models.Size
         public int? Id { get; set; } 
         public string NameEn { get; set; }
         public string NameAr { get; set; }
+        public IFormFile photo { get; set; }
+        public string? ImgUrl { get; set; }
 
         public string PriceJOR { get; set; }
         public string PriceUAE { get; set; }
@@ -18,6 +21,10 @@ namespace OceanaAura.Web.Models.Size
     {
         public SizeVMValidator()
         {
+            RuleFor(p=>p.photo)
+                .NotNull().WithMessage("Image is required.")
+                .Must(HaveValidImageExtension).WithMessage("Invalid file format. Supported formats: .jpg, .jpeg, .png, .gif, .jfif, .svg.")
+                .When(p => string.IsNullOrEmpty(p.ImgUrl)); // Validate only if ImgUrl is not provided
             RuleFor(p => p.NameEn)
            .NotEmpty().WithMessage("NameEn is required")
            .MinimumLength(2).WithMessage("NameEn  must be at least 2 characters long")
@@ -39,6 +46,13 @@ namespace OceanaAura.Web.Models.Size
             RuleFor(p => p.PriceUSD)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .Must(BeValidPrice).WithMessage("Price USD must be a valid number greater than zero.");
+        }
+        private bool HaveValidImageExtension(IFormFile file)
+        {
+            if (file == null) return true; // Skip validation if file is null
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".jfif", ".svg" };
+            var fileExtension = System.IO.Path.GetExtension(file.FileName).ToLower();
+            return validExtensions.Contains(fileExtension);
         }
         private bool BeValidPrice(string price)
         {

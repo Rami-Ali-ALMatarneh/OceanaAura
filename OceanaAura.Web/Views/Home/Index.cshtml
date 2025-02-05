@@ -29,7 +29,7 @@
                     @if (SelectedLanguage == "ar")
                     {
                         <span>
-                            اكتشف المزيج المثالي من الأناقة والأداء مع زجاجات OA. مصممة لإبقائك تتحرك بأناقة، تتوفر زجاجاتنا بمجموعة متنوعة من الأحجام والألوان لتلبي ذوقك. من الأناقة البسيطة إلى الحيوية الجريئة، OA لديها الزجاجة المثالية لكل لحظة تحافظ على مشروباتك باردة أو ساخنة لساعات.
+                            ابقَ منتعشًا ومُلهمًا مع OCEANA AURA. زجاجات المياه المصممة بأناقة تمنحك الراحة في كل لحظة، حيث تحافظ على مشروباتك في درجة الحرارة المثالية، سواء كانت باردة بعد التمرين أو دافئة خلال تنقلاتك. متوفرة بألوان وأحجام متنوعة.
                         </span>
                     }
                     else
@@ -220,7 +220,7 @@
             <a asp-action="Store" asp-controller="Home" class="btn-link">
                 @if (SelectedLanguage == "ar")
                 {
-                    <span>عرض جميع المنتجات</span>
+                        <span>عرض جميع الزجاجات</span>
                 }
                 else
                 {
@@ -278,25 +278,29 @@
             }
             <span class="position-absolute bottom-0 start-50 translate-middle-x bg-dark" style="width: 80px; height: 3px;"></span>
         </h3>
+
         <div class="row justify-content-center g-4">
             @foreach (var size in sizes)
             {
                 <div class="col-lg-2 col-md-4 col-sm-6 col-12" data-aos="fade-up" data-aos-delay="0">
                     <div class="card text-center shadow h-100 transition-all hover-shadow">
                         <div class="card-header bg-dark text-white py-3">
-                            <h5 class="card-title mb-0 fw-bold">@size.NameEn</h5>
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <h5 class="card-title mb-0 fw-bold text-uppercase">@size.NameAr</h5>
+                            }
+                            else
+                            {
+                                <h5 class="card-title mb-0 fw-bold text-uppercase">@size.NameEn</h5>
+                            }
                         </div>
+
                         <div class="card-body d-flex flex-column justify-content-between py-4">
-                            <p class="card-text h4 fw-bold text-primary mb-3">
-                                @if (SelectedRegionPage == "Jordan")
-                                {
-                                    @size.PriceJOR <span class="fs-6">JOD</span>
-                                }
-                                @if (SelectedRegionPage == "United Arab Emirates")
-                                {
-                                    @size.PriceUAE <span class="fs-6">AED</span>
-                                }
-                            </p>
+                            <!-- Image Container -->
+                            <div class="image-container d-flex align-items-center justify-content-center p-2" style="height: 180px;">
+                                <img src="~/File/HomeImg/@size.ImgUrl" alt="@size.NameEn" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: cover;">
+                            </div>
+
                             <a asp-action="store" asp-controller="Home" class="btn btn-outline-dark btn-lg w-100 fw-bold">
                                 @if (SelectedLanguage == "ar")
                                 {
@@ -312,8 +316,10 @@
                 </div>
             }
         </div>
+
     </div>
 </section>
+
 
 <!-- About Section -->
 <section id="aboutus" class="collection bg-light position-relative py-5">
@@ -340,7 +346,7 @@
                         <h3 class="element-title text-uppercase">
                             @if (SelectedLanguage == "ar")
                             {
-                                <span>عن Oceana Aura</span>
+                                <span>من نحن</span>
                             }
                             else
                             {
@@ -351,7 +357,7 @@
                             @if (SelectedLanguage == "ar")
                             {
                                 <span>
-                                    ديجنيسيم لاكوس، توربيس أوت سوسبينديس فيل تيلوس. توربيس بوروس، جرافيدا أورسي، فرينجيلا أ. أس سيد يو فرينجيلا أوديو مي. كونسيكوات فاريترا أت ماجنا إمبيرديت كورسوس أس فوبيبوس سيت ليبرو. أولتريسيس كوام نونك، لوريم سيت لوريم أورنا، بريتيوم أليكوام أوت. إن فيل، كويس دونك دولور إد إن. بولفينار كومودو موليس ديام سيد فاسيليسيس أت كورسوس إمبيرديت كورسوس أس فوبيبوس سيت فوبيبوس سيت ليبرو.
+                                    اكتشف طريقة جديدة للترطيب مع OCEANA AURA، التي تمثل أكثر من مجرد علامة لزجاجات المياه؛ إنها خيار أسلوب حياة لأولئك الذين يقدرون الجمال والعملية في آن واحد، سواء كنت في صدد أداء تمرين أو متجهًا لاجتماع. تشكيلة زجاجاتنا الفاخرة تحافظ على مشروباتك باردة أو دافئة لساعات، وتتوفر بعدة ألوان وأحجام تناسب كل احتياج. كما يمكنك تخصيص زجاجتك بإضافة اسمك، لتجعلها مصممة خصيصاً لك.
                                 </span>
                             }
                             else
@@ -406,7 +412,7 @@
             <div class="modal-body p-0 m-sm-3">
                 <!-- Video Element -->
                 <video class="w-100" muted loop autoplay>
-                    <source src="~/File/HomeImg/video.mp4" type="video/mp4">
+                    <source src="~/File/HomeImg/videoBottle.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
@@ -421,7 +427,9 @@
             <h3 class="section-title text-center mb-5">
                 @if (SelectedLanguage == "ar")
                 {
-                    <span>نحب الإطراء الجيد</span>
+                    <span>
+                        آرائكم تهمنا
+                    </span>
                 }
                 else
                 {

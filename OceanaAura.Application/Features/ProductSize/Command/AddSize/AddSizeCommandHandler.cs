@@ -50,6 +50,7 @@ namespace OceanaAura.Application.Features.ProductSize.Command.AddSize
             var size = new Domain.Entities.ProductSize
             {
                 SizeId = data.LookUpId,
+                ImgUrl = request.ImgUrl,
                 PriceJOR = request.PriceJOR,
                 PriceUAE = request.PriceUAE,
                 PriceUSD = request.PriceUSD,

@@ -122,7 +122,7 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             {
                 To = new List<MailboxAddress>
                 {
-                    new MailboxAddress("Admin", "sam.samer200@gmail.com")
+                    new MailboxAddress("Admin", "info@oceanaaura.com")
                 },
                 Subject = "Request an Invoice",
                 Body = emailBodyAdmin,

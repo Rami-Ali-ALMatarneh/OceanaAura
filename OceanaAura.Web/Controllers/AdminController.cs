@@ -64,6 +64,7 @@ using OceanaAura.Web.Models.Colors;
 using OceanaAura.Web.Models.Lookup;
 using OceanaAura.Web.Models.Products;
 using OceanaAura.Web.Models.Size;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Security.Policy;
@@ -807,17 +808,24 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
             return Ok(jsonData);
         }
         [HttpPost]
-        public async Task<JsonResult> DeleteSize(int id)
+        public async Task<JsonResult> DeleteSize(int id, string imgUrl)
         {
             try
             {
                 var command = new DeleteSizeCommand { Id = id };
                 await _mediator.Send(command); // Use MediatR to handle the command
-                return Json(new { success = true, message = "Message deleted successfully!" });
+
+                // Optionally, delete the image file from the server
+                if (!string.IsNullOrEmpty(imgUrl))
+                {
+                    FileExtensions.DeleteFileFromFileFolder(imgUrl, webHostEnvironment);
+                }
+
+                return Json(new { success = true, message = "Size deleted successfully!" });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred while deleting the message." });
+                return Json(new { success = false, message = "An error occurred while deleting the size." });
             }
         }
 
@@ -833,7 +841,6 @@ public async Task<IActionResult> AddBottleImg(AddBottleImg model)
                 // Validate the SizeVM using the validator
                 var validator = new SizeVMValidator();
                 var validationResult = await validator.ValidateAsync(sizeVM);
-
                 if (!validationResult.IsValid)
                 {
                     // Clear any existing model errors before adding new ones

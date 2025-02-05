@@ -15,6 +15,7 @@ namespace OceanaAura.Domain.Entities
     {
         [Key]
         public int Id { get; set; }
+        public string ImgUrl { get; set; }
 
         [ForeignKey("Size")]
         public int SizeId { get; set; }

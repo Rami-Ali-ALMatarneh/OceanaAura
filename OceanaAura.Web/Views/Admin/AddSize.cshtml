@@ -34,6 +34,13 @@
                             <span asp-validation-for="NameAr" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
+                            <label for="photo" class="form-label">Upload Bottle Size Image</label>
+                            <div class="custom-file">
+                                <input asp-for="photo" type="file" class="form-control-file" id="Img" accept="image/*" />
+                            </div>
+                            <span asp-validation-for="photo" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
                             <label for="ProductPriceJOR" class="form-label">Price in JOR</label>
                             <input type="text" class="form-control" id="ProductPriceJOR" name="PriceJOR" asp-for="PriceJOR" placeholder="0.00 JD" />
                             <span asp-validation-for="PriceJOR" class="text-danger"></span>

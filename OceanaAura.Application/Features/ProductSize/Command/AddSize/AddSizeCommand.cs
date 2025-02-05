@@ -12,6 +12,8 @@ namespace OceanaAura.Application.Features.ProductSize.Command.AddSize
     {
         public string NameEn { get; set; }
         public string NameAr { get; set; }
+        public string ImgUrl { get; set; }
+
         public decimal PriceJOR { get; set; }
         public decimal PriceUAE { get; set; }
         public decimal PriceUSD { get; set; }

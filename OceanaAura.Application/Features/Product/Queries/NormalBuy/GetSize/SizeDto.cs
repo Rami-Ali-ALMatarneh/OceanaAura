@@ -11,6 +11,8 @@ namespace OceanaAura.Application.Features.Product.Queries.NormalBuy.GetSize
         public int Id { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; }
+        public string ImgUrl { get; set; }
+
         public decimal PriceJor { get; set; }
         public decimal PriceUae { get; set; }
         public decimal PriceUsd { get; set; }
