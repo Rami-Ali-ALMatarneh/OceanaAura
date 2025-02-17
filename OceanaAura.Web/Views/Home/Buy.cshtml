@@ -37,8 +37,24 @@
         font-weight: bold;
     }
 
-    .buyImg{
-        max-height: 700px;
+    /* Spinner Styles */
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 1000;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
     }
 </style>
 
@@ -497,7 +513,7 @@
                 // Validate the form before sending data
                 if (validateForm(form)) {
                     $.ajax({
-                        url: url,
+                                               url: url,
                         type: 'POST',
                         data: formData,
                         success: function (response) {
@@ -616,6 +632,14 @@
                 const lidId = $('#lid').val();
                 const colorId = $('input[name="ColorId"]:checked').val();
 
+                // Show spinner
+                const spinner = `<div class="spinner-container">
+                                    <div class="spinner-border text-dark" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>`;
+                $('#productCarousel').append(spinner);
+
                 // Make an AJAX request to fetch filtered images
                 $.ajax({
                     url: '@Url.Action("GetFilteredBottleImages", "Home")', // Replace with your controller name
@@ -637,7 +661,7 @@
                                 const activeClass = index === 0 ? 'active' : '';
                                 $('#productCarousel .carousel-inner').append(`
                                     <div class="carousel-item ${activeClass}">
-                                        <img src="/File/ColorsImg/${imgUrl}" class="d-block w-100" alt="Product Image">
+                                        <img src="/File/ColorsImg/${imgUrl}" class="d-block w-100" loading="lazy" alt="Product Image">
                                     </div>
                                 `);
                             });
@@ -647,7 +671,7 @@
                                 const activeClass = index === 0 ? 'active' : '';
                                 $('#productCarousel .carousel-inner').append(`
                                     <div class="carousel-item ${activeClass}">
-                                        <img src="/File/ColorsImg/${img.imgUrlFront}" class="d-block w-100" alt="Product Image">
+                                        <img src="/File/ColorsImg/${img.imgUrlFront}" class="d-block w-100" loading="lazy" alt="Product Image">
                                     </div>
                                 `);
                             });
@@ -658,6 +682,10 @@
                     },
                     error: function (xhr, status, error) {
                         console.error('Error fetching filtered images:', error);
+                    },
+                    complete: function () {
+                        // Hide spinner after the request is complete
+                        $('.spinner-container').remove();
                     }
                 });
             }

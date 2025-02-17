@@ -27,7 +27,8 @@ namespace OceanaAura.Web.Models.BuyVM
         public int RegionId { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
-        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$", ErrorMessage = "Please provide a valid Gmail address.")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|yahoo\.com|hotmail\.com)$",
+    ErrorMessage = "Please provide a valid Gmail, Outlook, Yahoo, or Hotmail address.")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Phone number is required.")]

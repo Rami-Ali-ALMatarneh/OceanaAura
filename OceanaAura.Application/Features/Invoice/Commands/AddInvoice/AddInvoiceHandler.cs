@@ -19,6 +19,10 @@ using System.Text;
 using System.Threading.Tasks;
 using MimeKit;
 
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+
 namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
 {
     public class AddInvoiceHandler : IRequestHandler<InvoiceCommand, int>
@@ -95,54 +99,47 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             var emailBodyAdmin = await _viewRenderService.RenderToStringAsync("_OrderEmailAdmin", InvoiceDetails);
 
             // Convert HTML to PDF using PuppeteerSharp
-            var pdfBytes = await ConvertHtmlToPdfAsync(emailBody);
-            var pdfBytesAdmin = await ConvertHtmlToPdfAsync(emailBodyAdmin);
+            //var pdfBytes = await ConvertHtmlToPdfAsync(emailBody);
+            //var pdfBytesAdmin = await ConvertHtmlToPdfAsync(emailBodyAdmin);
 
             // Create email message
             var emailMessage = new EmailMessage
             {
-                To = new List<MailboxAddress>
-                    {
-                     new MailboxAddress("Ocean Aura", order.Email)
-                    },
+                To = order.Email,
                 Subject = "Request an Invoice",
                 Body = emailBody,
-                Attachments = new List<EmailAttachment>
-        {
-            new EmailAttachment
-            {
-                FileName = $"Invoice_{Invoice.InvoiceId}.pdf",
-                ContentType = "application/pdf",
-                Content = pdfBytes
-            }
+                //Attachments = new List<EmailAttachment>
+                //{
+                //    new EmailAttachment
+                //    {
+                //        FileName = $"Invoice_{Invoice.InvoiceId}.pdf",
+                //        ContentType = "application/pdf",
+                //        Content = pdfBytes
+                //    }
 
-        }
+                //}
             };
             var emailMessageAdmin = new EmailMessage
             {
-                To = new List<MailboxAddress>
-                {
-                    new MailboxAddress("Admin", "info@oceanaaura.com")
-                },
+                To = "info@oceanaaura.com",
                 Subject = "Request an Invoice",
                 Body = emailBodyAdmin,
-                Attachments = new List<EmailAttachment>
-        {
-            new EmailAttachment
-            {
-                FileName = $"Invoice_{Invoice.InvoiceId}.pdf",
-                ContentType = "application/pdf",
-                Content = pdfBytesAdmin
-            }
+                //Attachments = new List<EmailAttachment>
+                //{
+                //    new EmailAttachment
+                //    {
+                //        FileName = $"Invoice_{Invoice.InvoiceId}.pdf",
+                //        ContentType = "application/pdf",
+                //        Content = pdfBytesAdmin
+                //    }
 
-        }
+                //}
             };
-            await _emailService.SendEmailAsync(emailMessage);
-            await _emailService.SendEmailAsync(emailMessageAdmin);
-
+            _emailService.SendEmail(emailMessage);
+            _emailService.SendEmail(emailMessageAdmin);
             return Invoice.InvoiceId;
         }
-
+      
         private async Task<byte[]> ConvertHtmlToPdfAsync(string htmlContent)
         {
             // Download the Chromium browser if not already installed
@@ -158,7 +155,7 @@ namespace OceanaAura.Application.Features.Invoice.Commands.AddInvoice
             // Generate PDF from the page
             var pdfBytes = await page.PdfDataAsync(new PdfOptions
             {
-                Format = PaperFormat.A5,
+                Format = PaperFormat.A3,
                 MarginOptions = new MarginOptions
                 {
                     Top = "10px",

@@ -1045,7 +1045,7 @@ a {
 }
 
 .video .video-player a {
-  position: relative;
+  position: initial;
 }
 
 .video .video-player svg {
@@ -1133,7 +1133,6 @@ a {
 --------------------------------------------------------------*/
 .instagram .insta-item {
   position: relative;
-  margin-bottom: 20px;
 }
 
 .instagram .insta-item a:after {

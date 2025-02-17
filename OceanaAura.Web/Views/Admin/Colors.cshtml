@@ -60,7 +60,7 @@
                             if (!data) {
                                 return '<div style="width: 40px; height: 40px; object-fit: cover">No Image</div>';
                             } else {
-                                return `<img src="/File/ColorsImg/${data}" style="width: 40px; height: 40px; object-fit: cover;">`;
+                                return `<img src="/File/ColorsImg/${data}" loading="lazy" style="width: 40px; height: 40px; object-fit: cover;">`;
                             }
                         }
                     },

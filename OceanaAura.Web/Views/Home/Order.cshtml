@@ -19,6 +19,36 @@
         color = colors.FirstOrDefault(x => x.Id == OrderSummary.ColorId);
     }
 }
+
+<style>
+    /* Spinner CSS */
+    .spinner {
+        border: 10px solid rgba(0, 0, 0, 0.1);
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        border-left-color: black;
+        animation: spin 1s ease infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        display: none; /* Hidden by default */
+    }
+
+    @@keyframes spin {
+        0%
+    {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+
+    }
+</style>
 @model OceanaAura.Web.Models.BuyVM.OrderRequest
 
 <div class="container mt-5">
@@ -48,7 +78,7 @@
                         <span>Contact</span> <!-- English text -->
                     }
                 </h4>
-                <form method="post" asp-action="Order" asp-controller="Home" class="needs-validation" novalidate>
+                <form method="post" asp-action="order" asp-controller="Home" class="needs-validation" novalidate>
                     <!-- Contact Section -->
                     <div class="form-group mb-4">
                         <input type="email" class="form-control" id="Email" name="Email" asp-for="Email" placeholder="@(SelectedLanguage == "ar" ? "البريد الإلكتروني" : "Email")" required>
@@ -402,7 +432,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="d-flex align-items-center justify-content-between">
                         <!-- Product Image -->
-                        <img src="~/File/ColorsImg/@OrderSummary.Product.ImageUrls[0]" alt="@OrderSummary.Product.Name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                        <img src="~/File/ColorsImg/@OrderSummary.Product.ImageUrls[0]" loading="lazy" alt="@OrderSummary.Product.Name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
                         <div class="m-3">
                             <p class="mb-1">
                                 @if (SelectedLanguage == "ar")
@@ -574,22 +604,43 @@
         </div>
     </div>
 </div>
-
+<div class="spinner" id="loadingSpinner"></div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@if (OrderSuccessMessage != null)
-{
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: '@(SelectedLanguage == "ar" ? "نجاح!" : "Success!")',
-            text: '@OrderSuccessMessage',
-            confirmButtonText: '@(SelectedLanguage == "ar" ? "موافق" : "OK")'
-        }).then(function() {
-            // Redirect to the desired page after user clicks "OK"
-            window.location.href = '@Url.Action("Store", "Home")';
-        });
-    </script>
-}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Enable/disable the "Complete Order" button based on checkbox state
+    document.getElementById('agreeToPolicy').addEventListener('change', function() {
+        document.getElementById('completeOrderButton').disabled = !this.checked;
+    });
+
+    // Handle form submission
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // Show the spinner
+        document.getElementById('loadingSpinner').style.display = 'block';
+
+        // Optionally, you can disable the submit button to prevent multiple submissions
+        document.getElementById('completeOrderButton').disabled = true;
+    });
+
+    // SweetAlert for success message
+    @if (OrderSuccessMessage != null)
+    {
+        <text>
+            // Hide the spinner before showing SweetAlert
+            document.getElementById('loadingSpinner').style.display = 'none';
+
+            Swal.fire({
+                icon: 'success',
+                title: '@(SelectedLanguage == "ar" ? "نجاح!" : "Success!")',
+                text: '@OrderSuccessMessage',
+                confirmButtonText: '@(SelectedLanguage == "ar" ? "موافق" : "OK")'
+            }).then(function() {
+                // Redirect to the desired page after user clicks "OK"
+                window.location.href = '@Url.Action("Store", "Home")';
+            });
+        </text>
+    }
+</script>
 
 <script>
     // Enable/disable the "Complete Order" button based on checkbox state

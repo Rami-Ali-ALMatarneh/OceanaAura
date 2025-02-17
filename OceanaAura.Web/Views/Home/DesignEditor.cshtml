@@ -15,6 +15,22 @@
 <link rel="stylesheet" type="text/css" href="~/css/arabicLang.css">
 
 <style>
+    /* Custom CSS for the spinner (if not using Bootstrap) */
+    .spinner-border {
+        width: 5rem;
+        height: 5rem;
+        border: 1em solid black;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border 0.75s linear infinite;
+    }
+
+    @@keyframes spinner-border {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
     /* Ensure the parent container takes full height and width */
     .canvas-container {
         width: 100%; /* Full width of its parent */
@@ -24,10 +40,15 @@
 
     .upper-canvas {
         font-family: 'Evil Empire', sans-serif;
+        width: fit-content;
     }
 
     .design-canvas {
         font-family: 'Evil Empire', sans-serif;
+    }
+
+    .row > * {
+        padding-right: 0;
     }
 
     /* Make the canvas take up 100% of its container */
@@ -58,10 +79,32 @@
     #make-order {
         margin-top: 20px;
     }
+
+    /* Mobile-specific styles */
+    @@media (max-width: 768px) {
+        .front-image-box {
+            display: none; /* Hide the front image box on mobile */
+        }
+
+        .show-front-image-btn {
+            display: block; /* Show the button to display the front image */
+            margin-bottom: 20px;
+        }
+
+        .col-md-9 {
+            order: -1; /* Move the canvas to the top on mobile */
+        }
+    }
+
+    @@media (min-width: 769px) {
+        .show-front-image-btn {
+            display: none; /* Hide the button on desktop */
+        }
+    }
 </style>
 
 <div class="container-fluid mt-4">
-    <div class="row w-100 h-100">
+    <div class="row w-100 h-100 p-3">
         <!-- Left Sidebar -->
         <div class="col-md-3">
             <div class="card shadow-sm w-100 h-100">
@@ -113,12 +156,16 @@
                         <button id="view-bottle" class="btn btn-dark w-100">@(SelectedLanguage == "ar" ? "عرض الزجاجة" : "View Bottle")</button>
                     </div>
 
-                    <!-- Front Image Box -->
-                    <div class="mb-4">
-                        <div class="front-image-box">
-                            <img id="front-image" src="" alt="Front Image" style="display: none;">
-                        </div>
+                    <!-- Button to show front image on mobile -->
+                    <div class="mb-4 show-front-image-btn">
+                        <button id="show-front-image" class="btn btn-secondary w-100">@(SelectedLanguage == "ar" ? "عرض الصورة الأمامية" : "Show Front Image")</button>
                     </div>
+
+                    <!-- Front Image Box -->
+                    <div class="mb-4 front-image-box">
+                        <img id="front-image" src="" alt="Front Image" loading="lazy" style="display: none;">
+                    </div>
+
                     <!-- Font Selection -->
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الخط" : "Select Your Font")</h4>
@@ -128,6 +175,7 @@
                             <option value="DecoType-Thuluth-II">DecoType-Thuluth-II (عربي)</option>
                         </select>
                     </div>
+
                     <!-- Add Text Section -->
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</h4>
@@ -155,10 +203,10 @@
 
         <!-- Canvas Area -->
         <div class="col-md-9">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm" style="z-index:100;position:relative">
                 <div class="card-body">
                     <div class="canvas-container">
-                        <canvas id="design-canvas"></canvas>
+                        <canvas id="design-canvas" style="width:fit-content"></canvas>
                     </div>
                 </div>
             </div>
@@ -166,6 +214,10 @@
     </div>
 </div>
 
+<!-- Add this inside the canvas container or at the end of the body -->
+<div id="spinner" class="spinner-border text-primary" role="status" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+    <span class="visually-hidden">Loading...</span>
+</div>
 <!-- Load jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -179,22 +231,36 @@
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
         });
-       const text = new fabric.Text('', {
-        left: 100,
-        top: 100,
-        fontFamily: 'Evil Empire', // Set the font family
-        fontSize: 30,
-        fill: 'silver'
-    });
-           const text1 = new fabric.Text('', {
-        left: 100,
-        top: 100,
-        fontFamily: 'DecoType-Thuluth-II', // Set the font family
-        fontSize: 30,
-        fill: 'silver'
-    });
-        canvas.add(text);
-    canvas.add(text1);
+
+        // Load default bottle image
+        const defaultBottleImageUrl = '/File/HomeImg/Artboard350.svg'; // Replace with your default image path
+        fabric.Image.fromURL(defaultBottleImageUrl, function (img) {
+            // Scale and center the image
+            const scaleFactor = Math.min(
+                canvas.getWidth() / img.width,
+                canvas.getHeight() / img.height
+            );
+            img.scale(scaleFactor);
+            img.set({
+                left: (canvas.getWidth() - img.width * scaleFactor) / 2,
+                top: (canvas.getHeight() - img.height * scaleFactor) / 2,
+                lockMovementX: true,
+                lockMovementY: true,
+                lockRotation: true,
+                lockScalingX: true,
+                lockScalingY: true,
+                hasControls: false,
+                hasBorders: false,
+                selectable: false
+            });
+            canvas.add(img);
+        });
+
+        // Force canvas redraw on scroll
+        window.addEventListener('scroll', function () {
+            canvas.renderAll(); // Force the canvas to redraw
+        });
+
         // View Bottle Button Click Handler
         $('#view-bottle').click(function () {
             const sizeId = $('#size-select').val();
@@ -215,6 +281,9 @@
                 });
                 return;
             }
+
+            // Show the spinner
+            $('#spinner').show();
 
             // Make an AJAX request to fetch the filtered bottle image
             $.ajax({
@@ -266,10 +335,14 @@
 
                             // Add the image to the canvas
                             canvas.add(img);
+                            // Hide the spinner after the image is loaded
+                            $('#spinner').hide();
                         });
                     }
                 },
                 error: function (xhr, status, error) {
+                    // Hide the spinner in case of an error
+                    $('#spinner').hide();
                     const selectedLanguage = '@SelectedLanguage';
                     const message = selectedLanguage === 'ar' ? 'المنتوج غير متوفر في المخزون!' : 'Product is out of stock!';
                     const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
@@ -572,7 +645,35 @@
                 });
             }
         });
-    })
+
+        // Show front image on mobile when button is clicked
+        $('#show-front-image').click(function () {
+            const frontImageUrl = $('#front-image').attr('src'); // Get the image URL
+            if (frontImageUrl) {
+                // Use SweetAlert2 to display the image in a popup
+                Swal.fire({
+                    imageUrl: frontImageUrl,
+                    imageAlt: 'Front Image',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    width: '70%',
+                    backdrop: true,
+                });
+            } else {
+                const selectedLanguage = '@SelectedLanguage';
+                const message = selectedLanguage === 'ar' ? 'لا توجد صورة لعرضها!' : 'No image to display!';
+                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                    confirmButtonText: confirmButtonText
+                });
+            }
+        });
+    });
+
     // Resize Canvas on Window Resize
     function resizeCanvas() {
         const canvas = document.getElementById('design-canvas');

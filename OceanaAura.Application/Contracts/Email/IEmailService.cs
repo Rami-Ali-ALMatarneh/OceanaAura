@@ -9,6 +9,7 @@ namespace OceanaAura.Application.Contracts.Email
 {
     public interface IEmailService
     {
-        Task SendEmailAsync(EmailMessage emailMessage);
+        void SendEmail(EmailMessage emailMessage);
+        void SendOTP(EmailMessage emailMessage);
     }
 }

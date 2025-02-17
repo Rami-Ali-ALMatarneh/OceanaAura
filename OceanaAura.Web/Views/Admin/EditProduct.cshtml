@@ -108,7 +108,7 @@
                             @foreach (var image in Model.ImageUrls)
                             {
                                 <div class="form-control d-flex justify-content-center align-items-center border rounded p-0" style="width: 100px; height: 100px; position: relative; background-color: #f8f9fa;">
-                                    <img src="/File/ColorsImg/@image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer;" onclick="showImageInModal1('/File/ColorsImg/@image')" />
+                                    <img src="/File/ColorsImg/@image" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer;" onclick="showImageInModal1('/File/ColorsImg/@image')" />
                                     <button type="button" style="position: absolute;
                                         top: 0;
                                         right: 0;
@@ -132,7 +132,7 @@
                             @foreach (var image in Model.ImageUrls)
                             {
                                 <div class="form-control d-flex justify-content-center align-items-center border rounded p-0" style="width: 100px; height: 100px; position: relative; background-color: #f8f9fa;">
-                                    <img src="/File/ColorsImg/@image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer;" onclick="showImageInModal1('/File/ColorsImg/@image')" />
+                                    <img src="/File/ColorsImg/@image" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer;" onclick="showImageInModal1('/File/ColorsImg/@image')" />
                                 </div>
                             }
                         }
@@ -148,7 +148,7 @@
                             <h5 class="modal-title" id="imageModalLabel1">Image Preview</h5>
                         </div>
                         <div class="modal-body text-center">
-                            <img id="modalImage1" src="" style="width: 100%; height: auto; border-radius: 5px;" />
+                            <img id="modalImage1" src="" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;" />
                         </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <img id="modalImage" class="img-fluid" alt="Preview Image" />
+                <img id="modalImage" loading="lazy" class="img-fluid" alt="Preview Image" />
             </div>
         </div>
     </div>

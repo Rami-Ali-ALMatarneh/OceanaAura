@@ -9,7 +9,7 @@ namespace OceanaAura.Application.Models.Email
 {
     public class EmailMessage
     {
-        public List<MailboxAddress> To { get; set; }
+        public string To { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public List<EmailAttachment> Attachments { get; set; } = new List<EmailAttachment>();

@@ -69,11 +69,11 @@
                     <p class="card-text">
                         @if (isArabic)
                         {
-                            <span>اتصل بفريق خدمة العملاء على <strong class="text-decoration-underline text-info">oaforce@outlook.com</strong> مع تفاصيل طلبك وسبب الاسترجاع. سيقوم فريقنا بتقييم طلبك.</span>
+                            <span>اتصل بفريق خدمة العملاء على <strong class="text-decoration-underline text-info">info@oceanaaura.com</strong> مع تفاصيل طلبك وسبب الاسترجاع. سيقوم فريقنا بتقييم طلبك.</span>
                         }
                         else
                         {
-                            <span>Contact our customer service team at <strong class="text-decoration-underline text-info">oaforce@outlook.com</strong> with your order details and reason for refund. Our team will assess your request.</span>
+                            <span>Contact our customer service team at <strong class="text-decoration-underline text-info">info@oceanaaura.com</strong> with your order details and reason for refund. Our team will assess your request.</span>
                         }
                     </p>
                     <p class="card-text fw-bold">
@@ -135,7 +135,7 @@
             {
                 <div class="col">
                     <div class="card h-100 product-card">
-                        <img src="~/File/ColorsImg/@product.ImgProduct[0]" class="card-img-top" alt="@product.Name">
+                        <img src="~/File/ColorsImg/@product.ImgProduct[0]" loading="lazy" class="card-img-top" alt="@product.Name">
                         <div class="card-body text-center">
                             <h5 class="card-title">@product.Name</h5>
                             <a asp-action="buy" asp-controller="Home" asp-route-id="@product.Id" class="btn btn-dark">@(isArabic ? "شراء الآن" : "Buy Now")</a>

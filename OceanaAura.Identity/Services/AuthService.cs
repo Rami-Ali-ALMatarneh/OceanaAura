@@ -138,16 +138,14 @@ namespace OceanaAura.Identity.Services
 
             var emailMessage = new EmailMessage
             {
-                To = new List<MailboxAddress>
-                {
-                    new MailboxAddress(user.UserName, user.Email)
-                },
+                To = user.Email,
                 Subject = "Reset Password",
                 Body = emailBody
             };
             try
             {
-                await _emailService.SendEmailAsync(emailMessage);
+                _emailService.SendOTP(emailMessage);
+                //_emailService.SendEmail();
             }
             catch (Exception ex)
             {

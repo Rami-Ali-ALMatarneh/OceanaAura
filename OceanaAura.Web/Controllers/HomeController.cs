@@ -123,10 +123,7 @@ namespace OceanaAura.Web.Controllers
             var categories = await _mediator.Send(new CategoriesQuery());
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
-            var products = await _mediator.Send(new ProductQuery());
-                    products = products.Where(x => !x.IsHide).ToList();
-
-            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+   
 
             var sizes = await _mediator.Send(new SizeQuery());
             var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
@@ -135,7 +132,10 @@ namespace OceanaAura.Web.Controllers
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
+         var products = await _mediator.Send(new ProductQuery());
+                    products = products.Where(x => !x.IsHide).ToList();
 
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
             ViewBag.Products = productsVM;
             ViewBag.ProductCategory = categoriesVM;
             ViewBag.VisibilityFeedback = VisibilityFeedbackVM;
@@ -147,6 +147,11 @@ namespace OceanaAura.Web.Controllers
 
         public async Task<IActionResult> ContactUs()
         {
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
+
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
@@ -190,6 +195,7 @@ namespace OceanaAura.Web.Controllers
 
         public async Task<IActionResult> Store()
         {
+
             var products = await _mediator.Send(new ProductQuery());
             products = products.Where(x => !x.IsHide).ToList();
 
@@ -211,6 +217,11 @@ namespace OceanaAura.Web.Controllers
         {
             try
             {
+                var products = await _mediator.Send(new ProductQuery());
+                products = products.Where(x => !x.IsHide).ToList();
+
+                var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+                ViewBag.Products = productsVM;
                 // Call the handler to get filtered images
                 var filteredImages = await _mediator.Send(new GetFilteredBottleImagesQuery
                 {
@@ -241,6 +252,11 @@ namespace OceanaAura.Web.Controllers
         }
         public async Task<IActionResult> Buy(int id)
         {
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
+
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
             var categories = await _mediator.Send(new CategoriesQuery());
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
@@ -296,9 +312,13 @@ namespace OceanaAura.Web.Controllers
         }
 
         [HttpGet]
-        [Route("order")]
-        public async Task<IActionResult> Order(string Details)
+        public async Task<IActionResult> order(string Details)
         {
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
+
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;
@@ -352,8 +372,7 @@ namespace OceanaAura.Web.Controllers
         }
 
         [HttpPost]
-        [Route("order")]
-        public async Task<IActionResult> Order(OrderRequest orderRequest)
+        public async Task<IActionResult> order(OrderRequest orderRequest)
         {
             // Set ViewBag data similar to the GET request
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
@@ -461,6 +480,7 @@ namespace OceanaAura.Web.Controllers
         }
         public async Task<IActionResult> Feedback()
         {
+
             var categories = await _mediator.Send(new CategoriesQuery());
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
@@ -689,6 +709,11 @@ namespace OceanaAura.Web.Controllers
 
         public async Task<IActionResult> DesignEditor()
         {
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
+
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;

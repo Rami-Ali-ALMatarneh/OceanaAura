@@ -3,6 +3,8 @@
     var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
     var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
     var SelectedRegion = ViewBag.SelectedRegionPage; // Get the selected region
+    var Products = ViewBag.Products as List<OceanaAura.Web.Models.Products.ProductVMHome>;
+    var product = Products?.FirstOrDefault();
 }
 
 <!DOCTYPE html>
@@ -30,6 +32,28 @@
           rel="stylesheet">
     <!-- RTL-specific styles -->
     <style>
+        /* Go Up Button Styles */
+        #go-up-btn {
+            display: none; /* Hidden by default */
+            position: fixed; /* Fixed position */
+            bottom: 20px; /* Place the button at the bottom */
+            right: 20px; /* Place the button at the right */
+            z-index: 1000; /* Ensure it's above other elements */
+            background-color: black; /* Blue background */
+            color: white; /* White text */
+            border: none; /* No border */
+            border-radius: 20%; /* Circular button */
+            width: 55px; /* Fixed width */
+            height: 55px; /* Fixed height */
+            font-size: 24px; /* Larger font size */
+            cursor: pointer; /* Pointer cursor on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+            #go-up-btn:hover {
+                background-color: black; /* Darker blue on hover */
+            }
         html[dir="rtl"] body {
             text-align: right;
             direction: rtl;
@@ -223,7 +247,13 @@
                                     <span>Menu</span>
                                 }
                             </h5>
-                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            <style>
+                                .btn-close-white {
+                                    filter: invert(1) grayscale(100%) brightness(200%);
+                                }
+                            </style>
+
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                         </div>
                         <div class="offcanvas-body">
                             <ul class="navbar-nav justify-content-end flex-grow-1 gap-1 gap-md-5 pe-3">
@@ -252,7 +282,7 @@
                                     </a>
                                     <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownShop">
                                         <li>
-                                            <a asp-action="Store" asp-controller="Home" class="dropdown-item text-white">
+                                            <a asp-action="Buy" asp-route-id="@product.Id" asp-controller="Home" class="dropdown-item text-white">
                                                 @if (SelectedLanguage == "ar")
                                                 {
                                                     <span>منتجات المتجر</span>
@@ -289,7 +319,80 @@
                                         }
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <!-- Language Dropdown -->
+                                <li class="nav-item dropdown me-2 mb-2 mb-lg-0 d-lg-none  d-lg-none">
+                                    <a class="nav-link dropdown-toggle text-white" id="dropdownLanguage" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @if (SelectedLanguage == "en")
+                                        {
+                                            <span>English</span>
+                                        }
+                                        else if (SelectedLanguage == "ar")
+                                        {
+                                            <span>العربية</span>
+                                        }
+                                    </a>
+                                    <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownLanguage">
+                                        <li style="cursor: pointer">
+                                            <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('en')">
+                                                <span>English</span>
+                                            </a>
+                                        </li>
+                                        <li style="cursor: pointer">
+                                            <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('ar')">
+                                                <span>العربية</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <!-- Region Dropdown -->
+                                <li class="nav-item dropdown me-2 mb-2 mb-lg-0  d-lg-none" style="margin-left:7px">
+                                    <a class="nav-link dropdown-toggle text-white" id="dropdownRegion" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @if (SelectedRegion == "Jordan")
+                                        {
+                                            <span>JOD</span>
+                                        }
+                                        @if (SelectedRegion == "United Arab Emirates")
+                                        {
+                                            <span>AED</span>
+                                        }
+                                    </a>
+                                    <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownRegion">
+                                        @if (ViewBag.Regions != null)
+                                        {
+                                            foreach (var region in ViewBag.Regions as List<RegionVM>)
+                                            {
+                                                <li style="cursor: pointer">
+                                                    <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedRegion('@region.NameEn')">
+                                                        @if (region.NameEn == "Jordan")
+                                                        {
+                                                            <img src="~/File/Images/Flag_of_Jordan.svg" alt="Jordan" style="width: 20px; height: 15px;" class="me-2"> <span>JOD</span>
+                                                        }
+                                                        @if (region.NameEn == "United Arab Emirates")
+                                                        {
+                                                            <img src="~/File/Images/Flag_of_the_United_Arab_Emirates.svg" alt="UAE" style="width: 20px; height: 15px;" class="me-2"> <span>AED</span>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </li>
+
+                                <!-- Cart Button -->
+                                <li class="me-2 mb-2 mb-lg-0  d-lg-none">
+                                    <a href="index.html" class="text-uppercase text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                                        @if (SelectedLanguage == "ar")
+                                        {
+                                            <span>السلة</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Cart</span>
+                                        }
+                                        <span class="cart-count">(@CartSummaryList.Count())</span>
+                                    </a>
+                                </li>
+                               @*  <li class="nav-item">
                                     <a class="nav-link text-white" asp-action="Help" asp-controller="Home">
                                         @if (SelectedLanguage == "ar")
                                         {
@@ -302,7 +405,7 @@
                                             <span>Terms & Conditions</span>
                                         }
                                     </a>
-                                </li>
+                                </li> *@
                             </ul>
                         </div>
                     </div>
@@ -310,7 +413,37 @@
 
                 <!-- Language and Region Dropdowns -->
                 <div class="col-12 col-lg-auto">
-                    <ul class="list-unstyled d-flex flex-wrap align-items-center m-0">
+
+                    <ul class="list-unstyled d-flex flex-wrap align-items-center justify-content-between m-0 d-lg-none d-md-none" style="font-size: 14px">
+                        <!-- Shop Products Link -->
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a asp-action="Buy" asp-route-id="@product.Id" asp-controller="Home" class="nav-link text-white">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>منتجات المتجر</span>
+                                }
+                                else
+                                {
+                                    <span>Shop Products</span>
+                                }
+                            </a>
+                        </li>
+
+                        <!-- Create Your Own Bottle Link -->
+                        <li class="nav-item me-2 mb-2 mb-lg-0" >
+                            <a asp-action="DesignEditor" asp-controller="Home" class="nav-link text-white">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اصنع زجاجتك الخاصة</span>
+                                }
+                                else
+                                {
+                                    <span>Create Your Own Bottle</span>
+                                }
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="list-unstyled d-flex flex-wrap align-items-center justify-content-between m-0 d-none d-lg-flex" style="font-size: 14px">
                         <!-- Language Dropdown -->
                         <li class="nav-item dropdown me-2 mb-2 mb-lg-0">
                             <a class="nav-link dropdown-toggle text-white" id="dropdownLanguage" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -337,48 +470,8 @@
                             </ul>
                         </li>
 
-                        <!-- Shop Dropdown for Mobile -->
-                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0 d-lg-none">
-                            <a class="nav-link dropdown-toggle text-white" id="dropdownShopMobile" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                @if (SelectedLanguage == "ar")
-                                {
-                                    <span>المتجر</span>
-                                }
-                                else
-                                {
-                                    <span>Shop</span>
-                                }
-                            </a>
-                            <ul class="dropdown-menu list-unstyled bg-dark" aria-labelledby="dropdownShopMobile">
-                                <li>
-                                    <a asp-action="Store" asp-controller="Home" class="dropdown-item text-white">
-                                        @if (SelectedLanguage == "ar")
-                                        {
-                                            <span>منتجات المتجر</span>
-                                        }
-                                        else
-                                        {
-                                            <span>Shop Products</span>
-                                        }
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="DesignEditor" asp-controller="Home" class="dropdown-item text-white">
-                                        @if (SelectedLanguage == "ar")
-                                        {
-                                            <span>اصنع زجاجتك الخاصة</span>
-                                        }
-                                        else
-                                        {
-                                            <span>Create Your Own Bottle</span>
-                                        }
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
                         <!-- Region Dropdown -->
-                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0">
+                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0" style="margin-left:7px">
                             <a class="nav-link dropdown-toggle text-white" id="dropdownRegion" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 @if (SelectedRegion == "Jordan")
                                 {
@@ -426,6 +519,7 @@
                             </a>
                         </li>
                     </ul>
+
                 </div>
             </div>
         </div>
@@ -552,10 +646,10 @@
     @RenderBody()
 
     <!-- Footer -->
-    <footer id="footer" class="mt-5">
-        <div class="container">
+    <footer id="footer" class="mt-5 container-fluid">
+        <div class="container-fluid">
             <div class="row d-flex flex-wrap justify-content-between py-5">
-                <div class="col-md-4 col-sm-6">
+                <div class="col-md-6 col-sm-6">
                     <div class="footer-menu footer-menu-002">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -648,14 +742,14 @@
                                     }
                                     else
                                     {
-                                        <span>Help</span>
+                                        <span>Terms & Conditions</span>
                                     }
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-6">
+@*                 <div class="col-md-4 col-sm-6">
                     <div class="footer-menu footer-menu-003">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -696,8 +790,8 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
+                </div> *@
+                <div class="col-md-6 col-sm-6">
                     <div class="footer-menu footer-menu-004 border-animation-left">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -712,21 +806,11 @@
                         <p>
                             @if (SelectedLanguage == "ar")
                             {
-                                <span>هل لديك أي أسئلة أو اقتراحات؟ <a href="mailto:contact@yourcompany.com" class="item-anchor">contact@yourcompany.com</a></span>
+                                <span>هل لديك أي أسئلة أو اقتراحات؟ <a href="mailto:info@oceanaaura.com" class="item-anchor">info@oceanaaura.com</a></span>
                             }
                             else
                             {
-                                <span>Do you have any questions or suggestions? <a href="mailto:contact@yourcompany.com" class="item-anchor">contact@yourcompany.com</a></span>
-                            }
-                        </p>
-                        <p>
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>هل تحتاج إلى دعم؟ اتصل بنا. <a href="tel:+43 720 11 52 78" class="item-anchor">+43 720 11 52 78</a></span>
-                            }
-                            else
-                            {
-                                <span>Do you need support? Give us a call. <a href="tel:+43 720 11 52 78" class="item-anchor">+43 720 11 52 78</a></span>
+                                <span>Do you have any questions or suggestions? <a href="mailto:info@oceanaaura.com" class="item-anchor">info@oceanaaura.com</a></span>
                             }
                         </p>
 
@@ -748,8 +832,8 @@
         </div>
         <div class="border-top py-4">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-6 d-flex flex-wrap justconmd">
+                <div class="row d-flex flex-column text-center flex-md-row align-items-center justify-content-center">
+              @*       <div class="col-md-6 d-flex flex-wrap justify-content-center justify-content-md-start">
                         <div class="payment-option">
                             <span>
                                 @if (SelectedLanguage == "ar")
@@ -763,9 +847,9 @@
                             </span>
                             <img src="~/File/HomeImg/CashOnDelivery.png" style="width:100px;height:40px" alt="card">
                         </div>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <p>
+                    </div> *@
+                    <div class="col-md-12 text-center text-md-end mt-3 mt-md-0">
+                        <p class="text-center">
                             © Copyright 2025 Oceana Aura. All rights reserved.
                         </p>
                     </div>
@@ -824,6 +908,8 @@
             </div>
         </div>
     </div>
+    <button id="go-up-btn" class="text-center fw-bold d-flex justify-content-center align-items-center h1" title="Go to top">↑</button>
+
     <!-- Scripts -->
     <script src="~/js/HomeJs/js/jquery.min.js"></script>
     <script src="~/js/HomeJs/js/plugins.js"></script>
@@ -941,9 +1027,6 @@
                     if (response.success) {
                         // Close the modal
                         const regionModal = bootstrap.Modal.getInstance(document.getElementById('regionSelectionModal'));
-                        regionModal.hide();
-
-                        // Reload the page to apply the selected region
                         location.reload();
                     }
                 },
@@ -952,6 +1035,24 @@
                 }
             });
         }
+    </script>
+    <script>
+        window.onscroll = function () {
+            const goUpBtn = document.getElementById('go-up-btn');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                goUpBtn.style.display = 'block'; // Show the button
+            } else {
+                goUpBtn.style.display = 'none'; // Hide the button
+            }
+        };
+
+        // Scroll to Top on Button Click
+        document.getElementById('go-up-btn').addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Smooth scroll
+            });
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

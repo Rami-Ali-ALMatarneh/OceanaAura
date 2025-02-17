@@ -55,15 +55,12 @@
 //        }
 //    }
 //}
-using MailKit.Net.Smtp;
-using MimeKit;
+
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using OceanaAura.Application.Contracts.Email;
 using OceanaAura.Application.Models.Email;
+using System.Net;
+using System.Net.Mail;
 namespace EcommerceOnion.Application.Services
 {
     public class EmailServices : IEmailService
@@ -73,51 +70,76 @@ namespace EcommerceOnion.Application.Services
         {
             _emailSettings = emailSettings.Value;
         }
-
-        public async Task SendEmailAsync(EmailMessage message)
+        public void SendEmail(EmailMessage emailMessage)
         {
-            var emailMessage = CreateEmailMessage(message);
-            await SendAsync(emailMessage);
-        }
-
-        private MimeMessage CreateEmailMessage(EmailMessage message)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(_emailSettings.DisplayName, _emailSettings.Email));
-            emailMessage.To.AddRange(message.To);
-            emailMessage.Subject = message.Subject;
-
-            var bodyBuilder = new BodyBuilder { HtmlBody = message.Body };
-
-            if (message.Attachments != null && message.Attachments.Any())
+            var smtpClient = new SmtpClient(_emailSettings.Host)
             {
-                foreach (var attachment in message.Attachments)
-                {
-                    bodyBuilder.Attachments.Add(attachment.FileName, attachment.Content, ContentType.Parse(attachment.ContentType));
-                }
-            }
+                Port = _emailSettings.Port, 
+                Credentials = new NetworkCredential(_emailSettings.Email, _emailSettings.Password),
+                EnableSsl = _emailSettings.EnableSsl,
+            };
 
-            emailMessage.Body = bodyBuilder.ToMessageBody();
-            return emailMessage;
-        }
-
-        private async Task SendAsync(MimeMessage mailMessage)
-        {
-            using (var client = new SmtpClient())
+            var mailMessage = new MailMessage
             {
-                try
+                From = new MailAddress(_emailSettings.Email),
+                Subject = emailMessage.Subject,
+                Body = emailMessage.Body,
+                IsBodyHtml = true,
+            };
+
+            mailMessage.To.Add(emailMessage.To);
+
+            // Add PDF attachments
+            foreach (var attachment in emailMessage.Attachments)
                 {
-                    await client.ConnectAsync(_emailSettings.Host, _emailSettings.Port, true);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await client.AuthenticateAsync(_emailSettings.Email, _emailSettings.Password);
-                    await client.SendAsync(mailMessage);
+                    var stream = new MemoryStream(attachment.Content);
+                    var mailAttachment = new Attachment(stream, attachment.FileName, attachment.ContentType);
+                    mailMessage.Attachments.Add(mailAttachment);
                 }
-                finally
-                {
-                    await client.DisconnectAsync(true);
-                    client.Dispose();
-                }
-            }
+            
+            smtpClient.Send(mailMessage);
         }
+        public void SendOTP(EmailMessage emailMessage)
+        {
+            var smtpClient = new SmtpClient("mail.oceanaaura.com")
+            {
+                Port = _emailSettings.Port,
+                Credentials = new NetworkCredential("info@oceanaaura.com", "OceanaAura259257@"),
+                EnableSsl = _emailSettings.EnableSsl,
+            };
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("info@oceanaaura.com"),
+                Subject = emailMessage.Subject,
+                Body = emailMessage.Body,
+                IsBodyHtml = true,
+            };
+
+            mailMessage.To.Add(emailMessage.To);
+            smtpClient.Send(mailMessage);
+        }
+
+        /***********************/
+        //public void SendEmail()
+        //{
+        //    var smtpClient = new SmtpClient("mail.oceanaaura.com")
+        //    {
+        //        Port = 8889, // or 8889
+        //        Credentials = new NetworkCredential("info@oceanaaura.com", "OceanaAura259257@"),
+        //        EnableSsl = false, // true if using port 465
+        //    };
+
+        //    var mailMessage = new MailMessage
+        //    {
+        //        From = new MailAddress("info@oceanaaura.com"),
+        //        Subject = "Subject",
+        //        Body = "Email body",
+        //        IsBodyHtml = true,
+        //    };
+        //    mailMessage.To.Add("opscode59@gmail.com");
+
+        //    smtpClient.Send(mailMessage);
+        //}
     }
 }

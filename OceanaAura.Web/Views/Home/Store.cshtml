@@ -29,7 +29,7 @@
                     <div class="card h-100 shadow-sm">
                         <div class="image-holder position-relative">
                             <a asp-action="Buy" asp-controller="Home" asp-route-id="@Product.Id">
-                                <img src="~/File/ColorsImg/@Product.ImgProduct[0]" alt="product" class="card-img-top img-fluid">
+                                <img src="~/File/ColorsImg/@Product.ImgProduct[0]" loading="lazy" alt="product" class="card-img-top img-fluid">
                             </a>
                         </div>
                         <div class="card-body text-center">
