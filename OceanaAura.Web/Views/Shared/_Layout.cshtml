@@ -221,19 +221,64 @@
         <div class="container-fluid">
             <div class="row justify-content-between align-items-center w-100">
                 <!-- Logo Section -->
-                <div class="col-auto d-flex justify-content-center align-items-center">
-                    <a class="navbar-brand text-white d-flex align-items-center" asp-action="Index" asp-controller="Home">
+                <div class="col-auto d-flex justify-content-center align-items-center p-0">
+                    <a class="navbar-brand text-white d-flex align-items-center m-0" asp-action="Index" asp-controller="Home">
                         <!-- Logo Image -->
-                        <img src="~/File/HomeImg/logo.png" style="height: 110px;">
+                        <img src="~/File/HomeImg/logo.png" style="height: 100px;">
                         <!-- Logo Text -->
                     </a>
                 </div>
 
                 <!-- Navbar Toggler for Mobile -->
-                <div class="col-auto">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+                <div class="col-auto d-flex align-items-center">
+                    <!-- Navbar Toggler, Language Dropdown, and Cart Button for Mobile -->
+                    <div class="col-auto d-flex align-items-center gap-2">
+
+                        <!-- Language Dropdown -->
+                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0 d-lg-none list-unstyled p-0 m-0" style="font-size:12px">
+                            <a class="nav-link dropdown-toggle text-white" id="dropdownLanguage" style="cursor: pointer" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (SelectedLanguage == "en")
+                                {
+                                    <span style="font-size:12px">English</span>
+                                }
+                                else if (SelectedLanguage == "ar")
+                                {
+                                    <span style="font-size:12px">العربية</span>
+                                }
+                            </a>
+                            <ul class="dropdown-menu list-unstyled bg-dark list-unstyled p-0 m-0" aria-labelledby="dropdownLanguage">
+                                <li style="cursor: pointer" style="font-size:12px">
+                                    <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('en')">
+                                        <span>English</span>
+                                    </a>
+                                </li>
+                                <li style="cursor: pointer" style="font-size:12px">
+                                    <a class="dropdown-item d-flex align-items-center text-white" onclick="setSelectedLanguage('ar')">
+                                        <span>العربية</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Cart Button -->
+                        <li class="me-2 mb-2 mb-lg-0 d-lg-none list-unstyled p-0 m-0" style="font-size:12px">
+                            <a href="index.html" class="text-uppercase text-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>السلة</span>
+                                }
+                                else
+                                {
+                                    <span>Cart</span>
+                                }
+                                <span class="cart-count">(@CartSummaryList.Count())</span>
+                            </a>
+                        </li>
+                        <!-- Navbar Toggler -->
+                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
 
                     <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                         <div class="offcanvas-header">
@@ -305,6 +350,7 @@
                                                 }
                                             </a>
                                         </li>
+                                       
                                     </ul>
                                 </li>
                                 <li class="nav-item">
@@ -414,8 +460,20 @@
                 <!-- Language and Region Dropdowns -->
                 <div class="col-12 col-lg-auto">
 
-                    <ul class="list-unstyled d-flex flex-wrap align-items-center justify-content-between m-0 d-lg-none d-md-none" style="font-size: 14px">
+                    <ul class="list-unstyled d-flex flex-wrap align-items-center gap-2 m-0 d-lg-none" style="font-size: 14px">
                         <!-- Shop Products Link -->
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a asp-action="Index" asp-controller="Home" class="nav-link text-white">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الرئيسية</span>
+                                }
+                                else
+                                {
+                                    <span>HOME</span>
+                                }
+                            </a>
+                        </li>
                         <li class="nav-item me-2 mb-2 mb-lg-0">
                             <a asp-action="Buy" asp-route-id="@product.Id" asp-controller="Home" class="nav-link text-white">
                                 @if (SelectedLanguage == "ar")
@@ -439,6 +497,18 @@
                                 else
                                 {
                                     <span>Create Your Own Bottle</span>
+                                }
+                            </a>
+                        </li>
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a asp-action="ContactUs" asp-controller="Home" class="nav-link text-white">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اتصل بنا</span>
+                                }
+                                else
+                                {
+                                    <span>Contact Us</span>
                                 }
                             </a>
                         </li>
@@ -819,7 +889,7 @@
                             <ul class="list-unstyled d-flex flex-wrap gap-3">
                                 <li>
                                     <a href="https://www.instagram.com/oaforce" target="_blank" class="text-secondary">
-                                        <svg width="24" height="24" viewBox="0 0 24 24">
+                                        <svg width="60" height="60" viewBox="0 0 24 24">
                                             <use xlink:href="#instagram"></use>
                                         </svg>
                                     </a>

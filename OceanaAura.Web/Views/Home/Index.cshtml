@@ -48,35 +48,39 @@
                     <div class="swiper-slide">
                         <div class="banner-item image-zoom-effect">
                             <div class="image-holder">
-                                <a href="#">
-                                    <img src="~/File/HomeImg/home1.jpeg" alt="product" loading="lazy" class="img-fluid">
+                                <a>
+                                    <!-- Image for small screens -->
+                                    <img src="~/File/HomeImg/home1.1.jpeg" alt="product" loading="lazy" class="img-fluid d-block d-sm-none">
+
+                                    <!-- Image for larger screens -->
+                                    <img src="~/File/HomeImg/home1.jpeg" alt="product" loading="lazy" class="img-fluid d-none d-sm-block">
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
+                    <div class="swiper-slide  d-none d-sm-block">
                         <div class="banner-item image-zoom-effect">
                             <div class="image-holder">
-                                <a href="#">
-                                    <img src="~/File/HomeImg/home2.jpeg" alt="product" loading="lazy" class="img-fluid">
+                                <a>
+                                    <img src="~/File/HomeImg/home2.jpeg" alt="product" loading="lazy" class="img-fluid d-none d-sm-block">
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
+                    <div class="swiper-slide  d-none d-sm-block">
                         <div class="banner-item image-zoom-effect">
                             <div class="image-holder">
-                                <a href="#">
-                                    <img src="~/File/HomeImg/home3.jpeg" loading="lazy" alt="product" class="img-fluid">
+                                <a>
+                                    <img src="~/File/HomeImg/home3.jpeg" loading="lazy" alt="product" class="img-fluid d-none d-sm-block">
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
+                    <div class="swiper-slide  d-none d-sm-block">
                         <div class="banner-item image-zoom-effect">
                             <div class="image-holder">
-                                <a href="#">
-                                    <img src="~/File/HomeImg/home4.jpeg" alt="product" loading="lazy" class="img-fluid">
+                                <a>
+                                    <img src="~/File/HomeImg/home4.jpeg" alt="product" loading="lazy" class="img-fluid d-none d-sm-block">
                                 </a>
                             </div>
                         </div>
@@ -594,7 +598,7 @@
     }
 </style>
 <!-- end Feedback section  -->
-<section class="instagram position-relative">
+@* <section class="instagram position-relative">
     <div class="d-flex justify-content-center w-100 position-absolute bottom-0 z-1">
         <a href="https://www.instagram.com/oaforce/?hl=en" target="_blank" class="btn btn-dark px-5">
             @if (SelectedLanguage == "ar")
@@ -651,7 +655,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> *@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var videoModal = document.getElementById('videoModal');
