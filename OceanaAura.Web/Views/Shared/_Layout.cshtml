@@ -54,6 +54,7 @@
             #go-up-btn:hover {
                 background-color: black; /* Darker blue on hover */
             }
+
         html[dir="rtl"] body {
             text-align: right;
             direction: rtl;
@@ -350,7 +351,7 @@
                                                 }
                                             </a>
                                         </li>
-                                       
+
                                     </ul>
                                 </li>
                                 <li class="nav-item">
@@ -438,7 +439,7 @@
                                         <span class="cart-count">(@CartSummaryList.Count())</span>
                                     </a>
                                 </li>
-                               @*  <li class="nav-item">
+                                @*  <li class="nav-item">
                                     <a class="nav-link text-white" asp-action="Help" asp-controller="Home">
                                         @if (SelectedLanguage == "ar")
                                         {
@@ -488,7 +489,7 @@
                         </li>
 
                         <!-- Create Your Own Bottle Link -->
-                        <li class="nav-item me-2 mb-2 mb-lg-0" >
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
                             <a asp-action="DesignEditor" asp-controller="Home" class="nav-link text-white">
                                 @if (SelectedLanguage == "ar")
                                 {
@@ -819,7 +820,7 @@
                         </ul>
                     </div>
                 </div>
-@*                 <div class="col-md-4 col-sm-6">
+                @*                 <div class="col-md-4 col-sm-6">
                     <div class="footer-menu footer-menu-003">
                         <h5 class="widget-title text-uppercase mb-4">
                             @if (SelectedLanguage == "ar")
@@ -903,7 +904,7 @@
         <div class="border-top py-4">
             <div class="container">
                 <div class="row d-flex flex-column text-center flex-md-row align-items-center justify-content-center">
-              @*       <div class="col-md-6 d-flex flex-wrap justify-content-center justify-content-md-start">
+                    @*       <div class="col-md-6 d-flex flex-wrap justify-content-center justify-content-md-start">
                         <div class="payment-option">
                             <span>
                                 @if (SelectedLanguage == "ar")
@@ -928,7 +929,8 @@
         </div>
     </footer>
     <!-- Region Selection Popup Modal -->
-    <div class="modal fade" id="regionSelectionModal" tabindex="-1" aria-labelledby="regionSelectionModalLabel" aria-hidden="true">
+    <!-- Region Selection Popup Modal -->
+    <div class="modal fade" id="regionSelectionModal" tabindex="-1" aria-labelledby="regionSelectionModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -942,6 +944,8 @@
                             <span>Select Your Region</span>
                         }
                     </h5>
+                    <!-- إزالة زر الإغلاق (X) -->
+                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
                 <div class="modal-body">
                     <p>
@@ -974,6 +978,12 @@
                             }
                         }
                     </ul>
+                    <!-- Spinner/Loading Indicator -->
+                    <div id="loadingSpinner" class="text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1008,16 +1018,24 @@
         }
 
         function setSelectedRegion(selectedRegion) {
+            // عرض spinner التحميل
+            $('#loadingSpinner').show();
+
             $.ajax({
                 url: '@Url.Action("SetSelectedRegion", "Home")',
                 type: 'POST',
                 data: { selectedRegion: selectedRegion },
                 success: function (response) {
                     if (response.success) {
-                        location.reload();
+                        // إخفاء spinner وإغلاق الـ modal
+                        $('#loadingSpinner').hide();
+                        $('#regionSelectionModal').modal('hide'); // إغلاق الـ modal برمجيًا
+                        location.reload(); // إعادة تحميل الصفحة
                     }
                 },
                 error: function () {
+                    // إخفاء spinner وإظهار رسالة خطأ
+                    $('#loadingSpinner').hide();
                     alert('There was an error setting the region.');
                 }
             });
@@ -1088,19 +1106,25 @@
             }
         });
 
-        function setSelectedRegion(selectedRegion) {
+              function setSelectedRegion(selectedRegion) {
+            // عرض spinner التحميل
+            $('#loadingSpinner').show();
+
             $.ajax({
                 url: '@Url.Action("SetSelectedRegion", "Home")',
                 type: 'POST',
                 data: { selectedRegion: selectedRegion },
                 success: function (response) {
                     if (response.success) {
-                        // Close the modal
-                        const regionModal = bootstrap.Modal.getInstance(document.getElementById('regionSelectionModal'));
-                        location.reload();
+                        // إخفاء spinner وإغلاق الـ modal
+                        $('#loadingSpinner').hide();
+                        $('#regionSelectionModal').modal('hide'); // إغلاق الـ modal برمجيًا
+                        location.reload(); // إعادة تحميل الصفحة
                     }
                 },
                 error: function () {
+                    // إخفاء spinner وإظهار رسالة خطأ
+                    $('#loadingSpinner').hide();
                     alert('There was an error setting the region.');
                 }
             });

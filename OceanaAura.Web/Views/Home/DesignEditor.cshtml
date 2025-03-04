@@ -231,7 +231,22 @@
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
         });
-
+       const text = new fabric.Text('', {
+        left: 100,
+        top: 100,
+        fontFamily: 'Evil Empire', // Set the font family
+        fontSize: 30,
+        fill: 'silver'
+    });
+           const text1 = new fabric.Text('', {
+        left: 100,
+        top: 100,
+        fontFamily: 'DecoType-Thuluth-II', // Set the font family
+        fontSize: 30,
+        fill: 'silver'
+    });
+        canvas.add(text);
+    canvas.add(text1);
         // Load default bottle image
         const defaultBottleImageUrl = '/File/HomeImg/Artboard350.svg'; // Replace with your default image path
         fabric.Image.fromURL(defaultBottleImageUrl, function (img) {

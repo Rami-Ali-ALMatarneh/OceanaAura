@@ -511,6 +511,11 @@ namespace OceanaAura.Web.Controllers
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
 
+            products = products.Where(x => !x.IsHide).ToList();
+
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
+
             ViewBag.Colors = colorsVM;
             ViewBag.ProductCategory = categoriesVM;
             ViewBag.SelectedRegionPage = GetSelectedRegionFromSession(); // Set the selected region in ViewBag
@@ -614,7 +619,11 @@ namespace OceanaAura.Web.Controllers
             var regions = await _mediator.Send(new RegionQuery());
             var regionsVM = _mapper.Map<List<RegionVM>>(regions);
             ViewBag.Regions = regionsVM;
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
 
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
             ViewBag.CartSummaryList = GetCartSummaryFromSession(GetSelectedRegionFromSession());
 
             return View();
@@ -626,7 +635,11 @@ namespace OceanaAura.Web.Controllers
             var colors = await _mediator.Send(new GetColorQuery());
             var colorsVM = _mapper.Map<List<ColorVM>>(colors);
             ViewBag.Colors = colorsVM;
+            var products = await _mediator.Send(new ProductQuery());
+            products = products.Where(x => !x.IsHide).ToList();
 
+            var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+            ViewBag.Products = productsVM;
             var payments = await _mediator.Send(new PaymentQuery());
             var paymentsVM = _mapper.Map<List<deliveryFee>>(payments);
             ViewBag.Payments = paymentsVM.FirstOrDefault(x => x.NameEn == "Delivery Fee" || x.NameAr == "رسوم التوصيل");
