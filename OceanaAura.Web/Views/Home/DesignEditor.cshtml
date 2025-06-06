@@ -101,6 +101,74 @@
             display: none; /* Hide the button on desktop */
         }
     }
+
+    /* Lids Cards Styles - Responsive */
+    .lids-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+        gap: 10px;
+    }
+
+    .lid-card {
+        flex: 1 0 calc(25% - 10px); /* 4 cards per row by default */
+        min-width: 100px;
+        max-width: 150px;
+        aspect-ratio: 3/4; /* Maintain aspect ratio */
+        cursor: pointer;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 8px;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .lid-card.selected {
+            border: 2px solid #000;
+            background-color: #f8f9fa;
+        }
+
+        .lid-card img {
+            width: 100%;
+            height: auto;
+            flex-grow: 1;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .lid-card .lid-name {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 3px;
+            word-break: break-word;
+        }
+
+        .lid-card .lid-price {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #666;
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .lid-card {
+            flex: 1 0 calc(33.333% - 10px); /* 3 cards per row on medium screens */
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .lid-card {
+            flex: 1 0 calc(50% - 10px); /* 2 cards per row on small screens */
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .lid-card {
+            flex: 1 0 calc(50% - 10px); /* 2 cards per row on extra small screens */
+            min-width: 80px;
+        }
+    }
 </style>
 
 <div class="container-fluid mt-4">
@@ -130,7 +198,7 @@
                                        style="background-image: url('/File/ColorsImg/@color.ImageURL');">
                                     <input type="radio" name="ColorId" value="@color.Id"
                                            class="d-none"
-                                    @(color.IsSoldOut ? "disabled" : "") />
+                                           @(color.IsSoldOut ? "disabled" : "") />
                                     @if (color.IsSoldOut)
                                     {
                                         <span class="sold-out-mark position-absolute top-50 start-50 translate-middle">X</span>
@@ -143,17 +211,33 @@
                     <!-- Lid Selection -->
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر الغطاء" : "Select Your Lid")</h4>
-                        <select id="lid-select" class="form-select">
+                        <div class="lids-container">
                             @foreach (var lid in Lids)
                             {
-                                <option value="@lid.Id">@(SelectedLanguage == "ar" ? lid.Name : lid.Name)</option>
+                                <label class="lid-card" data-lid-id="@lid.Id">
+                                    <img src="~/File/ColorsImg/@lid.ProductImages" alt="@lid.Name" loading="lazy" />
+                                    <div class="lid-name">@lid.Name</div>
+                                    <div class="lid-price">
+                                        @if (lid.IsMagneticLid)
+                                        {
+                                            if (SelectedRegionPage == "Jordan")
+                                            {
+                                                <span>@lid.PriceJOR JOD</span>
+                                            }
+                                            else if (SelectedRegionPage == "United Arab Emirates")
+                                            {
+                                                <span>@lid.PriceUAE AED</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span>Free</span>
+                                        }
+                                    </div>
+                                    <input type="radio" name="LidId" value="@lid.Id" style="display: none;" />
+                                </label>
                             }
-                        </select>
-                    </div>
-
-                    <!-- View Bottle Button -->
-                    <div class="mb-4">
-                        <button id="view-bottle" class="btn btn-dark w-100">@(SelectedLanguage == "ar" ? "عرض الزجاجة" : "View Bottle")</button>
+                        </div>
                     </div>
 
                     <!-- Button to show front image on mobile -->
@@ -180,17 +264,6 @@
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</h4>
                         <input type="text" id="text-input" class="form-control mb-4" placeholder="@(SelectedLanguage == "ar" ? "أدخل النص (من 2 إلى 20 أحرف)" : "Enter text (2 to 20 characters)")">
-                        <button id="add-text" class="btn btn-dark w-100">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</button>
-                    </div>
-
-                    <!-- Remove Text Section -->
-                    <div class="mb-4">
-                        <button id="remove-text" class="btn btn-danger w-100">@(SelectedLanguage == "ar" ? "إزالة النص المحدد" : "Remove Selected Text")</button>
-                    </div>
-
-                    <!-- Export Design Button -->
-                    <div class="mb-4">
-                        <button id="export-design" class="btn btn-success w-100">@(SelectedLanguage == "ar" ? "تصدير التصميم" : "Export Design")</button>
                     </div>
 
                     <!-- Make Order Button -->
@@ -231,22 +304,23 @@
         const canvas = new fabric.Canvas('design-canvas', {
             backgroundColor: '#ffffff',
         });
-       const text = new fabric.Text('', {
-        left: 100,
-        top: 100,
-        fontFamily: 'Evil Empire', // Set the font family
-        fontSize: 30,
-        fill: 'silver'
-    });
-           const text1 = new fabric.Text('', {
-        left: 100,
-        top: 100,
-        fontFamily: 'DecoType-Thuluth-II', // Set the font family
-        fontSize: 30,
-        fill: 'silver'
-    });
+        const text = new fabric.Text('', {
+            left: 100,
+            top: 100,
+            fontFamily: 'Evil Empire', // Set the font family
+            fontSize: 30,
+            fill: 'silver'
+        });
+        const text1 = new fabric.Text('', {
+            left: 100,
+            top: 100,
+            fontFamily: 'DecoType-Thuluth-II', // Set the font family
+            fontSize: 30,
+            fill: 'silver'
+        });
         canvas.add(text);
-    canvas.add(text1);
+        canvas.add(text1);
+
         // Load default bottle image
         const defaultBottleImageUrl = '/File/HomeImg/Artboard350.svg'; // Replace with your default image path
         fabric.Image.fromURL(defaultBottleImageUrl, function (img) {
@@ -276,24 +350,14 @@
             canvas.renderAll(); // Force the canvas to redraw
         });
 
-        // View Bottle Button Click Handler
-        $('#view-bottle').click(function () {
+        // Function to update bottle image
+        function updateBottleImage() {
             const sizeId = $('#size-select').val();
             const colorId = $('input[name="ColorId"]:checked').val();
-            const lidId = $('#lid-select').val();
+            const lidId = $('input[name="LidId"]:checked').val();
 
             // Validate if size, color, and lid are selected
             if (!sizeId || !colorId || !lidId) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد الحجم واللون والغطاء!' : 'Please select size, color, and lid!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
                 return;
             }
 
@@ -370,171 +434,90 @@
                     });
                 }
             });
+        }
+
+        // Live update when size, color or lid changes
+        $('#size-select, input[name="ColorId"], input[name="LidId"]').change(function() {
+            updateBottleImage();
         });
 
-        // Add Text with Selected Font
-        $('#add-text').click(function () {
-            const selectedFont = $('#font-select').val(); // Get the selected font
-            const textInput = $('#text-input').val(); // Get the text input value
+        // Text input live update
+        $('#text-input').on('input', function() {
+            const selectedFont = $('#font-select').val();
+            const textInput = $(this).val();
 
-            // Validate if a font is selected
-            if (!selectedFont) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد خط أولاً!' : 'Please select a font first!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-                return; // Stop execution if no font is selected
-            }
-
-            // Validate if text input is empty
-            if (!textInput) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'الرجاء إدخال نص!' : 'Please enter some text!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-                return; // Stop execution if text input is empty
-            }
-
-            // Validate if text input is between 2 and 20 characters
-            if (textInput.length < 2 || textInput.length > 20) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'يجب أن يكون النص من 2 إلى 20 أحرف!' : 'Text must be between 2 to 20 characters!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-                return; // Stop execution if text input is not between 2 and 20 characters
-            }
-
-            // Validate if text length is between 16 and 20 and contains spaces
-            if (textInput.length >= 16 && textInput.length <= 20 && textInput.includes(' ')) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'النص الذي يتراوح بين 16 و 20 حرفًا لا يمكن أن يحتوي على مسافات!' : 'Text between 16 to 20 characters cannot contain spaces!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-                return; // Stop execution if text length is between 16 and 20 and contains spaces
-            }
-
-            // Check if a text object already exists on the canvas
+            // Remove existing text
             const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
             if (existingText) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar'
-                    ? 'يمكن إضافة نص واحد فقط! الرجاء الضغط على "إزالة النص المحدد" للبدء من جديد.'
-                    : 'Only one text can be added! Please press on “remove selected text” to start over';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-                return; // Stop execution if a text object already exists
+                canvas.remove(existingText);
             }
 
-            // Add text to the canvas at the bottom center of the image
-            const text = new fabric.Textbox(textInput, {
-                left: canvas.getWidth() / 2, // Center horizontally
-                top: canvas.getHeight() - 70, // Position at the bottom with some padding
-                fontSize: 34,
-                fill: 'silver', // Use selected color
-                fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont, // Use the selected font
-                originX: 'center', // Center the text horizontally
-                originY: 'bottom', // Align the text to the bottom
-                textAlign: 'center', // Center the text
-                lockMovementX: true, // Prevent horizontal movement
-                lockMovementY: true, // Prevent vertical movement
-                lockRotation: true, // Prevent rotation
-                lockScalingX: true, // Prevent horizontal scaling
-                lockScalingY: true, // Prevent vertical scaling
-                hasControls: false, // Hide controls
-                hasBorders: false, // Hide borders
-                selectable: false // Make it non-selectable
-            });
+            if (textInput && selectedFont) {
+                // Add text to the canvas at the bottom center of the image
+                const text = new fabric.Textbox(textInput, {
+                    left: canvas.getWidth() / 2, // Center horizontally
+                    top: canvas.getHeight() - 70, // Position at the bottom with some padding
+                    fontSize: 34,
+                    fill: 'silver', // Use selected color
+                    fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont, // Use the selected font
+                    originX: 'center', // Center the text horizontally
+                    originY: 'bottom', // Align the text to the bottom
+                    textAlign: 'center', // Center the text
+                    lockMovementX: true, // Prevent horizontal movement
+                    lockMovementY: true, // Prevent vertical movement
+                    lockRotation: true, // Prevent rotation
+                    lockScalingX: true, // Prevent horizontal scaling
+                    lockScalingY: true, // Prevent vertical scaling
+                    hasControls: false, // Hide controls
+                    hasBorders: false, // Hide borders
+                    selectable: false // Make it non-selectable
+                });
 
-            canvas.add(text);
-        });
-
-        // Remove Selected Text
-        $('#remove-text').click(function () {
-            const activeObject = canvas.getActiveObject(); // Get the selected object
-
-            // If a text object is selected, remove it
-            if (activeObject && activeObject.type === 'textbox') {
-                canvas.remove(activeObject);
-            } else {
-                // If no object is selected, remove all text objects
-                const textObjects = canvas.getObjects().filter(obj => obj.type === 'textbox');
-                if (textObjects.length > 0) {
-                    textObjects.forEach(text => canvas.remove(text));
-                } else {
-                    const selectedLanguage = '@SelectedLanguage';
-                    const message = selectedLanguage === 'ar' ? 'لا يوجد نص لإزالته!' : 'No text to remove!';
-                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                        confirmButtonText: confirmButtonText
-                    });
-                }
+                canvas.add(text);
             }
         });
 
         // Handle Font Selection from <select> Dropdown
         $('#font-select').change(function () {
-            const selectedFont = $(this).val(); // Get the selected font
-            const activeObject = canvas.getActiveObject();
+            const selectedFont = $(this).val();
+            const textInput = $('#text-input').val();
 
-            // Update the font of the selected text on the canvas
-            if (activeObject && activeObject.type === 'textbox') {
-                activeObject.set('fontFamily', selectedFont === "Evil Empire" ? "'Evil Empire', sans-serif" : selectedFont);
-                canvas.renderAll();
+            if (textInput) {
+                // Remove existing text
+                const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
+                if (existingText) {
+                    canvas.remove(existingText);
+                }
+
+                // Add new text with updated font
+                const text = new fabric.Textbox(textInput, {
+                    left: canvas.getWidth() / 2,
+                    top: canvas.getHeight() - 70,
+                    fontSize: 34,
+                    fill: 'silver',
+                    fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont,
+                    originX: 'center',
+                    originY: 'bottom',
+                    textAlign: 'center',
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    lockRotation: true,
+                    lockScalingX: true,
+                    lockScalingY: true,
+                    hasControls: false,
+                    hasBorders: false,
+                    selectable: false
+                });
+
+                canvas.add(text);
             }
-        });
-
-        // Export Design
-        $('#export-design').click(function () {
-            const dataURL = canvas.toDataURL({
-                format: 'png',
-                quality: 1,
-            });
-            const link = document.createElement('a');
-            link.href = dataURL;
-            link.download = 'design.png';
-            link.click();
         });
 
         // Make Order Button Click Handler
         $('#make-order').click(function () {
             const sizeId = $('#size-select').val();
             const colorId = $('input[name="ColorId"]:checked').val();
-            const lidId = $('#lid-select').val();
-            const isCustomize = $('#is-customize').is(':checked');
+            const lidId = $('input[name="LidId"]:checked').val();
             const text = $('#text-input').val();
             const fontFamily = $('#font-select').val();
 
@@ -553,27 +536,12 @@
                 return;
             }
 
-            // Validate if text is provided when customization is enabled
-            if (isCustomize && (!text || !fontFamily)) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'الرجاء إدخال النص وتحديد الخط!' : 'Please enter text and select a font!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-                return;
-            }
-
             // Prepare the order details object
             const orderDetails = {
                 SizeId: sizeId,
                 ColorId: colorId,
                 LidId: lidId,
-                IsCustomize: isCustomize,
+                IsCustomize: text ? true : false,
                 Text: text,
                 FontFamily: fontFamily
             };
@@ -631,7 +599,15 @@
             } else {
                 $('.color-circle').removeClass('selected');
                 $(this).addClass('selected');
+                updateBottleImage();
             }
+        });
+
+        // Handle click on lid cards
+        $('.lid-card').on('click', function () {
+            $('.lid-card').removeClass('selected');
+            $(this).addClass('selected');
+            updateBottleImage();
         });
 
         // Click event for the front image box

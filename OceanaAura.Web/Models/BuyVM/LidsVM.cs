@@ -3,6 +3,7 @@
     public class LidsVM
     {
         public int Id { get; set; }
+        public string ProductImages { get; set; }
         public string Name { get; set; }
         public decimal? PriceJOR { get; set; }
         public decimal? PriceUAE { get; set; }

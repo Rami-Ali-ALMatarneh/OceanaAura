@@ -109,11 +109,11 @@
             <h3 class="element-title text-uppercase text-center mb-5">
                 @if (SelectedLanguage == "ar")
                 {
-                        <span>معرضنا</span>
+                    <span>معرضنا</span>
                 }
                 else
                 {
-                        <span>OUR GALLERY</span>
+                    <span>OUR GALLERY</span>
                 }
             </h3>
 
@@ -247,32 +247,33 @@
 </section>
 
 <!-- Products Section -->
-@if(Products.Count>0){
+@if (Products.Count > 0)
+{
     <section id="related-products" class="related-products product-carousel py-5 position-relative overflow-hidden">
-    <div class="container">
-        <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-5">
-            <h4 class="text-uppercase m-0 d-flex align-item">
-                @if (SelectedLanguage == "ar")
-                {
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-5">
+                <h4 class="text-uppercase m-0 d-flex align-item">
+                    @if (SelectedLanguage == "ar")
+                    {
                         <span>زجاجاتنا</span>
-                }
-                else
-                {
-                    <span>Our Bottles</span>
-                }
-            </h4>
-            <a asp-action="Store" asp-controller="Home" class="btn-link">
-                @if (SelectedLanguage == "ar")
-                {
+                    }
+                    else
+                    {
+                        <span>Our Bottles</span>
+                    }
+                </h4>
+                <a asp-action="Store" asp-controller="Home" class="btn-link">
+                    @if (SelectedLanguage == "ar")
+                    {
                         <span>عرض جميع الزجاجات</span>
-                }
-                else
-                {
+                    }
+                    else
+                    {
                         <span>View All Bottles</span>
-                }
-            </a>
-        </div>
-    @*     <div class="swiper product-swiper open-up" data-aos="zoom-out">
+                    }
+                </a>
+            </div>
+            @*     <div class="swiper product-swiper open-up" data-aos="zoom-out">
             <div class="swiper-wrapper d-flex" style="gap:0">
                 @foreach (var Product in Products.Take(2))
                 {
@@ -326,7 +327,7 @@
                                     <img src="~/File/HomeImg/@size.ImgUrl" alt="@size.NameEn" loading="lazy" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: cover;">
                                 </div>
 
-                                <a asp-action="Buy" asp-route-id="@product.Id" asp-controller="Home" class="btn btn-outline-dark btn-lg w-100 fw-bold">
+                                @* <a asp-action="Buy" asp-route-id="@product.Id" asp-controller="Home" class="btn btn-outline-dark btn-lg w-100 fw-bold">
                                     @if (SelectedLanguage == "ar")
                                     {
                                         <span>اشتري الآن</span>
@@ -335,14 +336,14 @@
                                     {
                                         <span style="z-index:100">Buy Now</span>
                                     }
-                                </a>
+                                </a> *@
                             </div>
                         </div>
                     </div>
                 }
             </div>
-    </div>
-</section>
+        </div>
+    </section>
 
 }
 <!-- Bottle Sizes Section -->

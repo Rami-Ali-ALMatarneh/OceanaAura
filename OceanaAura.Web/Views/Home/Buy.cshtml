@@ -6,7 +6,7 @@
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
     var Lids = (List<OceanaAura.Web.Models.BuyVM.LidsVM>)ViewBag.Lids;
     var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
-    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
+    var SelectedLanguage = ViewBag.SelectedLanguage;
 }
 
 <style>
@@ -20,7 +20,12 @@
         background-size: cover;
         background-position: center;
         position: relative;
+        border: 2px solid transparent;
     }
+
+        .color-circle.selected {
+            border: 2px solid #000;
+        }
 
         .color-circle.sold-out {
             opacity: 0.5;
@@ -56,321 +61,75 @@
         width: 3rem;
         height: 3rem;
     }
-</style>
 
-<div class="container mt-5">
-    @if (product != null)
-    {
-        <div class="row">
-            <!-- Product Images -->
-            <div class="col-md-6">
-                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @for (int i = 0; i < product.ImageUrls.Count; i++)
-                        {
-                            <div class="carousel-item @(i == 0 ? "active" : "") buyImg">
-                                <img src="~/File/ColorsImg/@product.ImageUrls[i]" class="d-block w-100 h-50" alt="Product Image">
-                            </div>
-                        }
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>السابق</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Previous</span> <!-- English text -->
-                            }
-                        </span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>التالي</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Next</span> <!-- English text -->
-                            }
-                        </span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Product Details -->
-            <div class="col-md-6">
-                <h1>@product.Name</h1>
-                <p>@product.Description</p>
-                <h5>
-                    @if (SelectedLanguage == "ar")
-                    {
-                        <span>الفئة:</span> <!-- Arabic text -->
-                    }
-                    else
-                    {
-                        <span>Category:</span> <!-- English text -->
-                    }
-                    @categories.FirstOrDefault(c => c.id == product.CategoryId)?.NameEn
-                </h5>
-
-                <!-- Pricing and Sizes -->
-                @if (product.IsBottleCategory)
-                {
-                    <h5>
-                        @if (SelectedLanguage == "ar")
-                        {
-                            <span>الأحجام المتاحة</span> <!-- Arabic text -->
-                        }
-                        else
-                        {
-                            <span>Available Sizes</span> <!-- English text -->
-                        }
-                    </h5>
-                    <form id="buyForm" method="post">
-                        <input type="hidden" name="ProductId" value="@product.Id" />
-
-                        <!-- Size Dropdown -->
-                        <div class="mb-3">
-                            <label for="size" class="form-label">
-                                @if (SelectedLanguage == "ar")
-                                {
-                                    <span>اختر الحجم</span> <!-- Arabic text -->
-                                }
-                                else
-                                {
-                                    <span>Select Size</span> <!-- English text -->
-                                }
-                            </label>
-                            <select class="form-select" id="size" name="SizeId">
-                                <option value="" disabled selected>
-                                    @if (SelectedLanguage == "ar")
-                                    {
-                                        <span>اختر الحجم</span> <!-- Arabic text -->
-                                    }
-                                    else
-                                    {
-                                        <span>Select Size</span> <!-- English text -->
-                                    }
-                                </option>
-                                @foreach (var size in sizes)
-                                {
-                                    <option value="@size.Id">
-                                        <span class="size-name">@size.NameEn</span> -
-                                        @if (SelectedRegionPage == "Jordan")
-                                        {
-                                            <span class="size-price">@size.PriceJOR JOD</span>
-                                        }
-                                        @if (SelectedRegionPage == "United Arab Emirates")
-                                        {
-                                            <span class="size-price">@size.PriceUAE AED</span>
-                                        }
-                                    </option>
-                                }
-                            </select>
-                        </div>
-
-                        <!-- Lids Dropdown -->
-                        <div class="mb-3">
-                            <label for="lid" class="form-label">
-                                @if (SelectedLanguage == "ar")
-                                {
-                                    <span>اختر الغطاء</span> <!-- Arabic text -->
-                                }
-                                else
-                                {
-                                    <span>Select Lid</span> <!-- English text -->
-                                }
-                            </label>
-                            <select class="form-select" id="lid" name="LidId">
-                                <option value="" disabled selected>
-                                    @if (SelectedLanguage == "ar")
-                                    {
-                                        <span>اختر الغطاء</span> <!-- Arabic text -->
-                                    }
-                                    else
-                                    {
-                                        <span>Select Lid</span> <!-- English text -->
-                                    }
-                                </option>
-                                @foreach (var lid in Lids)
-                                {
-                                    <option value="@lid.Id">
-                                        <span>@lid.Name</span>
-                                        @if (lid.IsMagneticLid)
-                                        {
-                                            if (SelectedRegionPage == "Jordan")
-                                            {
-                                                <span> - @lid.PriceJOR JOD</span>
-                                            }
-                                            else if (SelectedRegionPage == "United Arab Emirates")
-                                            {
-                                                <span> - @lid.PriceUAE AED</span>
-                                            }
-                                        }
-                                    </option>
-                                }
-                            </select>
-                        </div>
-
-                        <!-- Colors -->
-                        @foreach (var color in colors)
-                        {
-                            <label class="color-circle @(color.Id == ViewBag.SelectedColorId ? "selected" : "") @(color.IsSoldOut ? "sold-out" : "")"
-                                   style="background-image: url('/File/ColorsImg/@color.ImageURL');">
-                                <input type="radio" name="ColorId" value="@color.Id"
-                                @(color.Id == ViewBag.SelectedColorId ? "checked" : "")
-                                       style="display: none;"
-                                @(color.IsSoldOut ? "disabled" : "") />
-                                @if (color.IsSoldOut)
-                                {
-                                    <span class="sold-out-mark">X</span>
-                                }
-                            </label>
-                        }
-
-                        <!-- Quantity -->
-                        <div class="mb-3">
-                            <label for="quantity" class="form-label">
-                                @if (SelectedLanguage == "ar")
-                                {
-                                    <span>الكمية</span> <!-- Arabic text -->
-                                }
-                                else
-                                {
-                                    <span>Quantity</span> <!-- English text -->
-                                }
-                            </label>
-                            <div class="input-group quantity-selector" style="max-width: 1000px;">
-                                <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input type="number" class="form-control text-center" id="quantity" name="Quantity" min="1" value="1" style="max-width: 60px;" />
-                                <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Buy Now Button -->
-                        <button type="submit" class="btn btn-lg btn-dark mt-4">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>اشتري الآن</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Buy Now</span> <!-- English text -->
-                            }
-                        </button>
-                        <!-- Add to Cart Button -->
-                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>أضف إلى السلة</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Add to Cart</span> <!-- English text -->
-                            }
-                        </button>
-                    </form>
-                }
-                else
-                {
-                    <h5>
-                        @if (SelectedLanguage == "ar")
-                        {
-                            <span>السعر:</span> <!-- Arabic text -->
-                        }
-                        else
-                        {
-                            <span>Price:</span> <!-- English text -->
-                        }
-                    </h5>
-                    @if (SelectedRegionPage == "Jordan")
-                    {
-                        <span class="size-price">@product.PriceJOR JOD</span>
-                    }
-                    @if (SelectedRegionPage == "United Arab Emirates")
-                    {
-                        <span class="size-price"> @product.PriceUAE AED</span>
-                    }
-                    <!-- Simplified Buy Form -->
-                    <form id="buyFormSimple" method="post">
-                        <input type="hidden" name="ProductId" value="@product.Id" />
-
-                        <!-- Quantity -->
-                        <div class="mb-3">
-                            <label for="quantitySimple" class="form-label">
-                                @if (SelectedLanguage == "ar")
-                                {
-                                    <span>الكمية</span> <!-- Arabic text -->
-                                }
-                                else
-                                {
-                                    <span>Quantity</span> <!-- English text -->
-                                }
-                            </label>
-                            <div class="input-group quantity-selector" style="max-width: 1000px;">
-                                <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity-simple">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input type="number" class="form-control text-center" id="quantitySimple" name="Quantity" min="1" value="1" style="max-width: 60px;" />
-                                <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity-simple">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Buy Now Button -->
-                        <button type="submit" class="btn btn-lg btn-dark mt-4">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>اشتري الآن</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Buy Now</span> <!-- English text -->
-                            }
-                        </button>
-                        <!-- Add to Cart Button -->
-                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">
-                            @if (SelectedLanguage == "ar")
-                            {
-                                <span>أضف إلى السلة</span> <!-- Arabic text -->
-                            }
-                            else
-                            {
-                                <span>Add to Cart</span> <!-- English text -->
-                            }
-                        </button>
-                    </form>
-                }
-            </div>
-        </div>
+    /* Lids Cards Styles */
+    /* Lids Cards Styles - Responsive */
+    .lids-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+        gap: 10px;
     }
-    else
-    {
-        <h2 class="text-danger">
-            @if (SelectedLanguage == "ar")
-            {
-                <span>المنتج غير موجود!</span> <!-- Arabic text -->
-            }
-            else
-            {
-                <span>Product not found!</span> <!-- English text -->
-            }
-        </h2>
-    }
-</div>
 
-<!-- Custom CSS to remove number spinner -->
-<style>
+    .lid-card {
+        flex: 1 0 calc(25% - 10px); /* 4 cards per row by default */
+        min-width: 100px;
+        max-width: 150px;
+        aspect-ratio: 3/4; /* Maintain aspect ratio */
+        cursor: pointer;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 8px;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .lid-card.selected {
+            border: 2px solid #000;
+            background-color: #f8f9fa;
+        }
+
+        .lid-card img {
+            width: 100%;
+            height: auto;
+            flex-grow: 1;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .lid-card .lid-name {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 3px;
+            word-break: break-word;
+        }
+
+        .lid-card .lid-price {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #666;
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .lid-card {
+            flex: 1 0 calc(33.333% - 10px); /* 3 cards per row on medium screens */
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .lid-card {
+            flex: 1 0 calc(50% - 10px); /* 2 cards per row on small screens */
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .lid-card {
+            flex: 1 0 calc(50% - 10px); /* 2 cards per row on extra small screens */
+            min-width: 80px;
+        }
+    }
     /* For Chrome, Safari, Edge, Opera */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
@@ -393,7 +152,337 @@
         margin-top: 10px;
         display: none;
     }
+
+    /* Disable carousel auto sliding */
+    .carousel {
+        pointer-events: none;
+    }
 </style>
+
+<div class="container mt-5">
+    @if (product != null)
+    {
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="false">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < product.ImageUrls.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "") buyImg">
+                                <img src="~/File/ColorsImg/@product.ImageUrls[i]" class="d-block w-100 h-50" alt="Product Image">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>السابق</span>
+                            }
+                            else
+                            {
+                                <span>Previous</span>
+                            }
+                        </span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>التالي</span>
+                            }
+                            else
+                            {
+                                <span>Next</span>
+                            }
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-md-6">
+                <h1>@product.Name</h1>
+                <p>@product.Description</p>
+                <h5>
+                    @if (SelectedLanguage == "ar")
+                    {
+                        <span>الفئة:</span>
+                    }
+                    else
+                    {
+                        <span>Category:</span>
+                    }
+                    @categories.FirstOrDefault(c => c.id == product.CategoryId)?.NameEn
+                </h5>
+
+                <!-- Pricing and Sizes -->
+                @if (product.IsBottleCategory)
+                {
+                    <h5>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>الأحجام المتاحة</span>
+                        }
+                        else
+                        {
+                            <span>Available Sizes</span>
+                        }
+                    </h5>
+                    <form id="buyForm" method="post">
+                        <input type="hidden" name="ProductId" value="@product.Id" />
+
+                        <!-- Size Dropdown -->
+                        <div class="mb-3">
+                            <label for="size" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اختر الحجم</span>
+                                }
+                                else
+                                {
+                                    <span>Select Size</span>
+                                }
+                            </label>
+                            <select class="form-select" id="size" name="SizeId">
+                                <option value="" disabled selected>
+                                    @if (SelectedLanguage == "ar")
+                                    {
+                                        <span>اختر الحجم</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Select Size</span>
+                                    }
+                                </option>
+                                @foreach (var size in sizes)
+                                {
+                                    <option value="@size.Id">
+                                        <span class="size-name">@size.NameEn</span> -
+                                        @if (SelectedRegionPage == "Jordan")
+                                        {
+                                            <span class="size-price">@size.PriceJOR JOD</span>
+                                        }
+                                        @if (SelectedRegionPage == "United Arab Emirates")
+                                        {
+                                            <span class="size-price">@size.PriceUAE AED</span>
+                                        }
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Colors -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اختر اللون</span>
+                                }
+                                else
+                                {
+                                    <span>Select Color</span>
+                                }
+                            </label>
+                            <div>
+                                @foreach (var color in colors)
+                                {
+                                    <label class="color-circle @(color.Id == ViewBag.SelectedColorId ? "selected" : "") @(color.IsSoldOut ? "sold-out" : "")"
+                                           style="background-image: url('/File/ColorsImg/@color.ImageURL');">
+                                        <input type="radio" name="ColorId" value="@color.Id"
+                                               @(color.Id == ViewBag.SelectedColorId ? "checked" : "")
+                                               style="display: none;"
+                                               @(color.IsSoldOut ? "disabled" : "") />
+                                        @if (color.IsSoldOut)
+                                        {
+                                            <span class="sold-out-mark">X</span>
+                                        }
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+
+                        <!-- بقية الكود كما هو مع استبدال جزء ال lids بالتصميم الجديد -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>اختر الغطاء</span>
+                                }
+                                else
+                                {
+                                    <span>Select Lid</span>
+                                }
+                            </label>
+                            <div class="lids-container">
+                                @foreach (var lid in Lids)
+                                {
+                                    <label class="lid-card" data-lid-id="@lid.Id">
+                                        <img src="~/File/ColorsImg/@lid.ProductImages" alt="@lid.Name" loading="lazy" />
+                                        <div class="lid-name">@lid.Name</div>
+                                        <div class="lid-price">
+                                            @if (lid.IsMagneticLid)
+                                            {
+                                                if (SelectedRegionPage == "Jordan")
+                                                {
+                                                    <span>@lid.PriceJOR JOD</span>
+                                                }
+                                                else if (SelectedRegionPage == "United Arab Emirates")
+                                                {
+                                                    <span>@lid.PriceUAE AED</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span>Free</span>
+                                            }
+                                        </div>
+                                        <input type="radio" name="LidId" value="@lid.Id" style="display: none;" />
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الكمية</span>
+                                }
+                                else
+                                {
+                                    <span>Quantity</span>
+                                }
+                            </label>
+                            <div class="input-group quantity-selector" style="max-width: 1000px;">
+                                <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" class="form-control text-center" id="quantity" name="Quantity" min="1" value="1" style="max-width: 60px;" />
+                                <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Buy Now Button -->
+                        <button type="submit" class="btn btn-lg btn-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>اشتري الآن</span>
+                            }
+                            else
+                            {
+                                <span>Buy Now</span>
+                            }
+                        </button>
+                        <!-- Add to Cart Button -->
+                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>أضف إلى السلة</span>
+                            }
+                            else
+                            {
+                                <span>Add to Cart</span>
+                            }
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <h5>
+                        @if (SelectedLanguage == "ar")
+                        {
+                            <span>السعر:</span>
+                        }
+                        else
+                        {
+                            <span>Price:</span>
+                        }
+                    </h5>
+                    @if (SelectedRegionPage == "Jordan")
+                    {
+                        <span class="size-price">@product.PriceJOR JOD</span>
+                    }
+                    @if (SelectedRegionPage == "United Arab Emirates")
+                    {
+                        <span class="size-price"> @product.PriceUAE AED</span>
+                    }
+                    <!-- Simplified Buy Form -->
+                    <form id="buyFormSimple" method="post">
+                        <input type="hidden" name="ProductId" value="@product.Id" />
+
+                        <!-- Quantity -->
+                        <div class="mb-3">
+                            <label for="quantitySimple" class="form-label">
+                                @if (SelectedLanguage == "ar")
+                                {
+                                    <span>الكمية</span>
+                                }
+                                else
+                                {
+                                    <span>Quantity</span>
+                                }
+                            </label>
+                            <div class="input-group quantity-selector" style="max-width: 1000px;">
+                                <button type="button" class="btn btn-outline-dark px-3" id="decrease-quantity-simple">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" class="form-control text-center" id="quantitySimple" name="Quantity" min="1" value="1" style="max-width: 60px;" />
+                                <button type="button" class="btn btn-outline-dark px-3" id="increase-quantity-simple">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Buy Now Button -->
+                        <button type="submit" class="btn btn-lg btn-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>اشتري الآن</span>
+                            }
+                            else
+                            {
+                                <span>Buy Now</span>
+                            }
+                        </button>
+                        <!-- Add to Cart Button -->
+                        <button type="button" id="addToCart" class="btn btn-lg btn-outline-dark mt-4">
+                            @if (SelectedLanguage == "ar")
+                            {
+                                <span>أضف إلى السلة</span>
+                            }
+                            else
+                            {
+                                <span>Add to Cart</span>
+                            }
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <h2 class="text-danger">
+            @if (SelectedLanguage == "ar")
+            {
+                <span>المنتج غير موجود!</span>
+            }
+            else
+            {
+                <span>Product not found!</span>
+            }
+        </h2>
+    }
+</div>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -424,13 +513,13 @@
                 }
 
                 // Validate lid (only for bottle category)
-                const lidDropdown = $(form).find('#lid');
-                if (lidDropdown.length && !lidDropdown.val()) {
+                const lidDropdown = $(form).find('input[name="LidId"]:checked');
+                if ($(form).find('.lids-container').length && !lidDropdown.val()) {
                     isValid = false;
                     showError(form, '@(SelectedLanguage == "ar" ? "يرجى اختيار الغطاء." : "Please select a lid.")');
-                    lidDropdown.addClass('is-invalid');
+                    $(form).find('.lids-container').addClass('is-invalid');
                 } else {
-                    lidDropdown.removeClass('is-invalid');
+                    $(form).find('.lids-container').removeClass('is-invalid');
                 }
 
                 // Validate color
@@ -460,6 +549,13 @@
             $('input[name="ColorId"]').on('change', function () {
                 $('.color-circle').removeClass('selected');
                 $(this).parent('.color-circle').addClass('selected');
+            });
+
+            // Handle lid card selection
+            $('.lid-card').on('click', function () {
+                $('.lid-card').removeClass('selected');
+                $(this).addClass('selected');
+                $(this).find('input[type="radio"]').prop('checked', true);
             });
 
             // Quantity change functionality for bottle products
@@ -513,7 +609,7 @@
                 // Validate the form before sending data
                 if (validateForm(form)) {
                     $.ajax({
-                                               url: url,
+                        url: url,
                         type: 'POST',
                         data: formData,
                         success: function (response) {
@@ -533,7 +629,7 @@
                 const form = $(this).closest('form'); // Select the closest form (either buyForm or buyFormSimple)
                 const formId = form.attr('id'); // Identify the form
                 let details = '';
-                debugger
+
                 if (formId === 'buyForm') {
                     details = 'OrderDetails';
                 } else if (formId === 'buyFormSimple') {
@@ -629,7 +725,7 @@
             function updateImages() {
                 const productId = @product.Id; // Get the product ID from the Razor variable
                 const sizeId = $('#size').val();
-                const lidId = $('#lid').val();
+                const lidId = $('input[name="LidId"]:checked').val();
                 const colorId = $('input[name="ColorId"]:checked').val();
 
                 // Show spinner
@@ -691,8 +787,9 @@
             }
 
             // Attach event listeners to filter dropdowns and color circles
-            $('#size, #lid').on('change', updateImages);
+            $('#size').on('change', updateImages);
             $('input[name="ColorId"]').on('change', updateImages);
+            $('input[name="LidId"]').on('change', updateImages);
         });
     </script>
 }

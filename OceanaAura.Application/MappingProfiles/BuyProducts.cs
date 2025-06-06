@@ -72,6 +72,7 @@ namespace OceanaAura.Application.MappingProfiles
             CreateMap<Invoice, InvoiceDtos>()
 .ReverseMap();
             CreateMap<Product, LidsDto>()
+                .ForMember(dest => dest.ProductImages, opt => opt.MapFrom(src => src.ProductImages.FirstOrDefault().ImageUrl))
 .ReverseMap();
 
             CreateMap<GetBottleImg, BottleImg>()
