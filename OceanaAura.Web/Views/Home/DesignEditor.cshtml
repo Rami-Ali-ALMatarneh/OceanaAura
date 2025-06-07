@@ -6,8 +6,8 @@
     var SelectedRegionPage = ViewBag.SelectedRegionPage;
     var Lids = (List<OceanaAura.Web.Models.BuyVM.LidsVM>)ViewBag.Lids;
     var CartSummaryList = ViewBag.CartSummaryList as List<OceanaAura.Web.Models.BuyVM.OrderSummary>;
-    var SelectedLanguage = ViewBag.SelectedLanguage; // Get the selected language
-    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors; // Add colors from ViewBag
+    var SelectedLanguage = ViewBag.SelectedLanguage;
+    var colors = (List<OceanaAura.Web.Models.Colors.ColorVM>)ViewBag.Colors;
 }
 
 <!-- Add Evil Empire Font CDN -->
@@ -15,7 +15,7 @@
 <link rel="stylesheet" type="text/css" href="~/css/arabicLang.css">
 
 <style>
-    /* Custom CSS for the spinner (if not using Bootstrap) */
+    /* Custom CSS for the spinner */
     .spinner-border {
         width: 5rem;
         height: 5rem;
@@ -31,35 +31,91 @@
         }
     }
 
-    /* Ensure the parent container takes full height and width */
-    .canvas-container {
-        width: 100%; /* Full width of its parent */
-        height: 100vh; /* Full viewport height (or use 100% if the parent has a defined height) */
-        position: relative; /* For positioning child elements if needed */
+    /* Main Container */
+    .container-fluid {
+        padding: 0 15px;
     }
 
-    .upper-canvas {
-        font-family: 'Evil Empire', sans-serif;
-        width: fit-content;
+    /* Design Card Container */
+    .design-card-container {
+        position: relative;
+        width: 100%;
+        height: 500px; /* Fixed height for consistency */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
     }
 
-    .design-canvas {
-        font-family: 'Evil Empire', sans-serif;
+    .design-image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    .row > * {
-        padding-right: 0;
+    .design-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
     }
 
-    /* Make the canvas take up 100% of its container */
-    #design-canvas {
-        font-family: 'Evil Empire', sans-serif;
-        width: 100% !important; /* Full width of the container */
-        height: 100% !important; /* Full height of the container */
-        display: block; /* Remove extra space below the canvas */
+    .design-text-overlay {
+        position: absolute;
+        bottom: 70px; /* Position from bottom */
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: silver;
+        font-size: 22px;
+        pointer-events: none;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Better visibility */
+        word-wrap: break-word;
+        white-space: pre-line;
+        margin: 0 auto;
+        line-height: 1.3;
     }
 
-    /* Style for the front image box */
+    /* Color Selection */
+    .color-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        background-size: cover;
+        background-position: center;
+        margin: 5px;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+    }
+
+        .color-circle.selected {
+            border-color: #000;
+            transform: scale(1.1);
+        }
+
+        .color-circle.sold-out {
+            opacity: 0.5;
+            position: relative;
+            cursor: not-allowed;
+        }
+
+            .color-circle.sold-out::after {
+                content: "X";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: red;
+                font-weight: bold;
+                font-size: 20px;
+            }
+
+    /* Front Image Box */
     .front-image-box {
         border: 2px solid #000;
         margin-bottom: 20px;
@@ -67,42 +123,54 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        cursor: pointer; /* Add pointer cursor to indicate clickability */
+        cursor: pointer;
+        height: 150px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
     }
 
         .front-image-box img {
             max-width: 100%;
             max-height: 100%;
+            object-fit: contain;
         }
 
-    /* Style for the Make Order button */
-    #make-order {
-        margin-top: 20px;
+    /* Form Elements */
+    .form-select, .form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #ced4da;
     }
 
-    /* Mobile-specific styles */
-    @@media (max-width: 768px) {
-        .front-image-box {
-            display: none; /* Hide the front image box on mobile */
-        }
-
-        .show-front-image-btn {
-            display: block; /* Show the button to display the front image */
-            margin-bottom: 20px;
-        }
-
-        .col-md-9 {
-            order: -1; /* Move the canvas to the top on mobile */
-        }
+    /* Buttons */
+    .btn {
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-weight: 500;
+        transition: all 0.3s;
     }
 
-    @@media (min-width: 769px) {
-        .show-front-image-btn {
-            display: none; /* Hide the button on desktop */
-        }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
     }
 
-    /* Lids Cards Styles - Responsive */
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+    /* Lids Cards */
     .lids-container {
         display: flex;
         flex-wrap: wrap;
@@ -111,10 +179,10 @@
     }
 
     .lid-card {
-        flex: 1 0 calc(25% - 10px); /* 4 cards per row by default */
+        flex: 1 0 calc(25% - 10px);
         min-width: 100px;
         max-width: 150px;
-        aspect-ratio: 3/4; /* Maintain aspect ratio */
+        aspect-ratio: 3/4;
         cursor: pointer;
         border: 2px solid #ddd;
         border-radius: 8px;
@@ -122,11 +190,19 @@
         transition: all 0.3s;
         display: flex;
         flex-direction: column;
+        background-color: white;
     }
+
+        .lid-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
         .lid-card.selected {
             border: 2px solid #000;
             background-color: #f8f9fa;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .lid-card img {
@@ -142,6 +218,7 @@
             text-align: center;
             margin-bottom: 3px;
             word-break: break-word;
+            font-weight: 500;
         }
 
         .lid-card .lid-price {
@@ -150,24 +227,84 @@
             color: #666;
         }
 
+    /* Card Styles */
+    .card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
     /* Responsive adjustments */
     @@media (max-width: 992px) {
         .lid-card {
-            flex: 1 0 calc(33.333% - 10px); /* 3 cards per row on medium screens */
+            flex: 1 0 calc(33.333% - 10px);
+        }
+        
+        .design-text-overlay {
+            font-size: 20px;
         }
     }
 
     @@media (max-width: 768px) {
+        .design-card-container {
+            height: 400px;
+        }
+
+        .design-text-overlay {
+            bottom: 50px;
+            font-size: 18px;
+        }
+
         .lid-card {
-            flex: 1 0 calc(50% - 10px); /* 2 cards per row on small screens */
+            flex: 1 0 calc(50% - 10px);
+        }
+
+        .front-image-box {
+            display: none;
+        }
+
+        .show-front-image-btn {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .col-md-9 {
+            order: -1;
+            margin-bottom: 20px;
         }
     }
 
     @@media (max-width: 576px) {
+        .design-card-container {
+            height: 350px;
+        }
+
+        .design-text-overlay {
+            bottom: 40px;
+            font-size: 16px;
+        }
+
         .lid-card {
-            flex: 1 0 calc(50% - 10px); /* 2 cards per row on extra small screens */
+            flex: 1 0 calc(50% - 10px);
             min-width: 80px;
         }
+    }
+
+    @@media (min-width: 769px) {
+        .show-front-image-btn {
+            display: none;
+        }
+    }
+
+    /* Arabic specific styles */
+    .arabic-text {
+        font-family: 'DecoType-Thuluth-II', sans-serif;
+        direction: rtl;
     }
 </style>
 
@@ -175,8 +312,8 @@
     <div class="row w-100 h-100 p-3">
         <!-- Left Sidebar -->
         <div class="col-md-3">
-            <div class="card shadow-sm w-100 h-100">
-                <div class="card-body w-100 h-100">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
                     <!-- Size Selection -->
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "اختر حجم " : "Select Bottle Size")</h4>
@@ -194,15 +331,11 @@
                         <div class="d-flex flex-wrap gap-3">
                             @foreach (var color in colors)
                             {
-                                <label class="color-circle @(color.IsSoldOut ? "sold-out" : "") position-relative"
+                                <label class="color-circle @(color.IsSoldOut ? "sold-out" : "")"
                                        style="background-image: url('/File/ColorsImg/@color.ImageURL');">
                                     <input type="radio" name="ColorId" value="@color.Id"
                                            class="d-none"
                                            @(color.IsSoldOut ? "disabled" : "") />
-                                    @if (color.IsSoldOut)
-                                    {
-                                        <span class="sold-out-mark position-absolute top-50 start-50 translate-middle">X</span>
-                                    }
                                 </label>
                             }
                         </div>
@@ -263,7 +396,7 @@
                     <!-- Add Text Section -->
                     <div class="mb-4">
                         <h4 class="h6">@(SelectedLanguage == "ar" ? "إضافة نص" : "Add Text")</h4>
-                        <input type="text" id="text-input" class="form-control mb-4" placeholder="@(SelectedLanguage == "ar" ? "أدخل النص (من 2 إلى 20 أحرف)" : "Enter text (2 to 20 characters)")">
+                        <input type="text" id="text-input" class="form-control mb-4" placeholder="@(SelectedLanguage == "ar" ? "أدخل النص (من 2 إلى 20 أحرف)" : "Enter text (2 to 20 characters)")" maxlength="20">
                     </div>
 
                     <!-- Make Order Button -->
@@ -274,12 +407,15 @@
             </div>
         </div>
 
-        <!-- Canvas Area -->
+        <!-- Design Card Area -->
         <div class="col-md-9">
-            <div class="card shadow-sm" style="z-index:100;position:relative">
+            <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <div class="canvas-container">
-                        <canvas id="design-canvas" style="width:fit-content"></canvas>
+                    <div class="design-card-container">
+                        <div class="design-image-wrapper">
+                            <img id="design-image" class="design-image" src="" alt="Design Image" loading="lazy" />
+                            <div id="design-text" class="design-text-overlay"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -287,69 +423,60 @@
     </div>
 </div>
 
-<!-- Add this inside the canvas container or at the end of the body -->
-<div id="spinner" class="spinner-border text-primary" role="status" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+<!-- Spinner -->
+<div id="spinner" class="spinner-border text-primary" role="status" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
     <span class="visually-hidden">Loading...</span>
 </div>
-<!-- Load jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Load Fabric.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
-        // Initialize Fabric.js canvas
-        const canvas = new fabric.Canvas('design-canvas', {
-            backgroundColor: '#ffffff',
+        // Initialize variables
+        let currentFont = 'Evil Empire';
+        let currentText = '';
+        let isArabic = false;
+        
+        // Default images for each size in order of selection index
+        const defaultImages = [
+            '/File/HomeImg/Artboard350.svg',    // First option (index 0)
+            '/File/HomeImg/OriginalLid650.svg',   // Second option (index 1)
+            '/File/HomeImg/OriginalLid750.svg',   // Third option (index 2)
+            '/File/HomeImg/OriginalLid1L.svg',    // Fourth option (index 3)
+            '/File/HomeImg/OriginalLid12.svg'    // Fifth option (index 4)
+        ];
+        
+        // Load default bottle image based on selected size index
+        function loadDefaultImage() {
+            const selectedIndex = $('#size-select')[0].selectedIndex;
+            const defaultImage = defaultImages[selectedIndex] || '/File/HomeImg/Artboard350.svg';
+            $('#design-image').attr('src', defaultImage);
+        }
+        
+        // Initial load
+        loadDefaultImage();
+        
+        // Update default image when size changes
+        $('#size-select').change(function() {
+            loadDefaultImage();
         });
-        const text = new fabric.Text('', {
-            left: 100,
-            top: 100,
-            fontFamily: 'Evil Empire', // Set the font family
-            fontSize: 30,
-            fill: 'silver'
-        });
-        const text1 = new fabric.Text('', {
-            left: 100,
-            top: 100,
-            fontFamily: 'DecoType-Thuluth-II', // Set the font family
-            fontSize: 30,
-            fill: 'silver'
-        });
-        canvas.add(text);
-        canvas.add(text1);
+        
+        // Function to show alert message
+        function showAlert(arMessage, enMessage) {
+            const selectedLanguage = '@SelectedLanguage';
+            const message = selectedLanguage === 'ar' ? arMessage : enMessage;
+            const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
 
-        // Load default bottle image
-        const defaultBottleImageUrl = '/File/HomeImg/Artboard350.svg'; // Replace with your default image path
-        fabric.Image.fromURL(defaultBottleImageUrl, function (img) {
-            // Scale and center the image
-            const scaleFactor = Math.min(
-                canvas.getWidth() / img.width,
-                canvas.getHeight() / img.height
-            );
-            img.scale(scaleFactor);
-            img.set({
-                left: (canvas.getWidth() - img.width * scaleFactor) / 2,
-                top: (canvas.getHeight() - img.height * scaleFactor) / 2,
-                lockMovementX: true,
-                lockMovementY: true,
-                lockRotation: true,
-                lockScalingX: true,
-                lockScalingY: true,
-                hasControls: false,
-                hasBorders: false,
-                selectable: false
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message,
+                confirmButtonText: confirmButtonText
             });
-            canvas.add(img);
-        });
-
-        // Force canvas redraw on scroll
-        window.addEventListener('scroll', function () {
-            canvas.renderAll(); // Force the canvas to redraw
-        });
-
+        }
+        
         // Function to update bottle image
         function updateBottleImage() {
             const sizeId = $('#size-select').val();
@@ -374,10 +501,7 @@
                     lidId: lidId
                 },
                 success: function (data) {
-                    // Clear the canvas
-                    canvas.clear();
-
-                    const baseUrl = '/File/ColorsImg/'; // Replace with your actual base URL
+                    const baseUrl = '/File/ColorsImg/';
 
                     // Display the front image in the box
                     if (data.imgUrlFront) {
@@ -385,36 +509,12 @@
                         $('#front-image').attr('src', frontImageUrl).show();
                     }
 
-                    // Display the back image on the canvas
+                    // Display the back image on the card
                     if (data.imgUrlBack) {
                         const backImageUrl = baseUrl + data.imgUrlBack;
-                        fabric.Image.fromURL(backImageUrl, function (img) {
-                            // Calculate the scaling factor to fit the image within the canvas
-                            const scaleFactor = Math.min(
-                                canvas.getWidth(), // Scale based on width
-                                canvas.getHeight() / img.height // Scale based on height
-                            );
-
-                            // Apply the scaling factor to the image
-                            img.scale(scaleFactor);
-
-                            // Center the image on the canvas
-                            img.set({
-                                left: (canvas.getWidth() - img.width * scaleFactor) / 2,
-                                top: (canvas.getHeight() - img.height * scaleFactor) / 2,
-                                lockMovementX: true, // Prevent horizontal movement
-                                lockMovementY: true, // Prevent vertical movement
-                                lockRotation: true, // Prevent rotation
-                                lockScalingX: true, // Prevent horizontal scaling
-                                lockScalingY: true, // Prevent vertical scaling
-                                hasControls: false, // Hide controls
-                                hasBorders: false, // Hide borders
-                                selectable: false // Make it non-selectable
-                            });
-
-                            // Add the image to the canvas
-                            canvas.add(img);
-                            // Hide the spinner after the image is loaded
+                        $('#design-image').attr('src', backImageUrl).on('load', function() {
+                            // Update text after image loads
+                            updateText();
                             $('#spinner').hide();
                         });
                     }
@@ -422,18 +522,32 @@
                 error: function (xhr, status, error) {
                     // Hide the spinner in case of an error
                     $('#spinner').hide();
-                    const selectedLanguage = '@SelectedLanguage';
-                    const message = selectedLanguage === 'ar' ? 'المنتوج غير متوفر في المخزون!' : 'Product is out of stock!';
-                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                        confirmButtonText: confirmButtonText
-                    });
+                    showAlert('المنتوج غير متوفر في المخزون!', 'Product is out of stock!');
                 }
             });
+        }
+        
+        // Function to update text
+        function updateText() {
+            if (currentText) {
+                // Split text into two lines if it contains a space
+                let displayText = currentText;
+                if (currentText.includes(' ')) {
+                    const words = currentText.split(' ');
+                    if (words.length > 1) {
+                        // Join first half and second half with new line
+                        const mid = Math.ceil(words.length / 2);
+                        displayText = words.slice(0, mid).join(' ') + '\n' + words.slice(mid).join(' ');
+                    }
+                }
+                
+                $('#design-text').text(displayText)
+                    .css('font-family', currentFont)
+                    .toggleClass('arabic-text', isArabic)
+                    .show();
+            } else {
+                $('#design-text').hide();
+            }
         }
 
         // Live update when size, color or lid changes
@@ -443,73 +557,66 @@
 
         // Text input live update
         $('#text-input').on('input', function() {
-            const selectedFont = $('#font-select').val();
-            const textInput = $(this).val();
-
-            // Remove existing text
-            const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
-            if (existingText) {
-                canvas.remove(existingText);
-            }
-
-            if (textInput && selectedFont) {
-                // Add text to the canvas at the bottom center of the image
-                const text = new fabric.Textbox(textInput, {
-                    left: canvas.getWidth() / 2, // Center horizontally
-                    top: canvas.getHeight() - 70, // Position at the bottom with some padding
-                    fontSize: 34,
-                    fill: 'silver', // Use selected color
-                    fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont, // Use the selected font
-                    originX: 'center', // Center the text horizontally
-                    originY: 'bottom', // Align the text to the bottom
-                    textAlign: 'center', // Center the text
-                    lockMovementX: true, // Prevent horizontal movement
-                    lockMovementY: true, // Prevent vertical movement
-                    lockRotation: true, // Prevent rotation
-                    lockScalingX: true, // Prevent horizontal scaling
-                    lockScalingY: true, // Prevent vertical scaling
-                    hasControls: false, // Hide controls
-                    hasBorders: false, // Hide borders
-                    selectable: false // Make it non-selectable
-                });
-
-                canvas.add(text);
-            }
+            currentText = $(this).val();
+            updateText();
         });
 
         // Handle Font Selection from <select> Dropdown
         $('#font-select').change(function () {
-            const selectedFont = $(this).val();
-            const textInput = $('#text-input').val();
+            currentFont = $(this).val();
+            isArabic = currentFont === 'DecoType-Thuluth-II';
+            updateText();
+        });
 
-            if (textInput) {
-                // Remove existing text
-                const existingText = canvas.getObjects().find(obj => obj.type === 'textbox');
-                if (existingText) {
-                    canvas.remove(existingText);
-                }
+        // Handle click on color circles
+        $('.color-circle').on('click', function () {
+            if ($(this).hasClass('sold-out')) {
+                showAlert('هذا اللون غير متوفر!', 'This color is sold out!');
+            } else {
+                $('.color-circle').removeClass('selected');
+                $(this).addClass('selected');
+                updateBottleImage();
+            }
+        });
 
-                // Add new text with updated font
-                const text = new fabric.Textbox(textInput, {
-                    left: canvas.getWidth() / 2,
-                    top: canvas.getHeight() - 70,
-                    fontSize: 34,
-                    fill: 'silver',
-                    fontFamily: selectedFont === 'Evil Empire' ? "'Evil Empire', sans-serif" : selectedFont,
-                    originX: 'center',
-                    originY: 'bottom',
-                    textAlign: 'center',
-                    lockMovementX: true,
-                    lockMovementY: true,
-                    lockRotation: true,
-                    lockScalingX: true,
-                    lockScalingY: true,
-                    hasControls: false,
-                    hasBorders: false,
-                    selectable: false
+        // Handle click on lid cards
+        $('.lid-card').on('click', function () {
+            $('.lid-card').removeClass('selected');
+            $(this).addClass('selected');
+            updateBottleImage();
+        });
+
+        // Click event for the front image box
+        $('.front-image-box').on('click', function () {
+            const frontImageUrl = $('#front-image').attr('src');
+            if (frontImageUrl) {
+                Swal.fire({
+                    imageUrl: frontImageUrl,
+                    imageAlt: 'Front Image',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    width: '70%',
+                    backdrop: true,
                 });
+            } else {
+                showAlert('لا توجد صورة لعرضها!', 'No image to display!');
+            }
+        });
 
-                canvas.add(text);
+        // Show front image on mobile when button is clicked
+        $('#show-front-image').click(function () {
+            const frontImageUrl = $('#front-image').attr('src');
+            if (frontImageUrl) {
+                Swal.fire({
+                    imageUrl: frontImageUrl,
+                    imageAlt: 'Front Image',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    width: '70%',
+                    backdrop: true,
+                });
+            } else {
+                showAlert('لا توجد صورة لعرضها!', 'No image to display!');
             }
         });
 
@@ -523,18 +630,18 @@
 
             // Validate if size, color, and lid are selected
             if (!sizeId || !colorId || !lidId) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'الرجاء تحديد الحجم واللون والغطاء!' : 'Please select size, color, and lid!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
+                showAlert('الرجاء تحديد الحجم واللون والغطاء!', 'Please select size, color, and lid!');
                 return;
             }
+
+            // Validate text length if exists
+            if (text && (text.length < 2 || text.length > 20)) {
+                showAlert('النص يجب أن يكون بين 2 و 20 حرفًا!', 'Text must be between 2 and 20 characters!');
+                return;
+            }
+
+            // Show the spinner
+            $('#spinner').show();
 
             // Prepare the order details object
             const orderDetails = {
@@ -552,132 +659,19 @@
                 type: 'POST',
                 data: orderDetails,
                 success: function (response) {
+                    $('#spinner').hide();
                     if (response.success) {
                         // Redirect to the Order action in the Home controller
                         window.location.href = `@Url.Action("order", "Home")?Details=OrderDetails`;
                     } else {
-                        const selectedLanguage = '@SelectedLanguage';
-                        const message = selectedLanguage === 'ar' ? 'فشل في تقديم الطلب!' : 'Failed to submit the order!';
-                        const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: message,
-                            confirmButtonText: confirmButtonText
-                        });
+                        showAlert('فشل في تقديم الطلب!', 'Failed to submit the order!');
                     }
                 },
                 error: function (xhr, status, error) {
-                    const selectedLanguage = '@SelectedLanguage';
-                    const message = selectedLanguage === 'ar' ? 'فشل في تقديم الطلب!' : 'Failed to submit the order!';
-                    const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                        confirmButtonText: confirmButtonText
-                    });
+                    $('#spinner').hide();
+                    showAlert('فشل في تقديم الطلب!', 'Failed to submit the order!');
                 }
             });
         });
-
-        // Handle click on color circles
-        $('.color-circle').on('click', function () {
-            if ($(this).hasClass('sold-out')) {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'هذا اللون غير متوفر!' : 'This color is sold out!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-            } else {
-                $('.color-circle').removeClass('selected');
-                $(this).addClass('selected');
-                updateBottleImage();
-            }
-        });
-
-        // Handle click on lid cards
-        $('.lid-card').on('click', function () {
-            $('.lid-card').removeClass('selected');
-            $(this).addClass('selected');
-            updateBottleImage();
-        });
-
-        // Click event for the front image box
-        $('.front-image-box').on('click', function () {
-            const frontImageUrl = $('#front-image').attr('src'); // Get the image URL
-            if (frontImageUrl) {
-                // Use SweetAlert2 to display the image in a popup
-                Swal.fire({
-                    imageUrl: frontImageUrl,
-                    imageAlt: 'Front Image',
-                    showCloseButton: true,
-                    showConfirmButton: false,
-                    width: '70%',
-                    backdrop: true,
-                });
-            } else {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'لا توجد صورة لعرضها!' : 'No image to display!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-            }
-        });
-
-        // Show front image on mobile when button is clicked
-        $('#show-front-image').click(function () {
-            const frontImageUrl = $('#front-image').attr('src'); // Get the image URL
-            if (frontImageUrl) {
-                // Use SweetAlert2 to display the image in a popup
-                Swal.fire({
-                    imageUrl: frontImageUrl,
-                    imageAlt: 'Front Image',
-                    showCloseButton: true,
-                    showConfirmButton: false,
-                    width: '70%',
-                    backdrop: true,
-                });
-            } else {
-                const selectedLanguage = '@SelectedLanguage';
-                const message = selectedLanguage === 'ar' ? 'لا توجد صورة لعرضها!' : 'No image to display!';
-                const confirmButtonText = selectedLanguage === 'ar' ? 'حسناً' : 'OK';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message,
-                    confirmButtonText: confirmButtonText
-                });
-            }
-        });
     });
-
-    // Resize Canvas on Window Resize
-    function resizeCanvas() {
-        const canvas = document.getElementById('design-canvas');
-        const container = canvas.parentElement;
-
-        // Set canvas dimensions to match the container
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
-    }
-
-    // Resize canvas on window resize
-    window.addEventListener('resize', resizeCanvas);
-
-    // Initial resize
-    resizeCanvas();
 </script>

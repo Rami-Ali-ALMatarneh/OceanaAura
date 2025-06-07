@@ -62,7 +62,6 @@
         height: 3rem;
     }
 
-    /* Lids Cards Styles */
     /* Lids Cards Styles - Responsive */
     .lids-container {
         display: flex;
@@ -157,7 +156,28 @@
     .carousel {
         pointer-events: none;
     }
+    
+    /* Loading overlay styles */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: none;
+    }
 </style>
+
+<div class="loading-overlay">
+    <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
 
 <div class="container mt-5">
     @if (product != null)
@@ -305,8 +325,7 @@
                             </div>
                         </div>
 
-
-                        <!-- بقية الكود كما هو مع استبدال جزء ال lids بالتصميم الجديد -->
+                        <!-- Lids Selection -->
                         <div class="mb-3">
                             <label class="form-label">
                                 @if (SelectedLanguage == "ar")
@@ -491,6 +510,16 @@
 
     <script>
         $(document).ready(function () {
+            // Function to show loading overlay
+            function showLoading() {
+                $('.loading-overlay').show();
+            }
+            
+            // Function to hide loading overlay
+            function hideLoading() {
+                $('.loading-overlay').hide();
+            }
+
             // Function to display error messages dynamically
             function showError(form, message) {
                 const alertContainer = $(form).find('.alert-container');
@@ -608,6 +637,7 @@
 
                 // Validate the form before sending data
                 if (validateForm(form)) {
+                    showLoading();
                     $.ajax({
                         url: url,
                         type: 'POST',
@@ -620,6 +650,9 @@
                         },
                         error: function (xhr, status, error) {
                             console.error('Error submitting:', error);
+                        },
+                        complete: function() {
+                            hideLoading();
                         }
                     });
                 }
@@ -644,6 +677,7 @@
 
                 // Validate the form before sending data
                 if (validateForm(form)) {
+                    showLoading();
                     $.ajax({
                         url: url,
                         type: 'POST',
@@ -658,6 +692,9 @@
                         },
                         error: function (xhr, status, error) {
                             console.error('Error adding to cart:', error);
+                        },
+                        complete: function() {
+                            hideLoading();
                         }
                     });
                 }
@@ -676,6 +713,7 @@
                 });
 
                 const url = '@Url.Action("AddFeedback", "Home")'; // URL for the AddFeedback action
+                showLoading();
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -692,6 +730,9 @@
                     error: function (xhr, status, error) {
                         console.error('Error submitting feedback:', error);
                         showError(form, '@(SelectedLanguage == "ar" ? "حدث خطأ أثناء إرسال التعليق. يرجى المحاولة مرة أخرى." : "An error occurred while submitting feedback. Please try again.")');
+                    },
+                    complete: function() {
+                        hideLoading();
                     }
                 });
             });
@@ -790,6 +831,11 @@
             $('#size').on('change', updateImages);
             $('input[name="ColorId"]').on('change', updateImages);
             $('input[name="LidId"]').on('change', updateImages);
+
+            // Also trigger when lid card is clicked
+            $('.lid-card').on('click', function() {
+                setTimeout(updateImages, 100); // Small delay to ensure radio button is checked
+            });
         });
     </script>
 }

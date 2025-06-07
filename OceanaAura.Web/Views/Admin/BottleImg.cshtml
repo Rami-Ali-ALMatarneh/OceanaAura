@@ -16,6 +16,9 @@
             <a asp-action="AddBottleImg" asp-controller="Admin" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                 <i class="fas fa-plus fa-sm text-white-50"></i> Add Bottle Image
             </a>
+            <button id="deleteAllBottles" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm ms-2">
+                <i class="fas fa-trash fa-sm text-white-50"></i> Delete All Bottles
+            </button>
         </div>
     </div>
     <hr />
@@ -48,19 +51,18 @@
             var table = $('#bottleImgTable').DataTable({
                 "serverSide": true,
                 "processing": true,
-                "searching": false, // Disable search functionality
+                "searching": false,
                 "ajax": {
-                    "url": "@Url.Action("GetAllBottleImg", "Admin")", // Replace with your controller name
+                    "url": "@Url.Action("GetAllBottleImg", "Admin")",
                     "type": "POST",
                     "datatype": "json",
                 },
                 "columns": [
                     {
-                        "data": "imgUrlFront", // Updated to display an image
+                        "data": "imgUrlFront",
                         "name": "ImgUrlFront",
                         "autoWidth": true,
                         "render": function (data, type, row) {
-                            // Return an <img> tag with the image URL and size 50x50
                             return `<img src="/File/ColorsImg/${data}" loading="lazy" alt="Bottle Image" width="50" loading="lazy" height="50" />`;
                         }
                     },
@@ -114,11 +116,9 @@
             $(document).on('click', '.delete-bottle-img', function (e) {
                 e.preventDefault();
                 var bottleImgId = $(this).data('id');
-                var imgUrlfront = $(this).data('img-urlfront'); // Get the image URL
-                var imgUrlback = $(this).data('img-urlback'); // Get the image URL
+                var imgUrlfront = $(this).data('img-urlfront');
+                var imgUrlback = $(this).data('img-urlback');
 
-
-                // SweetAlert confirmation dialog
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'You won\'t be able to revert this!',
@@ -128,29 +128,58 @@
                     cancelButtonText: 'No, keep it'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Send HTTP POST request to delete the bottle image
                         $.ajax({
-                            url: '@Url.Action("DeleteBottleImg", "Admin")', // Replace with your controller name
+                            url: '@Url.Action("DeleteBottleImg", "Admin")',
                             type: 'POST',
                             data: {
                                 id: bottleImgId,
                                 imgUrlFront: imgUrlfront,
                                 imgUrlBack: imgUrlback
-                            }, // Send both ID and image URLs        
+                            },
                             success: function (response) {
                                 if (response.success) {
-                                    // Reload the DataTable
                                     $('#bottleImgTable').DataTable().ajax.reload();
-                                    // Show success message
                                     Swal.fire('Deleted!', response.message, 'success');
                                 } else {
-                                    // Show error message
                                     Swal.fire('Error!', response.message, 'error');
                                 }
                             },
                             error: function () {
-                                // Show error message
                                 Swal.fire('Error!', 'An error occurred while deleting the bottle image.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Delete All Bottles functionality
+            $(document).on('click', '#deleteAllBottles', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will delete ALL bottle images and cannot be undone!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete all!',
+                    cancelButtonText: 'No, cancel',
+                    confirmButtonColor: '#d33',
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '@Url.Action("DeleteAllBottleImg", "Admin")',
+                            type: 'POST',
+                            success: function (response) {
+                                if (response.success) {
+                                    $('#bottleImgTable').DataTable().ajax.reload();
+                                    Swal.fire('Deleted!', response.message, 'success');
+                                } else {
+                                    Swal.fire('Error!', response.message, 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error!', 'An error occurred while deleting all bottle images.', 'error');
                             }
                         });
                     }

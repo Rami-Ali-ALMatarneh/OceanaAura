@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using OceanaAura.Application.Contracts.Identity;
 using OceanaAura.Application.Exceptions;
 using OceanaAura.Application.Features.BottleImg.Command.AddBottleImg;
+using OceanaAura.Application.Features.BottleImg.Command.DeleteAllBottleImg;
 using OceanaAura.Application.Features.BottleImg.Command.DeleteBottleImg;
 using OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImg;
+using OceanaAura.Application.Features.BottleImg.Queries.GetAllBottleImgs;
 using OceanaAura.Application.Features.ContactUs.Commands.DeleteContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetAllContactUs;
 using OceanaAura.Application.Features.ContactUs.Queries.GetContactUsWithDetails;
@@ -89,7 +91,7 @@ namespace OceanaAura.Web.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var ProductNumber = await _mediator.Send(new ProductQuery());
-            var OrderNumber  = await _mediator.Send(new OrdersQuery());
+            var OrderNumber = await _mediator.Send(new OrdersQuery());
             var FeedbackNumber = await _mediator.Send(new GetAllFeedbacksQuery());
             var InvoiceNumber = await _mediator.Send(new InvoicesQuery());
             var OrdersWithStatus = await _mediator.Send(new GetOrdersWithStatusQuery());
@@ -419,57 +421,87 @@ namespace OceanaAura.Web.Controllers
         }
 
         // POST: AddBottleImg
-[HttpPost]
-public async Task<IActionResult> AddBottleImg(AddBottleImg model)
-{
-    // Validate the model
-    var validator = new AddBottleImgValidator();
-    var validationResult = await validator.ValidateAsync(model);
-
-    if (!validationResult.IsValid)
-    {
-        // Add validation errors to ModelState
-        foreach (var error in validationResult.Errors)
+        [HttpPost]
+        public async Task<IActionResult> AddBottleImg(AddBottleImg model)
         {
-            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        }
+            // Validate the model
+            var validator = new AddBottleImgValidator();
+            var validationResult = await validator.ValidateAsync(model);
 
-        // Repopulate ViewBag data for the form
-        var sizes = await _mediator.Send(new SizeQuery());
-        var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
-        ViewBag.Sizes = sizesVM;
+            if (!validationResult.IsValid)
+            {
+                // Add validation errors to ModelState
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
 
-        var colors = await _mediator.Send(new GetColorQuery());
-        var colorsVM = _mapper.Map<List<ColorVM>>(colors);
-        ViewBag.Colors = colorsVM;
+                // Repopulate ViewBag data for the form
+                var sizes = await _mediator.Send(new SizeQuery());
+                var sizesVM = _mapper.Map<List<SizeVM>>(sizes);
+                ViewBag.Sizes = sizesVM;
 
-        var products = await _mediator.Send(new ProductQuery());
-        products = products.Where(p => p.CategoryId == (int)LookUpEnums.ProductCategory.Lids).ToList();
-        var productsVM = _mapper.Map<List<ProductVMHome>>(products);
-        ViewBag.Products = productsVM;
+                var colors = await _mediator.Send(new GetColorQuery());
+                var colorsVM = _mapper.Map<List<ColorVM>>(colors);
+                ViewBag.Colors = colorsVM;
 
-        // Return the view with the model and validation errors
-        return View(model);
-    }
+                var products = await _mediator.Send(new ProductQuery());
+                products = products.Where(p => p.CategoryId == (int)LookUpEnums.ProductCategory.Lids).ToList();
+                var productsVM = _mapper.Map<List<ProductVMHome>>(products);
+                ViewBag.Products = productsVM;
 
-    // Process the form data if validation passes
-    if (model.ImgFront != null && model.ImgBack !=null)
-    {
-        model.ImgUrlFront = await FileExtensions.ConvertFileToStringAsync(model.ImgFront, webHostEnvironment);
-        model.ImgUrlBack = await FileExtensions.ConvertFileToStringAsync(model.ImgBack, webHostEnvironment);
+                // Return the view with the model and validation errors
+                return View(model);
+            }
 
-    }
+            // Process the form data if validation passes
+            if (model.ImgFront != null && model.ImgBack != null)
+            {
+                model.ImgUrlFront = await FileExtensions.ConvertFileToStringAsync(model.ImgFront, webHostEnvironment);
+                model.ImgUrlBack = await FileExtensions.ConvertFileToStringAsync(model.ImgBack, webHostEnvironment);
 
-    var addBottleImgDto = _mapper.Map<AddBottleImgDto>(model);
-    var bottleImgId = await _mediator.Send(addBottleImgDto);
+            }
+
+            var addBottleImgDto = _mapper.Map<AddBottleImgDto>(model);
+            var bottleImgId = await _mediator.Send(addBottleImgDto);
             if (bottleImgId <= 0)
             {
-                 FileExtensions.DeleteFileFromFileFolder(model.ImgUrlFront, webHostEnvironment);
+                FileExtensions.DeleteFileFromFileFolder(model.ImgUrlFront, webHostEnvironment);
                 FileExtensions.DeleteFileFromFileFolder(model.ImgUrlBack, webHostEnvironment);
 
             }
             return RedirectToAction("BottleImg", "Admin");
-}
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAllBottleImg()
+        {
+            try
+            {
+                // Get all bottle images to delete their files
+                var allBottleImgs = await _mediator.Send(new GetAllBottleImgQuery());
+                // Delete all image files from the server
+                foreach (var img in allBottleImgs)
+                {
+                    if (!string.IsNullOrEmpty(img.ImgUrlFront))
+                    {
+                        FileExtensions.DeleteFileFromFileFolder(img.ImgUrlFront, webHostEnvironment);
+                    }
+                    if (!string.IsNullOrEmpty(img.ImgUrlBack))
+                    {
+                        FileExtensions.DeleteFileFromFileFolder(img.ImgUrlBack, webHostEnvironment);
+                    }
+                }
+                await _mediator.Send(new DeleteAllBottleImg());
+
+                return Json(new { success = true, message = "All bottle images deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while deleting all bottle images." });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> DeleteBottleImg(int id, string imgUrlFront, string imgUrlBack)
         {
